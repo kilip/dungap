@@ -5,7 +5,10 @@ on:
   workflow_dispatch:
   workflow_call:
   push:
-    tags: [">v0.1.0"]
+    tags:
+      - "v*"
+    tags-ignore:
+      - v0.1.0
 
 jobs:
   release:
