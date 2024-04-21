@@ -1,7 +1,7 @@
 # Production environment override
 services:
   api:
-    image: ${PHP_DOCKER_IMAGE}
+    image: ${API_DOCKER_IMAGE}
     build:
       context: ./api
       target: frankenphp_prod
