@@ -9,17 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Node\Command;
+namespace Dungap\Network;
 
-final readonly class PowerOffCommand
+final readonly class ResultNode
 {
     public function __construct(
-        private string $nodeId
+        public string $ipAddress,
+        public ?string $hostname = null,
+        public ?string $vendor = null,
+        public ?string $macAddress = null,
     ) {
-    }
-
-    public function getNodeId(): string
-    {
-        return $this->nodeId;
     }
 }

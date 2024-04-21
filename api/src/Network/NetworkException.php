@@ -9,17 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Node\Command;
+namespace Dungap\Network;
 
-final readonly class PowerOffCommand
+class NetworkException
 {
-    public function __construct(
-        private string $nodeId
-    ) {
-    }
-
-    public function getNodeId(): string
-    {
-        return $this->nodeId;
-    }
 }

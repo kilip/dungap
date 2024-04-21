@@ -9,17 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Node\Command;
+namespace Dungap\Network\Bridge;
 
-final readonly class PowerOffCommand
+class Nmap
 {
-    public function __construct(
-        private string $nodeId
-    ) {
-    }
-
-    public function getNodeId(): string
-    {
-        return $this->nodeId;
-    }
 }

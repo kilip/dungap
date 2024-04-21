@@ -9,17 +9,23 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Node\Command;
+namespace Dungap\Network\Command;
 
-final readonly class PowerOffCommand
+final readonly class ScanNodesCommand
 {
+    /**
+     * @param array<int,string> $target
+     */
     public function __construct(
-        private string $nodeId
+        private array $target
     ) {
     }
 
-    public function getNodeId(): string
+    /**
+     * @return array<int,string>
+     */
+    public function getTarget(): array
     {
-        return $this->nodeId;
+        return $this->target;
     }
 }

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the dungap project.
+ *
+ * (c) Anthonius Munthi <me@itstoni.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Dungap\Tests\Node\Controller;
 
 use Dungap\Contracts\Node\NodeInterface;
@@ -13,7 +22,6 @@ use Symfony\Component\Uid\Uuid;
 
 class PowerOffActionTest extends TestCase
 {
-
     public function testInvoke(): void
     {
         $messageBus = $this->createMock(MessageBusInterface::class);
@@ -23,7 +31,7 @@ class PowerOffActionTest extends TestCase
         $messageBus->expects($this->once())
             ->method('dispatch')
             ->with($this->isInstanceOf(PowerOffCommand::class))
-            ->willReturn(new Envelope(new \stdclass()))
+            ->willReturn(new Envelope(new \stdClass()))
         ;
 
         $node->expects($this->once())

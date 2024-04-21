@@ -22,14 +22,12 @@ class PowerOffAction
 {
     public function __construct(
         private MessageBusInterface $messageBus,
-    )
-    {
+    ) {
     }
 
     public function __invoke(
         NodeInterface $node
-    ): Response
-    {
+    ): Response {
         $command = new PowerOffCommand($node->getId());
         $this->messageBus->dispatch($command);
 
