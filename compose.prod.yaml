@@ -1,0 +1,22 @@
+# Production environment override
+services:
+  api:
+    image: ${PHP_DOCKER_IMAGE}
+    build:
+      context: ./api
+      target: frankenphp_prod
+    environment:
+      APP_ENV: prod
+      APP_SECRET: ${APP_SECRET}
+      MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET}
+      MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET}
+
+  pwa:
+    image: ${PWA_DOCKER_IMAGE}
+    build:
+      context: ./pwa
+      target: prod
+      args:
+        AUTH_SECRET: ${AUTH_SECRET}
+    environment:
+      AUTH_SECRET: ${AUTH_SECRET}

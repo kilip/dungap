@@ -1,0 +1,5 @@
+node:
+  resource:
+    path: ../src/Node/Controller/
+    namespace: Dungap\Node\Controller
+  type: attribute

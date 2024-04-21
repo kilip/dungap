@@ -1,0 +1,139 @@
+---
+version: "3"
+
+tasks:
+  default: task -l
+
+  secrets:
+    desc: generate random secrets
+    cmds:
+      - openssl rand -base64 -hex 32
+
+  pass:init:
+    desc: generate secrets from password store
+    cmds:
+      - pass dungap/ssh-private-key > api/config/ssh/dungap
+      - pass dungap/ssh-public-key > api/config/ssh/dungap.pub
+
+  boot:prod:
+    desc: boot docker container
+    cmds:
+      - docker compose -f compose.yaml -f compose.prod.yaml up -d
+
+  up:
+    desc: boot all docker container
+    cmds:
+      - docker compose up -d {{.CLI_ARGS}}
+
+  up:*:
+    desc: boot docker container
+    cmds:
+      - task: up
+        vars:
+          CLI_ARGS: "{{.container}} {{.CLI_ARGS}}"
+    vars:
+      container: "{{index .MATCH 0}}"
+
+  start:
+    desc: start docker container
+    cmds:
+      - docker compose start {{.CLI_ARGS}}
+
+  start:*:
+    desc: start docker container
+    cmds:
+      - task: start
+        vars:
+          CLI_ARGS: "{{.container}} {{.CLI_ARGS}}"
+    vars:
+      container: "{{index .MATCH 0}}"
+
+  stop:
+    desc: stop docker container
+    cmds:
+      - docker compose stop {{.CLI_ARGS}}
+
+  stop:*:
+    desc: stop docker container
+    cmds:
+      - task: stop
+        vars:
+          CLI_ARGS: "{{.container}} {{.CLI_ARGS}}"
+    vars:
+      container: "{{index .MATCH 0}}"
+
+  restart:
+    desc: restart docker container
+    cmds:
+      - task: stop:{{.container}}
+      - task: start:{{.container}}
+    vars:
+      container: "{{index .MATCH 0}}"
+
+  rm:
+    desc: remove container
+    cmds:
+      - docker compose rm {{.container}} {{.CLI_ARGS}}
+
+  rm:*:
+    desc: remove container
+    cmds:
+      - task: rm
+        CLI_ARGS: "{{.container}} {{.CLI_ARGS}}"
+    vars:
+      container: "{{index .MATCH 0}}"
+
+  build:prod:
+    desc: Build production images
+    cmds:
+      - docker compose -f compose.yaml -f compose.prod.yaml build {{.CLI_ARGS}}
+
+  build:
+    desc: build dev container
+    cmds:
+      - docker compose build {{.CLI_ARGS}}
+
+  build:*:
+    cmds:
+      - task: build
+        vars:
+          CLI_ARGS: "{{.container}} {{.CLI_ARGS}}"
+    vars:
+      container: "{{index .MATCH 0}}"
+
+  logs:*:
+    desc: show api container log
+    cmds:
+      - docker compose logs -f {{.container}} --tail 10
+    vars:
+      container: "{{index .MATCH 0}}"
+
+  api:shell:
+    desc: execute bash shell in api container
+    cmds:
+      - docker compose exec api bash
+
+  sf:
+    desc: execute bin/console command in api container
+    cmds:
+      - docker compose exec api bin/console {{.CLI_ARGS}}
+
+  sf:cc:
+    desc: clear symfony cache
+    cmds:
+      - docker compose exec api bin/console cache:clear {{.CLI_ARGS}}
+
+  composer:
+    desc: execute composer in api container
+    cmds:
+      - docker compose exec api composer {{.CLI_ARGS}}
+
+  pnpm:
+    desc: execute pnpm in pwa container
+    cmds:
+      - docker compose exec pwa pnpm {{.CLI_ARGS}}
+
+  ps:
+    desc: show doctrine status
+    cmds:
+      - docker compose ps
