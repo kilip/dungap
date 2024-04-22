@@ -1,5 +1,5 @@
-node:
+device:
   resource:
-    path: ../src/Node/Controller/
-    namespace: Dungap\Node\Controller
+    path: ../src/Device/Controller/
+    namespace: Dungap\Device\Controller
   type: attribute

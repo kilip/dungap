@@ -16,14 +16,17 @@ doctrine:
     naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
     auto_mapping: true
     mappings:
-      Node:
+      Device:
         type: attribute
         is_bundle: false
-        dir: "%kernel.project_dir%/src/Node/Entity"
-        prefix: 'Dungap\Node\Entity'
+        dir: "%kernel.project_dir%/src/Device/Entity"
+        prefix: 'Dungap\Device\Entity'
         alias: Node
     controller_resolver:
       auto_mapping: true
+    resolve_target_entities:
+      Dungap\Contracts\Device\DeviceInterface: Dungap\Device\Entity\Device
+
 
 when@test:
   doctrine:
