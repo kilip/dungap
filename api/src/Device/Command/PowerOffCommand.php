@@ -9,11 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Contracts\Node;
+namespace Dungap\Device\Command;
 
-use Symfony\Component\Uid\Uuid;
-
-interface NodeInterface
+final readonly class PowerOffCommand
 {
-    public function getId(): ?Uuid;
+    public function __construct(
+        public string $deviceId
+    ) {
+    }
 }

@@ -9,30 +9,28 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Node\Controller;
+namespace Dungap\Device\Controller;
 
-use Dungap\Contracts\Node\NodeInterface;
-use Dungap\Node\Command\PowerOffCommand;
+use Dungap\Device\Command\ScanDeviceCommand;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsController]
-class PowerOffAction
+final readonly class ScanDeviceAction
 {
     public function __construct(
-        private MessageBusInterface $messageBus,
-    )
-    {
+        private MessageBusInterface $messageBus
+    ) {
     }
 
     public function __invoke(
-        NodeInterface $node
-    ): Response
-    {
-        $command = new PowerOffCommand($node->getId());
+        #[MapRequestPayload]
+        ScanDeviceCommand $command,
+    ): Response {
         $this->messageBus->dispatch($command);
 
-        return new Response(null, Response::HTTP_NO_CONTENT);
+        return new Response(status: Response::HTTP_NO_CONTENT);
     }
 }

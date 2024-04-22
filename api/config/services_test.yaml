@@ -1,0 +1,5 @@
+parameters:
+  public_url: '%env(MERCURE_PUBLIC_URL)%'
+services:
+  mercure.hub.default:
+    class: Dungap\Tests\Stub\HubStub
