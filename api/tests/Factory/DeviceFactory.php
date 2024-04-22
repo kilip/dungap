@@ -47,7 +47,7 @@ final class DeviceFactory extends ModelFactory
      */
     protected function getDefaults(): array
     {
-        $data =  [
+        $data = [
             'nickname' => self::faker()->unique()->word(),
             'hostname' => self::faker()->unique()->domainWord(),
             'ipAddress' => self::faker()->unique()->ipv4(),
@@ -59,7 +59,6 @@ final class DeviceFactory extends ModelFactory
         ];
 
         return $data;
-
     }
 
     /**

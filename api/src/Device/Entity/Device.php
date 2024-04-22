@@ -12,7 +12,6 @@
 namespace Dungap\Device\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\EnumDeviceFeature;
@@ -55,7 +54,7 @@ class Device implements DeviceInterface
     private ?\DateTimeImmutable $uptime = null;
 
     /**
-     * @extends Collection<EnumDeviceFeature>
+     * @var array<int,EnumDeviceFeature>
      */
     #[ORM\Column(type: 'json')]
     private array $features = [];
@@ -88,11 +87,17 @@ class Device implements DeviceInterface
         return in_array($feature, $this->features);
     }
 
+    /**
+     * @return array<int,EnumDeviceFeature>
+     */
     public function getFeatures(): array
     {
         return $this->features;
     }
 
+    /**
+     * @param array<int,EnumDeviceFeature> $features
+     */
     public function setFeatures(array $features): Device
     {
         $this->features = $features;

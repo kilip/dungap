@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the dungap project.
+ *
+ * (c) Anthonius Munthi <me@itstoni.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Dungap\Tests\API;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
@@ -10,13 +19,13 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 class DeviceTest extends ApiTestCase
 {
     // use ResetDatabase, Factories;
-    use Factories, ResetDatabase;
+    use Factories;
+    use ResetDatabase;
 
     public function testGetCollection(): void
     {
         $client = static::createClient();
         DeviceFactory::createMany(100);
-
 
         $response = $client->request('GET', '/devices');
 
