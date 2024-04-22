@@ -11,14 +11,14 @@
 
 namespace Dungap\Device\Controller;
 
-use Dungap\Device\Command\NetworkScanCommand;
+use Dungap\Device\Command\ScanDeviceCommand;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsController]
-final readonly class NetworkScanAction
+final readonly class ScanDeviceAction
 {
     public function __construct(
         private MessageBusInterface $messageBus
@@ -27,7 +27,7 @@ final readonly class NetworkScanAction
 
     public function __invoke(
         #[MapRequestPayload]
-        NetworkScanCommand $command,
+        ScanDeviceCommand $command,
     ): Response {
         $this->messageBus->dispatch($command);
 

@@ -11,13 +11,13 @@
 
 namespace Dungap\Contracts\Device;
 
-use Dungap\Device\Command\ScanDeviceCommand;
-use Dungap\Device\DTO\ResultDevice;
-
-interface DeviceScannerInterface
+enum EnumOsFamily: string
 {
-    /**
-     * @return array<int,ResultDevice>
-     */
-    public function scan(ScanDeviceCommand $command): array;
+    case Windows = 'Windows';
+    case Mac = 'Mac';
+    case Ubuntu = 'Ubuntu';
+    case Debian = 'Debian';
+    case RouterBoard = 'RouterBoard';
+    case RedHat = 'RedHat';
+    case Tasmota = 'Tasmota';
 }

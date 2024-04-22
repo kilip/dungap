@@ -12,8 +12,10 @@
 namespace Dungap\Device\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Device\DeviceInterface;
+use Dungap\Contracts\Device\EnumDeviceFeature;
 use Dungap\Device\Repository\DeviceRepository;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
@@ -23,8 +25,8 @@ use Symfony\Component\Uid\Uuid;
 class Device implements DeviceInterface
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: "CUSTOM")]
-    #[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     private ?Uuid $id = null;
 
@@ -52,9 +54,50 @@ class Device implements DeviceInterface
     #[ORM\Column(type: 'datetimetz_immutable', nullable: true)]
     private ?\DateTimeImmutable $uptime = null;
 
+    /**
+     * @extends Collection<EnumDeviceFeature>
+     */
+    #[ORM\Column(type: 'json')]
+    private array $features = [];
+
     public function getId(): ?Uuid
     {
         return $this->id;
+    }
+
+    public function addFeature(EnumDeviceFeature $feature): DeviceInterface
+    {
+        if (!in_array($feature, $this->features)) {
+            $this->features[] = $feature;
+        }
+
+        return $this;
+    }
+
+    public function removeFeature(EnumDeviceFeature $feature): DeviceInterface
+    {
+        if (($key = array_search($feature, $this->features)) !== false) {
+            unset($this->features[$key]);
+        }
+
+        return $this;
+    }
+
+    public function hasFeature(EnumDeviceFeature $feature): bool
+    {
+        return in_array($feature, $this->features);
+    }
+
+    public function getFeatures(): array
+    {
+        return $this->features;
+    }
+
+    public function setFeatures(array $features): Device
+    {
+        $this->features = $features;
+
+        return $this;
     }
 
     public function getNickname(): ?string

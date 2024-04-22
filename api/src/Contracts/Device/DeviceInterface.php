@@ -48,4 +48,10 @@ interface DeviceInterface
     public function setUptime(\DateTimeImmutable $uptime = null): self;
 
     public function getUptime(): ?\DateTimeImmutable;
+
+    public function addFeature(EnumDeviceFeature $feature): self;
+
+    public function removeFeature(EnumDeviceFeature $feature): self;
+
+    public function hasFeature(EnumDeviceFeature $feature): bool;
 }

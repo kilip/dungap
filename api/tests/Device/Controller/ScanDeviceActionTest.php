@@ -11,30 +11,30 @@
 
 namespace Dungap\Tests\Device\Controller;
 
-use Dungap\Device\Command\NetworkScanCommand;
-use Dungap\Device\Controller\NetworkScanAction;
+use Dungap\Device\Command\ScanDeviceCommand;
+use Dungap\Device\Controller\ScanDeviceAction;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class NetworkScanActionTest extends TestCase
+class ScanDeviceActionTest extends TestCase
 {
     private MockObject|MessageBusInterface $messageBus;
 
-    private NetworkScanAction $action;
+    private ScanDeviceAction $action;
 
     protected function setUp(): void
     {
         $this->messageBus = $this->createMock(MessageBusInterface::class);
-        $this->action = new \Dungap\Device\Controller\NetworkScanAction($this->messageBus);
+        $this->action = new ScanDeviceAction($this->messageBus);
     }
 
     public function testInvoke(): void
     {
         $messageBus = $this->messageBus;
-        $command = new NetworkScanCommand(target: ['10.0.0.0/24']);
+        $command = new ScanDeviceCommand(target: ['10.0.0.0/24']);
         $action = $this->action;
 
         $messageBus->expects($this->once())

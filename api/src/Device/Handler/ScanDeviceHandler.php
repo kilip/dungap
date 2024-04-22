@@ -14,7 +14,7 @@ namespace Dungap\Device\Handler;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\DeviceRepositoryInterface;
 use Dungap\Contracts\Device\DeviceScannerInterface;
-use Dungap\Device\Command\NetworkScanCommand;
+use Dungap\Device\Command\ScanDeviceCommand;
 use Dungap\Device\DeviceConstant;
 use Dungap\Device\DTO\ResultDevice;
 use Psr\Log\LoggerInterface;
@@ -22,7 +22,7 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[AsMessageHandler]
-final readonly class NetworkScanHandler
+final readonly class ScanDeviceHandler
 {
     public function __construct(
         private DeviceScannerInterface $scanner,
@@ -32,7 +32,7 @@ final readonly class NetworkScanHandler
     ) {
     }
 
-    public function __invoke(NetworkScanCommand $command): void
+    public function __invoke(ScanDeviceCommand $command): void
     {
         $this->logger?->notice('start scanning network devices... ', $command->target);
 

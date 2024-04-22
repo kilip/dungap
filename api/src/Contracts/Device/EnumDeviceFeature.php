@@ -11,13 +11,10 @@
 
 namespace Dungap\Contracts\Device;
 
-use Dungap\Device\Command\ScanDeviceCommand;
-use Dungap\Device\DTO\ResultDevice;
-
-interface DeviceScannerInterface
+enum EnumDeviceFeature: string
 {
-    /**
-     * @return array<int,ResultDevice>
-     */
-    public function scan(ScanDeviceCommand $command): array;
+    case PowerOff = 'PowerOff';
+    case PowerOn = 'PowerOn';
+    case Reboot = 'Reboot';
+    case Uptime = 'Uptime';
 }

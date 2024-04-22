@@ -12,7 +12,7 @@
 namespace Dungap\Bridge\Nmap;
 
 use Dungap\Contracts\Device\DeviceScannerInterface;
-use Dungap\Device\Command\NetworkScanCommand;
+use Dungap\Device\Command\ScanDeviceCommand;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Process\Process;
@@ -33,7 +33,7 @@ final readonly class NmapScannerDeviceScanner implements DeviceScannerInterface
     ) {
     }
 
-    public function scan(NetworkScanCommand $command): array
+    public function scan(ScanDeviceCommand $command): array
     {
         $filename = Uuid::v1();
         $resultFile = "{$this->cacheDir}/nmap/{$filename}.xml";

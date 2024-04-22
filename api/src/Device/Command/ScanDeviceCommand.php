@@ -13,7 +13,7 @@ namespace Dungap\Device\Command;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-final readonly class NetworkScanCommand
+final readonly class ScanDeviceCommand
 {
     /**
      * @param array<int,string> $target

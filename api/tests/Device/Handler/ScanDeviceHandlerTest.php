@@ -14,17 +14,18 @@ namespace Dungap\Tests\Device\Handler;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\DeviceRepositoryInterface;
 use Dungap\Contracts\Device\DeviceScannerInterface;
-use Dungap\Device\Command\NetworkScanCommand;
+use Dungap\Device\Command\ScanDeviceCommand;
 use Dungap\Device\DTO\ResultDevice;
+use Dungap\Device\Handler\ScanDeviceHandler;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class NetworkScanHandlerTest extends TestCase
+class ScanDeviceHandlerTest extends TestCase
 {
     private MockObject|DeviceRepositoryInterface $deviceRepository;
     private MockObject|EventDispatcherInterface $dispatcher;
-    private \Dungap\Device\Handler\NetworkScanHandler $handler;
+    private ScanDeviceHandler $handler;
 
     protected function setUp(): void
     {
@@ -42,10 +43,10 @@ class NetworkScanHandlerTest extends TestCase
 
         $scanner->expects($this->once())
             ->method('scan')
-            ->with($this->isInstanceOf(NetworkScanCommand::class))
+            ->with($this->isInstanceOf(ScanDeviceCommand::class))
             ->willReturn([$result]);
 
-        $this->handler = new \Dungap\Device\Handler\NetworkScanHandler(
+        $this->handler = new ScanDeviceHandler(
             scanner: $scanner,
             deviceRepository: $this->deviceRepository,
             dispatcher: $this->dispatcher
@@ -75,7 +76,7 @@ class NetworkScanHandlerTest extends TestCase
             ->method('store')
             ->with($device);
 
-        $handler(new NetworkScanCommand(['target']));
+        $handler(new ScanDeviceCommand(['target']));
     }
 
     /**
@@ -90,7 +91,7 @@ class NetworkScanHandlerTest extends TestCase
             ->with($this->equalTo($value))
             ->willReturn($device);
 
-        $handler(new NetworkScanCommand(['target']));
+        $handler(new ScanDeviceCommand(['target']));
     }
 
     /**

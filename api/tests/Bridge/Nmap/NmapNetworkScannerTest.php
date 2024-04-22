@@ -13,7 +13,7 @@ namespace Dungap\Tests\Bridge\Nmap;
 
 use Dungap\Bridge\Nmap\NmapResultParser;
 use Dungap\Bridge\Nmap\NmapScannerDeviceScanner;
-use Dungap\Device\Command\NetworkScanCommand;
+use Dungap\Device\Command\ScanDeviceCommand;
 use Dungap\Device\DTO\ResultDevice;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -53,7 +53,7 @@ class NmapNetworkScannerTest extends TestCase
             ->method('wait')
             ->with([$this->scanner, 'onProcess']);
 
-        $results = $this->scanner->scan(new NetworkScanCommand(['10.0.0.0/24']));
+        $results = $this->scanner->scan(new ScanDeviceCommand(['10.0.0.0/24']));
         $this->assertSame([$this->resultDevice], $results);
     }
 
