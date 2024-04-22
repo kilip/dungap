@@ -23,5 +23,6 @@ api_platform:
     # The list of your resources class directories. Defaults to the directories of the mapping paths but might differ.
     resource_class_directories:
         - '%kernel.project_dir%/src/Device/Entity'
+        - '%kernel.project_dir%/src/User/Entity'
     mercure:
         include_type: true
