@@ -16,7 +16,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Dungap\\": "src/"
+      "Dungap\\": "src/",
+      "Dungap\\DataFixtures\\": "fixtures/"
     }
   },
   "autoload-dev": {
