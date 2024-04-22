@@ -24,4 +24,4 @@ services:
   # please note that last definitions always *replace* previous ones
 
   Dungap\DataFixtures\:
-    resource: "../src/"
+    resource: "../fixtures"

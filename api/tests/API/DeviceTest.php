@@ -33,7 +33,7 @@ class DeviceTest extends ApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
 
         $this->assertJsonContains([
-            '@context' => '/contexts/Device',
+            '@context' => '/contexts/device',
             '@id' => '/devices',
             '@type' => 'hydra:Collection',
             'hydra:totalItems' => 100,
