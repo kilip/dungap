@@ -12,14 +12,39 @@
 namespace Dungap\Device\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\EnumDeviceFeature;
+use Dungap\Device\Controller\ScanDeviceAction;
 use Dungap\Device\Repository\DeviceRepository;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
-#[ApiResource(mercure: true)]
+#[ApiResource(
+    shortName: 'device',
+    operations: [
+        new GetCollection(),
+        new Post(),
+        new Get(),
+        new Put(),
+        new Patch(),
+        new Delete(),
+        new Post(
+            uriTemplate: '/devices/scan',
+            controller: ScanDeviceAction::class,
+            description: 'Scan available devices on network',
+            read: false,
+            name: 'api_device_scan',
+        ),
+    ],
+    mercure: true
+)]
 #[ORM\Entity(repositoryClass: DeviceRepository::class)]
 class Device implements DeviceInterface
 {

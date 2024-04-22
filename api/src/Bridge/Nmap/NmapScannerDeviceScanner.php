@@ -43,6 +43,9 @@ final readonly class NmapScannerDeviceScanner implements DeviceScannerInterface
             explode(' ', $cmd),
         );
 
+        if (!is_dir($dir = dirname($resultFile))) {
+            mkdir($dir, 0777, true);
+        }
         $process->start();
         $process->wait([$this, 'onProcess']);
 
