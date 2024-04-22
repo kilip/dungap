@@ -69,12 +69,15 @@
     "nelmio/cors-bundle": "^2.4",
     "phpdocumentor/reflection-docblock": "^5.4",
     "phpstan/phpdoc-parser": "^1.28",
+    "runtime/frankenphp-symfony": "^0.2.0",
     "symfony/asset": "7.0.*",
     "symfony/console": "7.0.*",
     "symfony/dotenv": "7.0.*",
     "symfony/expression-language": "7.0.*",
     "symfony/flex": "^2",
     "symfony/framework-bundle": "7.0.*",
+    "symfony/http-client": "7.0.*",
+    "symfony/mercure-bundle": "^0.3.8",
     "symfony/messenger": "7.0.*",
     "symfony/process": "7.0.*",
     "symfony/property-access": "7.0.*",
@@ -83,11 +86,17 @@
     "symfony/runtime": "7.0.*",
     "symfony/security-bundle": "7.0.*",
     "symfony/serializer": "7.0.*",
+    "symfony/twig-bundle": "7.0.*",
     "symfony/uid": "7.0.*",
     "symfony/validator": "7.0.*",
-    "symfony/yaml": "7.0.*"
+    "symfony/yaml": "7.0.*",
+    "twig/extra-bundle": "^2.12|^3.0",
+    "twig/twig": "^2.12|^3.0"
   },
   "require-dev": {
+    "dama/doctrine-test-bundle": "^8.0",
+    "doctrine/doctrine-fixtures-bundle": "^3.5",
+    "justinrainbow/json-schema": "^5.2",
     "phpstan/extension-installer": "^1.3",
     "phpstan/phpstan": "^1.10",
     "phpstan/phpstan-phpunit": "^1.3",
@@ -95,6 +104,8 @@
     "phpunit/phpunit": "^9.5",
     "symfony/browser-kit": "7.0.*",
     "symfony/css-selector": "7.0.*",
-    "symfony/phpunit-bridge": "^7.0"
+    "symfony/maker-bundle": "^1.58",
+    "symfony/phpunit-bridge": "^7.0",
+    "zenstruck/foundry": "^1.37"
   }
 }

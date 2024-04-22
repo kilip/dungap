@@ -42,7 +42,7 @@ class Device implements DeviceInterface
     #[ORM\Column(type: 'string', unique: true, nullable: true)]
     private ?string $macAddress = null;
 
-    #[ORM\Column(type: 'string', unique: true, nullable: true)]
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $netVendor = null;
 
     #[ORM\Column(type: 'boolean')]
