@@ -35,7 +35,8 @@ final readonly class DeviceScanner implements DeviceScannerInterface
             $device = new ResultDevice(
                 ipAddress: $response->address,
                 hostname: $response->hostName,
-                macAddress: $response->macAddress
+                macAddress: $response->macAddress,
+                source: Constant::RouterOS
             );
             $results[] = $device;
         }

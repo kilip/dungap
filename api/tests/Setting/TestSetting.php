@@ -9,16 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Device\DTO;
+namespace Dungap\Tests\Setting;
 
-final readonly class ResultDevice
+class TestSetting
 {
     public function __construct(
-        public string $ipAddress,
-        public ?string $hostname = null,
-        public ?string $vendor = null,
-        public ?string $macAddress = null,
-        public ?string $source = null,
+        public string $foo = 'bar'
     ) {
     }
 }
