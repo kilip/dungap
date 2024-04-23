@@ -29,7 +29,7 @@ final readonly class Request implements RequestInterface
     ) {
     }
 
-    public function request(string $method, string $path): array
+    public function request(string $method, string $path, array $payload = []): array
     {
         $client = $this->httpClient;
         $path = '/rest'.$path;
@@ -39,9 +39,14 @@ final readonly class Request implements RequestInterface
             'verify_host' => false,
             'verify_peer' => false,
             'headers' => [
+                'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
             ],
         ];
+
+        if (!empty($payload)) {
+            $options['json'] = $payload;
+        }
 
         $response = $client->request($method, $path, $options);
 
