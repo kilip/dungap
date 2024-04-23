@@ -24,5 +24,6 @@ api_platform:
     resource_class_directories:
         - '%kernel.project_dir%/src/Device/Entity'
         - '%kernel.project_dir%/src/User/Entity'
+        - '%kernel.project_dir%/src/Setting/Entity'
     mercure:
         include_type: true

@@ -28,6 +28,12 @@ doctrine:
         dir: "%kernel.project_dir%/src/User/Entity"
         prefix: 'Dungap\User\Entity'
         alias: User
+      Setting:
+        type: attribute
+        is_bundle: false
+        dir: "%kernel.project_dir%/src/Setting/Entity"
+        prefix: 'Dungap\Setting\Entity'
+        alias: Setting
     controller_resolver:
       auto_mapping: true
     resolve_target_entities:
