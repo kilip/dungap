@@ -1,0 +1,25 @@
+<?php
+
+/*
+ * This file is part of the dungap project.
+ *
+ * (c) Anthonius Munthi <me@itstoni.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Dungap\Bridge\SSH;
+
+class Setting
+{
+    public function __construct(
+        public ?string $username = null,
+        public ?string $password = null,
+        public ?string $privateKey = null,
+        public ?string $publicKey = null,
+        public int $timeout = 5,
+        public int $port = 22
+    ) {
+    }
+}

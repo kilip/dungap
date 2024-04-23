@@ -24,18 +24,18 @@ final readonly class SettingFactory implements SettingFactoryInterface
     ) {
     }
 
-    public function get(string $key, string $className): object
+    public function get(string $key, string $className, bool $create = true): ?object
     {
         $setting = $this->settingRepository->findByKey($key);
 
-        if (is_null($setting)) {
+        if (is_null($setting) && $create) {
             $setting = new Setting();
             $setting->setKey($key);
             $setting->setValue(new $className());
             $this->settingRepository->store($setting);
         }
 
-        return $setting->getValue();
+        return is_null($setting) ? null : $setting->getValue();
     }
 
     public function save(string $key, object $setting): void
