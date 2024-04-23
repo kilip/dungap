@@ -1,12 +1,21 @@
 <?php
 
+/*
+ * This file is part of the dungap project.
+ *
+ * (c) Anthonius Munthi <me@itstoni.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Dungap\User\Repository;
 
-use Dungap\User\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Dungap\User\Entity\User;
 
 /**
  * @extends ServiceEntityRepository<User>

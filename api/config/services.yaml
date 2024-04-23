@@ -25,3 +25,6 @@ services:
 
   Dungap\DataFixtures\:
     resource: "../fixtures"
+
+  device.scanner.default:
+    class: Dungap\Bridge\RouterOS\DeviceScanner

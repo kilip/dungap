@@ -1,13 +1,21 @@
 <?php
 
+/*
+ * This file is part of the dungap project.
+ *
+ * (c) Anthonius Munthi <me@itstoni.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 declare(strict_types=1);
 
 namespace Dungap\Security\Core;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Dungap\User\Entity\User;
 use Dungap\User\Repository\UserRepository;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\AttributesBasedUserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -40,6 +48,7 @@ final readonly class UserProvider implements AttributesBasedUserProviderInterfac
 
     /**
      * Create or update User on login.
+     *
      * @param array<string,mixed> $attributes
      */
     public function loadUserByIdentifier(string $identifier, array $attributes = []): UserInterface
@@ -50,8 +59,8 @@ final readonly class UserProvider implements AttributesBasedUserProviderInterfac
             throw new UnsupportedUserException('Property "name" is missing in token attributes.');
         }
 
-        foreach($attributes['groups'] as $group) {
-            if('admin' === strtolower($group)){
+        foreach ($attributes['groups'] as $group) {
+            if ('admin' === strtolower($group)) {
                 $user->addRole('ROLE_ADMIN');
             }
         }

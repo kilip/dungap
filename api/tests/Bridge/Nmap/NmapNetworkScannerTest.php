@@ -11,8 +11,8 @@
 
 namespace Dungap\Tests\Bridge\Nmap;
 
+use Dungap\Bridge\Nmap\NmapDeviceScanner;
 use Dungap\Bridge\Nmap\NmapResultParser;
-use Dungap\Bridge\Nmap\NmapScannerDeviceScanner;
 use Dungap\Device\Command\ScanDeviceCommand;
 use Dungap\Device\DTO\ResultDevice;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -25,7 +25,7 @@ class NmapNetworkScannerTest extends TestCase
     private MockObject|Process $process;
     private MockObject|LoggerInterface $logger;
     private ResultDevice $resultDevice;
-    private NmapScannerDeviceScanner $scanner;
+    private NmapDeviceScanner $scanner;
 
     public function setUp(): void
     {
@@ -38,7 +38,7 @@ class NmapNetworkScannerTest extends TestCase
             ->method('parse')
             ->willReturn([$this->resultDevice]);
 
-        $this->scanner = new NmapScannerDeviceScanner(
+        $this->scanner = new NmapDeviceScanner(
             resultParser: $resultParser,
             logger: $this->logger,
             process: $this->process
