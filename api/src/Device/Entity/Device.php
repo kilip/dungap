@@ -21,6 +21,7 @@ use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\EnumDeviceFeature;
+use Dungap\Device\Controller\PowerOnAction;
 use Dungap\Device\Controller\ScanDeviceAction;
 use Dungap\Device\Repository\DeviceRepository;
 use Symfony\Bridge\Doctrine\Types\UuidType;
@@ -41,6 +42,12 @@ use Symfony\Component\Uid\Uuid;
             description: 'Scan available devices on network',
             read: false,
             name: 'api_device_scan',
+        ),
+        new Get(
+            uriTemplate: '/devices/{id}/power-on',
+            controller: PowerOnAction::class,
+            write: false,
+            name: 'api_device_power_on'
         ),
     ],
     mercure: true

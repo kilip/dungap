@@ -14,7 +14,9 @@ namespace Dungap\Bridge\RouterOS\Contracts;
 interface RequestInterface
 {
     /**
+     * @param array<string,mixed> $payload
+     *
      * @return array<string,mixed>
      */
-    public function request(string $method, string $path): array;
+    public function request(string $method, string $path, array $payload = []): array;
 }

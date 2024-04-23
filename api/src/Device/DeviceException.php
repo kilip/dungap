@@ -13,4 +13,11 @@ namespace Dungap\Device;
 
 class DeviceException extends \Exception
 {
+    public static function powerOnNonExistingDevice(string $deviceId): self
+    {
+        return new self(sprintf(
+            'Failed to power on, device with id "%s" does not exist',
+            $deviceId
+        ));
+    }
 }
