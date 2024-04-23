@@ -27,6 +27,11 @@ class DeviceRepository extends ServiceEntityRepository implements DeviceReposito
         parent::__construct($manager, Device::class);
     }
 
+    public function findById(string $id): ?DeviceInterface
+    {
+        return $this->find($id);
+    }
+
     public function findByMacAddress(string $macAddress): ?DeviceInterface
     {
         return $this->findOneBy(['macAddress' => $macAddress]);

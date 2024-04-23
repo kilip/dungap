@@ -13,6 +13,8 @@ namespace Dungap\Contracts\Device;
 
 interface DeviceRepositoryInterface
 {
+    public function findById(string $id): ?DeviceInterface;
+
     public function findByMacAddress(string $macAddress): ?DeviceInterface;
 
     public function findByIpAddress(string $ipAddress): ?DeviceInterface;

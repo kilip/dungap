@@ -9,10 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Device;
+namespace Dungap\Device\Command;
 
-class DeviceConstant
+final readonly class PowerOnCommand
 {
-    public const EventDeviceFound = 'DeviceFound';
-    public const EventDevicePowerOn = 'DevicePowerOn';
+    public function __construct(
+        public string $deviceId
+    ) {
+    }
 }
