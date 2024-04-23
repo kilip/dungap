@@ -17,6 +17,8 @@ interface SettingFactoryInterface
      * @template  T of object
      *
      * @param class-string<T> $className
+     *
+     * @return T
      */
-    public function get(string $key, string $className): object;
+    public function get(string $key, string $className, bool $create = true): ?object;
 }
