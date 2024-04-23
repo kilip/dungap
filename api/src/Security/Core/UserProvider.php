@@ -40,6 +40,7 @@ final readonly class UserProvider implements AttributesBasedUserProviderInterfac
 
     /**
      * Create or update User on login.
+     * @param array<string,mixed> $attributes
      */
     public function loadUserByIdentifier(string $identifier, array $attributes = []): UserInterface
     {

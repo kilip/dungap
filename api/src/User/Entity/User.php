@@ -2,24 +2,25 @@
 
 namespace Dungap\User\Entity;
 
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Faker\Core\Uuid;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
     operations: [
-        new GetCollection()
+        new GetCollection(
+            security: 'is_granted("ROLE_ADMIN")'
+        )
     ],
     mercure: true
 )]
 #[ORM\Entity]
+#[ORM\Table(name: 'users')]
 #[UniqueEntity('email')]
 class User implements UserInterface
 {
@@ -38,6 +39,9 @@ class User implements UserInterface
     #[ORM\Column]
     private ?string $name = null;
 
+    /**
+     * @var array<int,string>
+     */
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
