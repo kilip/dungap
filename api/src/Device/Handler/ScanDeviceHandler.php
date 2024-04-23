@@ -18,6 +18,7 @@ use Dungap\Device\Command\ScanDeviceCommand;
 use Dungap\Device\DeviceConstant;
 use Dungap\Device\DTO\ResultDevice;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -25,6 +26,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 final readonly class ScanDeviceHandler
 {
     public function __construct(
+        #[Autowire('@device.scanner.default')]
         private DeviceScannerInterface $scanner,
         private DeviceRepositoryInterface $deviceRepository,
         private EventDispatcherInterface $dispatcher,

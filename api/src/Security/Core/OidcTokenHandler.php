@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the dungap project.
+ *
+ * (c) Anthonius Munthi <me@itstoni.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Dungap\Security\Core;
@@ -11,7 +20,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\AccessToken\AccessTokenHandlerInterface;
 use Symfony\Component\Security\Http\AccessToken\Oidc\Exception\MissingClaimException;
-use Symfony\Component\Security\Http\AccessToken\Oidc\OidcTokenHandler as BaseTokenHandler;
 use Symfony\Component\Security\Http\AccessToken\Oidc\OidcTrait;
 use Symfony\Component\Security\Http\Authenticator\FallbackUserLoader;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;

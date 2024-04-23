@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Uid\Uuid;
 
-final readonly class NmapScannerDeviceScanner implements DeviceScannerInterface
+final readonly class NmapDeviceScanner implements DeviceScannerInterface
 {
     public function __construct(
         private NmapResultParser $resultParser,
