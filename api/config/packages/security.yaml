@@ -22,7 +22,6 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin, roles: IS_AUTHENTICATED }
-        - { path: ^/devices, roles: IS_AUTHENTICATED }
 
 when@prod: &prod
     security:
@@ -39,16 +38,3 @@ when@prod: &prod
 #                            cache_ttl: 600 # default
 
 when@dev: *prod
-
-when@test:
-    security:
-        firewalls:
-            main:
-                access_token:
-                    token_handler:
-                        oidc:
-                            claim: 'email'
-                            audience: '%env(OIDC_AUD)%'
-                            issuers: [ '%env(OIDC_SERVER_URL)%' ]
-                            algorithm: 'ES256'
-                            key: '%env(OIDC_JWK)%'
