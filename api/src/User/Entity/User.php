@@ -1,21 +1,30 @@
 <?php
 
+/*
+ * This file is part of the dungap project.
+ *
+ * (c) Anthonius Munthi <me@itstoni.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Dungap\User\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Uuid;
 
 #[ApiResource(
     operations: [
         new GetCollection(
             security: 'is_granted("ROLE_ADMIN")'
-        )
+        ),
     ],
     mercure: true
 )]
@@ -60,6 +69,7 @@ class User implements UserInterface
     public function getRoles(): array
     {
         $this->roles[] = 'ROLE_USER';
+
         return array_unique($this->roles, SORT_ASC);
     }
 
@@ -70,7 +80,7 @@ class User implements UserInterface
 
     public function addRole(string $role): void
     {
-        if(!$this->hasRole($role)){
+        if (!$this->hasRole($role)) {
             $this->roles[] = $role;
         }
     }
@@ -88,6 +98,7 @@ class User implements UserInterface
     public function setEmail(?string $email): User
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -99,6 +110,7 @@ class User implements UserInterface
     public function setName(?string $name): User
     {
         $this->name = $name;
+
         return $this;
     }
 }
