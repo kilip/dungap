@@ -18,6 +18,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\EnumDeviceFeature;
@@ -86,7 +88,7 @@ class Device implements DeviceInterface
     private ?\DateTimeImmutable $uptime = null;
 
     /**
-     * @var array<int,EnumDeviceFeature>
+     * @var array<int,string>
      */
     #[ORM\Column(type: 'json')]
     private array $features = [];
@@ -98,29 +100,15 @@ class Device implements DeviceInterface
 
     public function addFeature(EnumDeviceFeature $feature): DeviceInterface
     {
-        if (!in_array($feature, $this->features)) {
-            $this->features[] = $feature;
+        if (!$this->hasFeature($feature)) {
+            $this->features[] = $feature->value;
         }
 
         return $this;
-    }
-
-    public function removeFeature(EnumDeviceFeature $feature): DeviceInterface
-    {
-        if (($key = array_search($feature, $this->features)) !== false) {
-            unset($this->features[$key]);
-        }
-
-        return $this;
-    }
-
-    public function hasFeature(EnumDeviceFeature $feature): bool
-    {
-        return in_array($feature, $this->features);
     }
 
     /**
-     * @return array<int,EnumDeviceFeature>
+     * @inheritDoc
      */
     public function getFeatures(): array
     {
@@ -128,13 +116,29 @@ class Device implements DeviceInterface
     }
 
     /**
-     * @param array<int,EnumDeviceFeature> $features
+     * @inheritDoc
      */
-    public function setFeatures(array $features): Device
+    public function setFeatures(array $features): DeviceInterface
     {
         $this->features = $features;
+        return $this;
+    }
+
+    public function removeFeature(EnumDeviceFeature $feature): DeviceInterface
+    {
+        if ($this->hasFeature($feature)) {
+            $key=array_search($feature->value, $this->features);
+            if($key){
+                unset($this->features[$key]);
+            }
+        }
 
         return $this;
+    }
+
+    public function hasFeature(EnumDeviceFeature $feature): bool
+    {
+        return in_array($feature->value, $this->features);
     }
 
     public function getNickname(): ?string
@@ -226,7 +230,7 @@ class Device implements DeviceInterface
         return $this->uptime;
     }
 
-    public function setUptime(\DateTimeImmutable $uptime = null): Device
+    public function setUptime(?\DateTimeImmutable $uptime = null): Device
     {
         $this->uptime = $uptime;
 

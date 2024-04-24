@@ -29,7 +29,11 @@ class SecureFactoryTest extends TestCase
     protected function setUp(): void
     {
         $this->settingFactory = $this->createMock(SettingFactoryInterface::class);
-        $this->factory = new SecureFactory($this->settingFactory);
+        $this->factory = new SecureFactory(
+            settingFactory: $this->settingFactory,
+            username: 'john',
+            privateKey: __DIR__.'/fixtures/dungap',
+        );
         $this->device = $this->createMock(DeviceInterface::class);
         $this->global = new Setting(
             'johndoe',

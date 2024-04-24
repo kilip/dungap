@@ -45,7 +45,7 @@ interface DeviceInterface
 
     public function isOnline(): bool;
 
-    public function setUptime(\DateTimeImmutable $uptime = null): self;
+    public function setUptime(?\DateTimeImmutable $uptime = null): self;
 
     public function getUptime(): ?\DateTimeImmutable;
 
@@ -54,4 +54,14 @@ interface DeviceInterface
     public function removeFeature(EnumDeviceFeature $feature): self;
 
     public function hasFeature(EnumDeviceFeature $feature): bool;
+
+    /**
+     * @return array<int,string>
+     */
+    public function getFeatures(): array;
+
+    /**
+     * @param array<int,string> $features
+     */
+    public function setFeatures(array $features): self;
 }

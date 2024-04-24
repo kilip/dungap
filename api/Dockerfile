@@ -20,7 +20,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install --no-install-recommends -y \
 		nmap \
         wakeonlan \
-				nmap \
+		nmap \
+		supervisor \
 	;
 
 RUN set -eux; \

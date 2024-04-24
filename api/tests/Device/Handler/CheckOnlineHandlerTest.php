@@ -59,6 +59,9 @@ class CheckOnlineHandlerTest extends TestCase
         $this->device->method('getId')
             ->willReturn(Uuid::v1());
 
+        $this->device->method('hasFeature')
+            ->willReturn(true);
+
         $this->deviceRepository->method('findByIpAddress')
             ->with('ip')
             ->willReturn($this->device);
@@ -73,9 +76,9 @@ class CheckOnlineHandlerTest extends TestCase
             ->willReturn([$this->resultDevice])
         ;
 
-        $this->device->expects($this->exactly(2))
+        $this->device->expects($this->exactly(3))
             ->method('isOnline')
-            ->willReturn(false, true);
+            ->willReturn(false, true, true);
 
         $this->device->expects($this->once())
             ->method('setOnline')
@@ -110,9 +113,9 @@ class CheckOnlineHandlerTest extends TestCase
             ->method('run')
             ->willReturn([$resultDevice]);
 
-        $this->device->expects($this->exactly(2))
+        $this->device->expects($this->exactly(3))
             ->method('isOnline')
-            ->willReturn(true, false);
+            ->willReturn(true, false, false);
         $this->device->expects($this->once())
             ->method('setUptime')
             ->with(null);
