@@ -34,7 +34,7 @@ class Setting implements SettingInterface
     #[ORM\Column(type: 'json_document')]
     public object $value;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: UuidType::NAME, nullable: true)]
     public ?Uuid $relId = null;
 
     public function getId(): ?Uuid

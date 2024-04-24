@@ -29,7 +29,7 @@ tasks:
   up:
     desc: create and start the container
     cmds:
-      - docker compose up {{.COMPOSE_FILES}} -d {{.CLI_ARGS}}
+      - docker compose {{.COMPOSE_FILES}} up -d {{.CLI_ARGS}}
 
   up:*:
     desc: boot docker container
