@@ -42,6 +42,16 @@ abstract class AbstractResponse
             return null;
         }
 
+        $value = $json[$jsonName];
+
+        if (in_array($value, ['true', 'false'])) {
+            return 'true' === $value;
+        }
+
+        if (in_array($value, ['yes', 'no'])) {
+            return 'yes' === $value;
+        }
+
         return $json[$jsonName];
     }
 }
