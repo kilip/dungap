@@ -23,7 +23,6 @@ class DeviceScannerTest extends TestCase
     {
         $request = $this->createMock(RequestInterface::class);
         $json = json_decode(file_get_contents(__DIR__.'/fixtures/ip.dhcp-server.lease.json'), true);
-        $json = [$json];
         $scanner = new DeviceScanner($request);
 
         $request->expects($this->once())
@@ -33,7 +32,9 @@ class DeviceScannerTest extends TestCase
 
         $results = $scanner->scan(new ScanDeviceCommand(['10.0.0.0/24']));
 
+        // ensure that only enabled device stored as results
         $this->assertCount(1, $results);
+
         $this->assertInstanceOf(ResultDevice::class, $results[0]);
         $this->assertSame('192.168.1.1', $results[0]->ipAddress);
         $this->assertSame('AA:BB:CC:DD:EE:FF', $results[0]->macAddress);

@@ -32,6 +32,9 @@ final readonly class DeviceScanner implements DeviceScannerInterface
         $results = [];
         foreach ($json as $item) {
             $response = new DhcpLeaseResponse($item);
+            if ($response->disabled) {
+                continue;
+            }
             $device = new ResultDevice(
                 ipAddress: $response->address,
                 hostname: $response->hostName,

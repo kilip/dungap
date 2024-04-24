@@ -26,5 +26,7 @@ services:
   Dungap\DataFixtures\:
     resource: "../fixtures"
 
-  device.scanner.default:
+  dungap.device.scanner:
     class: Dungap\Bridge\RouterOS\DeviceScanner
+  dungap.device.online_checker:
+    class: Dungap\Bridge\RouterOS\Service\OnlineChecker
