@@ -1,0 +1,40 @@
+[
+  {
+    ".id": "*16",
+    "active-address": "192.168.1.1",
+    "active-client-id": "ff:cb:39:a:c7:0:2:0:0:ab:11:1d:bd:4:4f:1f:1e:71:6f",
+    "active-mac-address": "AA:BB:CC:DD:EE:FF",
+    "active-server": "dhcp-main",
+    "address": "192.168.1.1",
+    "address-lists": "",
+    "blocked": "false",
+    "comment": "k8s-mars",
+    "dhcp-option": "",
+    "disabled": "false",
+    "dynamic": "false",
+    "expires-after": "7m49s",
+    "host-name": "mars",
+    "last-seen": "2m11s",
+    "mac-address": "AA:BB:CC:DD:EE:FF",
+    "radius": "false",
+    "server": "dhcp-main",
+    "status": "bound"
+  },
+  {
+    ".id": "*17",
+    "address": "192.168.1.1",
+    "address-lists": "",
+    "blocked": "false",
+    "comment": "k8s-mars",
+    "dhcp-option": "",
+    "disabled": "false",
+    "dynamic": "false",
+    "expires-after": "7m49s",
+    "host-name": "mars",
+    "last-seen": "2m11s",
+    "mac-address": "AA:BB:CC:DD:EE:FF",
+    "radius": "false",
+    "server": "dhcp-main",
+    "status": "bound"
+  }
+]

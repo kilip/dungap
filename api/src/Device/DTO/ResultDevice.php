@@ -19,6 +19,7 @@ final readonly class ResultDevice
         public ?string $vendor = null,
         public ?string $macAddress = null,
         public ?string $source = null,
+        public bool $online = false,
     ) {
     }
 }

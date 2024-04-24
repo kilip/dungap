@@ -24,6 +24,11 @@ final class SSH implements SshInterface
      */
     private array $commands = [];
 
+    /**
+     * @var array<int,string>
+     */
+    private array $outputs = [];
+
     public function __construct(
         private readonly string $host,
         private readonly Setting $setting,
@@ -58,5 +63,11 @@ final class SSH implements SshInterface
     public function onRun(string $output): void
     {
         $this->logger?->info("[SSH] {$output}");
+        $this->outputs[] = $output;
+    }
+
+    public function getOutput(): string
+    {
+        return implode("\n", $this->outputs);
     }
 }

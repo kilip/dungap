@@ -16,4 +16,6 @@ interface SshInterface
     public function addCommand(string $command): self;
 
     public function run(): void;
+
+    public function getOutput(): string;
 }

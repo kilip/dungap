@@ -30,11 +30,12 @@ class OnlineChecker implements OnlineCheckerInterface
 
         foreach ($json as $item) {
             $response = new DhcpLeaseResponse($item);
-            if (!$response->disabled && !is_null($response->activeAddress)) {
+            if (!$response->disabled) {
                 $results[] = new ResultDevice(
                     ipAddress: $response->address,
                     hostname: $response->hostName,
                     macAddress: $response->macAddress,
+                    online: null != $response->activeAddress,
                 );
             }
         }
