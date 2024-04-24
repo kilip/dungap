@@ -1,9 +1,15 @@
 ---
 version: "3"
 
+vars:
+  COMPOSE_FILES: '-f compose.yaml -f {{or .COMPOSE_OVERRIDE_FILE "compose.override.yaml" }}'
+
 tasks:
   default: task -l
 
+  test:
+    cmds:
+      - echo "{{.COMPOSE_FILES}}"
   secrets:
     desc: generate random secrets
     cmds:
@@ -21,9 +27,9 @@ tasks:
       - docker compose -f compose.yaml -f compose.prod.yaml up -d
 
   up:
-    desc: boot all docker container
+    desc: create and start the container
     cmds:
-      - docker compose up -d {{.CLI_ARGS}}
+      - docker compose up {{.COMPOSE_FILES}} -d {{.CLI_ARGS}}
 
   up:*:
     desc: boot docker container
@@ -91,7 +97,7 @@ tasks:
   build:
     desc: build dev container
     cmds:
-      - docker compose build {{.CLI_ARGS}}
+      - docker compose {{.COMPOSE_FILES}} build {{.CLI_ARGS}}
 
   build:*:
     cmds:

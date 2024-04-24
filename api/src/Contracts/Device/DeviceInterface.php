@@ -45,7 +45,7 @@ interface DeviceInterface
 
     public function isOnline(): bool;
 
-    public function setUptime(\DateTimeImmutable $uptime = null): self;
+    public function setUptime(?\DateTimeImmutable $uptime = null): self;
 
     public function getUptime(): ?\DateTimeImmutable;
 

@@ -11,11 +11,9 @@
 
 namespace Dungap\Contracts\Device;
 
-enum EnumDeviceFeature: string
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+
+#[AutoconfigureTag('dungap.processor.uptime')]
+interface UptimeProcessorInterface
 {
-    case PowerOff = 'PowerOff';
-    case PowerOn = 'PowerOn';
-    case Reboot = 'Reboot';
-    case Uptime = 'Uptime';
-    case SSH = 'SSH';
 }

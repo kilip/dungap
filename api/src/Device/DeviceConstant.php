@@ -13,6 +13,7 @@ namespace Dungap\Device;
 
 class DeviceConstant
 {
-    public const EventDeviceFound = 'DeviceFound';
     public const EventDevicePowerOn = 'DevicePowerOn';
+    public const EventConfigureDevice = 'EventConfigureDevice';
+    public const EventAfterDeviceConfigured = 'EventAfterDeviceConfigured';
 }
