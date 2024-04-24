@@ -11,11 +11,7 @@
 
 namespace Dungap\Contracts\Device;
 
-enum EnumDeviceFeature: string
+enum EnumDeviceEvent: string
 {
-    case PowerOff = 'PowerOff';
-    case PowerOn = 'PowerOn';
-    case Reboot = 'Reboot';
-    case Uptime = 'Uptime';
-    case SSH = 'SSH';
+    case EventConfigureDevice = 'EventConfigureDevice';
 }
