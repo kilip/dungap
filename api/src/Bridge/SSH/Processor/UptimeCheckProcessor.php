@@ -14,11 +14,13 @@ namespace Dungap\Bridge\SSH\Processor;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\SecureFactoryInterface;
 use Dungap\Contracts\Device\UptimeProcessorInterface;
+use Psr\Log\LoggerInterface;
 
 final readonly class UptimeCheckProcessor implements UptimeProcessorInterface
 {
     public function __construct(
         private SecureFactoryInterface $secureFactory,
+        private ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -27,8 +29,8 @@ final readonly class UptimeCheckProcessor implements UptimeProcessorInterface
         $ssh = $this->secureFactory->createSshClient($device);
         $ssh->addCommand('uptime -s');
         $ssh->run();
-        $output = $ssh->getOutput();
-
+        $output = trim($ssh->getOutput());
+        $this->logger?->info('processing date time for {0}: {1}', [$device->getIpAddress(), $output]);
         return date_create_immutable_from_format('Y-m-d H:i:s', $output);
     }
 }

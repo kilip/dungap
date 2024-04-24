@@ -13,6 +13,7 @@ namespace Dungap\Device\Handler;
 
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\DeviceRepositoryInterface;
+use Dungap\Contracts\Device\EnumDeviceFeature;
 use Dungap\Contracts\Device\OnlineCheckerInterface;
 use Dungap\Contracts\Device\UptimeProcessorInterface;
 use Dungap\Device\Command\CheckOnlineCommand;
@@ -44,7 +45,9 @@ readonly class CheckOnlineHandler
 
         try {
             $results = $this->checker->run();
+            $this->logger->notice('[OnlineChecker] processing results...');
             foreach ($results as $result) {
+                $this->logger?->info('[OnlineChecker] processing result {0}', [$result->ipAddress]);
                 $this->processResult($result);
             }
         } catch (\Exception $e) {
@@ -65,13 +68,17 @@ readonly class CheckOnlineHandler
 
         if ($device->isOnline() !== $resultDevice->online) {
             $device->setOnline($resultDevice->online);
-            if ($device->isOnline()) {
-                $uptime = $this->generateUptime($device);
-                $device->setUptime($uptime);
-            } else {
-                $device->setUptime(null);
-            }
         }
+
+        if(!$device->isOnline()){
+            $device->setUptime(null);
+        }
+        if($device->isOnline() && is_null($device->getUptime()) && $device->hasFeature(EnumDeviceFeature::Uptime)){
+            $this->logger->notice('online.checker>> checking uptime for {0}', [$device->getIpAddress()]);
+            $uptime = $this->generateUptime($device);
+            $device->setUptime($uptime);
+        }
+
         $repository->store($device);
     }
 

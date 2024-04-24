@@ -21,4 +21,6 @@ interface SettingFactoryInterface
      * @return T
      */
     public function get(string $key, string $className, bool $create = true): ?object;
+
+    public function save(string $key, object $setting): void;
 }

@@ -17,12 +17,17 @@ use Dungap\Contracts\Device\SftpInterface;
 use Dungap\Contracts\Device\SshInterface;
 use Dungap\Contracts\Setting\SettingFactoryInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-class SecureFactory implements SecureFactoryInterface
+readonly class SecureFactory implements SecureFactoryInterface
 {
     public function __construct(
         private SettingFactoryInterface $settingFactory,
-        private ?LoggerInterface $logger = null,
+        #[Autowire('%env(SSH_USERNAME)%')]
+        private string                  $username,
+        #[Autowire('%env(resolve:SSH_PRIVATE_KEY)%')]
+        private string                  $privateKey,
+        private ?LoggerInterface        $logger = null,
     ) {
     }
 
@@ -56,7 +61,20 @@ class SecureFactory implements SecureFactoryInterface
         $setting = $settings->get("ssh.config.{$deviceId}", Setting::class, false);
 
         if (is_null($setting)) {
-            $setting = $settings->get('ssh.config.global', Setting::class);
+            $setting = $settings->get('ssh.config.global', Setting::class, false);
+            if(is_null($setting)){
+                $privateKey = $this->privateKey;
+                if(is_file($privateKey)){
+                    $this->logger?->info('loading private key from: ', [$privateKey]);
+                    $privateKey = file_get_contents($privateKey);
+                }
+                $setting = new Setting(
+                    username: $this->username,
+                    privateKey: $privateKey,
+                    port: 22,
+                );
+                $settings->save('ssh.config.global', $setting);
+            }
         }
 
         return $setting;

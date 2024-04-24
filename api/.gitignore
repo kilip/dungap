@@ -1,3 +1,7 @@
+###> dungap ###
+config/ssh/*
+!config/ssh/.gitkeep
+###< dungap ###
 
 ###> symfony/framework-bundle ###
 /.env.local
