@@ -64,13 +64,13 @@ class Device implements DeviceInterface
     #[ORM\Column(type: 'string', unique: true, nullable: true)]
     private ?string $nickname = null;
 
-    #[ORM\Column(type: 'string', unique: true, nullable: true)]
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $hostname = null;
 
-    #[ORM\Column(type: 'string', unique: true, nullable: true)]
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $ipAddress = null;
 
-    #[ORM\Column(type: 'string', unique: true, nullable: true)]
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $macAddress = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
@@ -226,7 +226,7 @@ class Device implements DeviceInterface
         return $this->uptime;
     }
 
-    public function setUptime(\DateTimeImmutable $uptime = null): Device
+    public function setUptime(?\DateTimeImmutable $uptime = null): Device
     {
         $this->uptime = $uptime;
 

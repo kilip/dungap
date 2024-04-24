@@ -41,14 +41,19 @@ final readonly class ScanDeviceHandler
         $results = $this->scanner->scan($command);
 
         foreach ($results as $result) {
-            $device = $this->loadDevice($result);
-            $device->setIpAddress($result->ipAddress)
-                ->setMacAddress($result->macAddress)
-                ->setHostname($result->hostname)
-                ->setNetVendor($result->vendor);
+            try {
+                $device = $this->loadDevice($result);
 
-            $this->dispatcher->dispatch($device, DeviceConstant::EventDeviceFound);
-            $this->deviceRepository->store($device);
+                $device->setIpAddress($result->ipAddress)
+                    ->setMacAddress($result->macAddress)
+                    ->setHostname($result->hostname)
+                    ->setNetVendor($result->vendor);
+
+                $this->dispatcher->dispatch($device, DeviceConstant::EventConfigureDevice);
+                $this->deviceRepository->store($device);
+            } catch (\Exception $e) {
+                $this->logger?->error('[ScanDevice] host: {0} error: {1}', [$result->hostname ?? $result->ipAddress, $e->getMessage()]);
+            }
         }
     }
 
@@ -70,6 +75,8 @@ final readonly class ScanDeviceHandler
             return $device;
         }
 
-        return $repository->create()->setDraft(true);
+        $device = $repository->create();
+        $device->setDraft(true);
+        return $device;
     }
 }
