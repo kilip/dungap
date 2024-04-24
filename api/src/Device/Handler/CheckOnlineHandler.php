@@ -11,21 +11,29 @@
 
 namespace Dungap\Device\Handler;
 
+use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\DeviceRepositoryInterface;
 use Dungap\Contracts\Device\OnlineCheckerInterface;
+use Dungap\Contracts\Device\UptimeProcessorInterface;
 use Dungap\Device\Command\CheckOnlineCommand;
 use Dungap\Device\DTO\ResultDevice;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-class CheckOnlineHandler
+readonly class CheckOnlineHandler
 {
+    /**
+     * @param array<int,UptimeProcessorInterface> $uptimeProcessors
+     */
     public function __construct(
         private DeviceRepositoryInterface $deviceRepository,
         #[Autowire('@dungap.device.online_checker')]
         private OnlineCheckerInterface $checker,
+        #[TaggedIterator('dungap.processor.uptime')]
+        private iterable $uptimeProcessors,
         private ?LoggerInterface $logger = null,
     ) {
     }
@@ -36,7 +44,9 @@ class CheckOnlineHandler
 
         try {
             $results = $this->checker->run();
-            $this->processResults($results);
+            foreach ($results as $result) {
+                $this->processResult($result);
+            }
         } catch (\Exception $e) {
             $this->logger?->error('[OnlineChecker] error: {0}', [$e->getMessage()]);
         }
@@ -44,18 +54,36 @@ class CheckOnlineHandler
         unlink($command->lockFile);
     }
 
-    /**
-     * @param array<int,ResultDevice> $results
-     */
-    private function processResults(array $results): void
+    private function processResult(ResultDevice $resultDevice): void
     {
         $repository = $this->deviceRepository;
-        foreach ($results as $result) {
-            $device = $repository->findByIpAddress($result->ipAddress);
-            if (!is_null($device)) {
-                $device->setOnline(true);
-                $repository->store($device);
+        $device = $repository->findByIpAddress($resultDevice->ipAddress);
+
+        if (is_null($device)) {
+            return;
+        }
+
+        if ($device->isOnline() !== $resultDevice->online) {
+            $device->setOnline($resultDevice->online);
+            if ($device->isOnline()) {
+                $uptime = $this->generateUptime($device);
+                $device->setUptime($uptime);
+            } else {
+                $device->setUptime(null);
             }
         }
+        $repository->store($device);
+    }
+
+    private function generateUptime(DeviceInterface $device): \DateTimeImmutable
+    {
+        foreach ($this->uptimeProcessors as $uptimeProcessor) {
+            $uptime = $uptimeProcessor->process($device);
+            if (!is_null($uptime)) {
+                return $uptime;
+            }
+        }
+
+        return new \DateTimeImmutable();
     }
 }
