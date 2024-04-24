@@ -16,4 +16,5 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag('dungap.processor.uptime')]
 interface UptimeProcessorInterface
 {
+    public function process(DeviceInterface $device): ?\DateTimeImmutable;
 }

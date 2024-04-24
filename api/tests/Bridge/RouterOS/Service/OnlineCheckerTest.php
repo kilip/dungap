@@ -20,7 +20,7 @@ class OnlineCheckerTest extends TestCase
     public function testRun(): void
     {
         $request = $this->createMock(RequestInterface::class);
-        $json = json_decode(file_get_contents(__DIR__.'/../fixtures/ip.dhcp-server.lease.json'), true);
+        $json = json_decode(file_get_contents(__DIR__.'/../fixtures/online-checker-01.json'), true);
         $checker = new OnlineChecker(
             $request
         );
@@ -31,6 +31,9 @@ class OnlineCheckerTest extends TestCase
 
         $results = $checker->run();
 
-        $this->assertCount(1, $results);
+        $this->assertCount(2, $results);
+
+        $this->assertTrue($results[0]->online);
+        $this->assertFalse($results[1]->online);
     }
 }

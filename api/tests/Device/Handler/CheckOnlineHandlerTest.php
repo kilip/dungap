@@ -13,6 +13,7 @@ namespace Dungap\Tests\Device\Handler;
 
 use Dungap\Contracts\Device\DeviceRepositoryInterface;
 use Dungap\Contracts\Device\OnlineCheckerInterface;
+use Dungap\Contracts\Device\UptimeProcessorInterface;
 use Dungap\Device\Command\CheckOnlineCommand;
 use Dungap\Device\DTO\ResultDevice;
 use Dungap\Device\Entity\Device;
@@ -20,6 +21,7 @@ use Dungap\Device\Handler\CheckOnlineHandler;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Uid\Uuid;
 
 class CheckOnlineHandlerTest extends TestCase
 {
@@ -27,6 +29,8 @@ class CheckOnlineHandlerTest extends TestCase
     private MockObject|OnlineCheckerInterface $onlineChecker;
     private MockObject|Device $device;
     private MockObject|LoggerInterface $logger;
+    private MockObject|UptimeProcessorInterface $uptimeProcessor;
+
     private CheckOnlineHandler $handler;
     private ResultDevice $resultDevice;
     private string $lockfile;
@@ -42,13 +46,22 @@ class CheckOnlineHandlerTest extends TestCase
             hostname: 'hostname',
             vendor: 'vendor',
             macAddress: 'mac',
+            online: true,
         );
         $this->logger = $this->createMock(LoggerInterface::class);
+        $this->uptimeProcessor = $this->createMock(UptimeProcessorInterface::class);
         $this->handler = new CheckOnlineHandler(
             $this->deviceRepository,
             $this->onlineChecker,
+            [$this->uptimeProcessor],
             $this->logger
         );
+        $this->device->method('getId')
+            ->willReturn(Uuid::v1());
+
+        $this->deviceRepository->method('findByIpAddress')
+            ->with('ip')
+            ->willReturn($this->device);
 
         ensureFileDirExists($this->lockfile);
     }
@@ -60,18 +73,49 @@ class CheckOnlineHandlerTest extends TestCase
             ->willReturn([$this->resultDevice])
         ;
 
-        $this->deviceRepository->expects($this->once())
-            ->method('findByIpAddress')
-            ->with('ip')
-            ->willReturn($this->device);
+        $this->device->expects($this->exactly(2))
+            ->method('isOnline')
+            ->willReturn(false, true);
 
         $this->device->expects($this->once())
             ->method('setOnline')
             ->with(true);
 
+        $uptime = new \DateTimeImmutable();
+        $this->device->expects($this->once())
+            ->method('setUptime')
+            ->with($uptime);
+
+        $this->uptimeProcessor->expects($this->once())
+            ->method('process')
+            ->with($this->device)
+            ->willReturn($uptime);
+
         $this->deviceRepository->expects($this->once())
             ->method('store')
             ->with($this->device);
+
+        $this->handler->__invoke(new CheckOnlineCommand($this->lockfile));
+    }
+
+    public function testWithOfflineDevice(): void
+    {
+        $resultDevice = new ResultDevice(
+            ipAddress: 'ip',
+            macAddress: 'mac',
+            online: false,
+        );
+
+        $this->onlineChecker->expects(self::once())
+            ->method('run')
+            ->willReturn([$resultDevice]);
+
+        $this->device->expects($this->exactly(2))
+            ->method('isOnline')
+            ->willReturn(true, false);
+        $this->device->expects($this->once())
+            ->method('setUptime')
+            ->with(null);
 
         $this->handler->__invoke(new CheckOnlineCommand($this->lockfile));
     }
