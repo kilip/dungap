@@ -37,6 +37,7 @@ class PowerOffProcessor implements PowerOffProcessorInterface
             $ssh->addCommand('sudo poweroff');
         } catch (\Exception $exception) {
             $this->logger?->error('Failed to poweroff by using SSH, message: {0}', [$exception->getMessage()]);
+
             return false;
         }
 

@@ -26,7 +26,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 final readonly class ScanDeviceHandler
 {
     public function __construct(
-        #[Autowire('@device.scanner.default')]
+        #[Autowire('@dungap.device.scanner')]
         private DeviceScannerInterface $scanner,
         private DeviceRepositoryInterface $deviceRepository,
         private EventDispatcherInterface $dispatcher,
@@ -77,6 +77,7 @@ final readonly class ScanDeviceHandler
 
         $device = $repository->create();
         $device->setDraft(true);
+
         return $device;
     }
 }

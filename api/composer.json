@@ -18,7 +18,10 @@
     "psr-4": {
       "Dungap\\": "src/",
       "Dungap\\DataFixtures\\": "fixtures/"
-    }
+    },
+    "files": [
+      "src/functions.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
@@ -60,6 +63,7 @@
     "php": ">=8.2",
     "ext-ctype": "*",
     "ext-iconv": "*",
+    "ext-pcntl": "*",
     "ext-simplexml": "*",
     "api-platform/core": "^3.2",
     "doctrine/dbal": "^3",
@@ -68,6 +72,7 @@
     "doctrine/orm": "^3.1",
     "dunglas/doctrine-json-odm": "^1.4",
     "nelmio/cors-bundle": "^2.4",
+    "nesbot/carbon": "^3.3",
     "phpdocumentor/reflection-docblock": "^5.4",
     "phpseclib/phpseclib": "^3.0",
     "phpstan/phpdoc-parser": "^1.28",
