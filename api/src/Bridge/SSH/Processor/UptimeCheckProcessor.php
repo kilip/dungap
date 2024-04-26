@@ -31,6 +31,7 @@ final readonly class UptimeCheckProcessor implements UptimeProcessorInterface
         $ssh->run();
         $output = trim($ssh->getOutput());
         $this->logger?->info('processing date time for {0}: {1}', [$device->getIpAddress(), $output]);
+
         return date_create_immutable_from_format('Y-m-d H:i:s', $output);
     }
 }

@@ -12,7 +12,7 @@
 namespace Dungap\Tests\Task\Cli;
 
 use Carbon\CarbonInterval;
-use Dungap\Contracts\TaskInterface;
+use Dungap\Contracts\Task\TaskInterface;
 use Dungap\Task\Cli\TaskCommand;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

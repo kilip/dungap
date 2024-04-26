@@ -11,7 +11,7 @@
 
 namespace Dungap\Device\Task;
 
-use Dungap\Contracts\TaskInterface;
+use Dungap\Contracts\Task\TaskInterface;
 use Dungap\Device\Command\CheckOnlineCommand;
 use Dungap\Task\TaskTrait;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;

@@ -24,10 +24,10 @@ readonly class SecureFactory implements SecureFactoryInterface
     public function __construct(
         private SettingFactoryInterface $settingFactory,
         #[Autowire('%env(SSH_USERNAME)%')]
-        private string                  $username,
+        private string $username,
         #[Autowire('%env(resolve:SSH_PRIVATE_KEY)%')]
-        private string                  $privateKey,
-        private ?LoggerInterface        $logger = null,
+        private string $privateKey,
+        private ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -62,9 +62,9 @@ readonly class SecureFactory implements SecureFactoryInterface
 
         if (is_null($setting)) {
             $setting = $settings->get('ssh.config.global', Setting::class, false);
-            if(is_null($setting)){
+            if (is_null($setting)) {
                 $privateKey = $this->privateKey;
-                if(is_file($privateKey)){
+                if (is_file($privateKey)) {
                     $this->logger?->info('loading private key from: ', [$privateKey]);
                     $privateKey = file_get_contents($privateKey);
                 }

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Contracts;
+namespace Dungap\Contracts\Task;
 
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 

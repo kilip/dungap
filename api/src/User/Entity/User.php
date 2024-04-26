@@ -13,11 +13,12 @@ namespace Dungap\User\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
 use Doctrine\ORM\Mapping as ORM;
+use Dungap\Contracts\UserInterface;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 
 #[ApiResource(
@@ -25,6 +26,9 @@ use Symfony\Component\Uid\Uuid;
         new GetCollection(
             security: 'is_granted("ROLE_ADMIN")'
         ),
+        new Get(
+            security: 'object === user'
+        )
     ],
     mercure: true
 )]
@@ -40,6 +44,12 @@ class User implements UserInterface
     private ?Uuid $id = null;
 
     /**
+     * @see https://schema.org/username
+     */
+    #[ORM\Column(unique: true)]
+    private ?string $username = null;
+
+    /**
      * @see https://schema.org/email
      */
     #[ORM\Column(unique: true)]
@@ -53,6 +63,10 @@ class User implements UserInterface
      */
     #[ORM\Column(type: 'json')]
     private array $roles = [];
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private string $password;
+    private string $plainPassword;
 
     public function getId(): ?Uuid
     {
@@ -78,16 +92,30 @@ class User implements UserInterface
         return in_array($role, $this->roles);
     }
 
-    public function addRole(string $role): void
+    public function addRole(string $role): self
     {
         if (!$this->hasRole($role)) {
             $this->roles[] = $role;
         }
+
+        return $this;
     }
 
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): User
+    {
+        $this->password = $password;
+
+        return $this;
     }
 
     public function getEmail(): ?string
@@ -110,6 +138,30 @@ class User implements UserInterface
     public function setName(?string $name): User
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $plainPassword): User
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(?string $username): User
+    {
+        $this->username = $username;
 
         return $this;
     }
