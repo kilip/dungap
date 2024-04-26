@@ -70,10 +70,10 @@ readonly class CheckOnlineHandler
             $device->setOnline($resultDevice->online);
         }
 
-        if(!$device->isOnline()){
+        if (!$device->isOnline()) {
             $device->setUptime(null);
         }
-        if($device->isOnline() && is_null($device->getUptime()) && $device->hasFeature(EnumDeviceFeature::Uptime)){
+        if ($device->isOnline() && is_null($device->getUptime()) && $device->hasFeature(EnumDeviceFeature::Uptime)) {
             $this->logger->notice('online.checker>> checking uptime for {0}', [$device->getIpAddress()]);
             $uptime = $this->generateUptime($device);
             $device->setUptime($uptime);

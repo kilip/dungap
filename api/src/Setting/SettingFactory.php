@@ -14,7 +14,6 @@ namespace Dungap\Setting;
 use Dungap\Contracts\Setting\SettingFactoryInterface;
 use Dungap\Contracts\Setting\SettingRepositoryInterface;
 use Dungap\Setting\Entity\Setting;
-use SpomkyLabs\Pki\ASN1\Type\Constructed\Set;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
 #[Autoconfigure(public: true)]
@@ -42,7 +41,7 @@ final readonly class SettingFactory implements SettingFactoryInterface
     public function save(string $key, object $setting): void
     {
         $storage = $this->settingRepository->findByKey($key);
-        if(is_null($storage)){
+        if (is_null($storage)) {
             $storage = new Setting();
         }
         $storage->setKey($key);

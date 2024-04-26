@@ -12,7 +12,7 @@
 namespace Dungap\Task\Cli;
 
 use Carbon\CarbonInterval;
-use Dungap\Contracts\TaskInterface;
+use Dungap\Contracts\Task\TaskInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

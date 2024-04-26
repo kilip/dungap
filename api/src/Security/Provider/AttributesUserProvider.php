@@ -11,30 +11,31 @@
 
 declare(strict_types=1);
 
-namespace Dungap\Security\Core;
+namespace Dungap\Security\Provider;
 
 use Doctrine\Persistence\ManagerRegistry;
+use Dungap\Contracts\User\UserRepositoryInterface;
+use Dungap\Contracts\UserInterface;
 use Dungap\User\Entity\User;
-use Dungap\User\Repository\UserRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\AttributesBasedUserProviderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 /**
- * @implements AttributesBasedUserProviderInterface<UserInterface|User>
+ * @implements AttributesBasedUserProviderInterface<UserInterface>
  */
-final readonly class UserProvider implements AttributesBasedUserProviderInterface
+final readonly class AttributesUserProvider implements AttributesBasedUserProviderInterface
 {
-    public function __construct(private ManagerRegistry $registry, private UserRepository $repository)
-    {
+    public function __construct(
+        private ManagerRegistry $registry,
+        private UserRepositoryInterface $repository
+    ) {
     }
 
-    public function refreshUser(UserInterface $user): UserInterface
+    public function refreshUser(SymfonyUserInterface $user): SymfonyUserInterface
     {
-        $manager = $this->registry->getManagerForClass($user::class);
-        if (!$manager) {
-            throw new UnsupportedUserException(sprintf('User class "%s" not supported.', $user::class));
-        }
+        assert($user instanceof UserInterface);
+        $manager = $this->registry->getManagerForClass(UserInterface::class);
 
         $manager->refresh($user);
 
@@ -43,7 +44,9 @@ final readonly class UserProvider implements AttributesBasedUserProviderInterfac
 
     public function supportsClass(string $class): bool
     {
-        return User::class === $class;
+        $implements = class_implements($class);
+
+        return in_array(UserInterface::class, $implements);
     }
 
     /**
@@ -53,7 +56,7 @@ final readonly class UserProvider implements AttributesBasedUserProviderInterfac
      */
     public function loadUserByIdentifier(string $identifier, array $attributes = []): UserInterface
     {
-        $user = $this->repository->findOneBy(['email' => $identifier]) ?: new User();
+        $user = $this->repository->findByEmail($identifier) ?: new User();
 
         if (!isset($attributes['name'])) {
             throw new UnsupportedUserException('Property "name" is missing in token attributes.');

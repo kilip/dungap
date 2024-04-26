@@ -11,6 +11,8 @@
 
 namespace Dungap\Device\Entity;
 
+use ApiPlatform\Doctrine\Odm\Filter\OrderFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -18,8 +20,6 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\EnumDeviceFeature;
@@ -63,9 +63,11 @@ class Device implements DeviceInterface
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     private ?Uuid $id = null;
 
+    #[ApiFilter(OrderFilter::class)]
     #[ORM\Column(type: 'string', unique: true, nullable: true)]
     private ?string $nickname = null;
 
+    #[ApiFilter(OrderFilter::class)]
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $hostname = null;
 
@@ -107,28 +109,23 @@ class Device implements DeviceInterface
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getFeatures(): array
     {
         return $this->features;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function setFeatures(array $features): DeviceInterface
     {
         $this->features = $features;
+
         return $this;
     }
 
     public function removeFeature(EnumDeviceFeature $feature): DeviceInterface
     {
         if ($this->hasFeature($feature)) {
-            $key=array_search($feature->value, $this->features);
-            if($key){
+            $key = array_search($feature->value, $this->features);
+            if ($key) {
                 unset($this->features[$key]);
             }
         }
@@ -230,7 +227,7 @@ class Device implements DeviceInterface
         return $this->uptime;
     }
 
-    public function setUptime(?\DateTimeImmutable $uptime = null): Device
+    public function setUptime(\DateTimeImmutable $uptime = null): Device
     {
         $this->uptime = $uptime;
 
