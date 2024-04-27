@@ -63,7 +63,7 @@ final readonly class AttributesUserProvider implements AttributesBasedUserProvid
         }
 
         foreach ($attributes['groups'] as $group) {
-            if ('admin' === strtolower($group)) {
+            if (in_array(strtolower($group), ['admin', 'dungap admins'])) {
                 $user->addRole('ROLE_ADMIN');
             }
         }
