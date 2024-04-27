@@ -1,25 +1,32 @@
-import NextAuth, { DefaultSession, Session } from "next-auth";
+import Authentik from "@auth/core/providers/authentik";
+import NextAuth, { Session, User } from "next-auth";
+import { AdapterUser } from "next-auth/adapters";
+import { JWT } from "next-auth/jwt";
 import { Provider } from "next-auth/providers";
-import Credentials from "next-auth/providers/credentials";
-import Google from "next-auth/providers/google";
+import invariant from "tiny-invariant";
 import { config } from "../util/config";
 
 declare module "next-auth" {
-  interface User {
-    roles: string[];
-    token: string;
-  }
 
   interface Session {
-    accessToken: string;
-    userId: string;
-    user: {
-      token: string;
-    } & DefaultSession[ 'user' ];
+    accessToken?: string;
+    error?: string;
+    user?: User;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    refreshToken?: string;
+    accessToken?: string;
+    accessTokenExpires?: number;
+    error?: string;
+    user?: User | AdapterUser;
   }
 }
 
 const providers: Provider[] = [
+  /*
   Credentials({
     credentials: {
       username: {},
@@ -54,6 +61,12 @@ const providers: Provider[] = [
     }
   }),
   Google
+  */
+  Authentik({
+    clientId: config.authentikId,
+    clientSecret: config.authentikSecret,
+    issuer: config.authentikIssuer,
+  })
 ];
 
 export const providerMap = providers.map((provider) => {
@@ -65,29 +78,72 @@ export const providerMap = providers.map((provider) => {
   }
 });
 
+async function refreshAccessToken(token: JWT): Promise<JWT> {
+  try {
+    const url = `https://authentik.itstoni.com/application/o/token/?` +
+      new URLSearchParams({
+        clientId: config.authentikId,
+        clientSecret: config.authentikSecret,
+        grant_type: 'refresh_token',
+        refresh_token: token.refreshToken as string
+      });
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      method: "POST"
+    });
+    const refreshedTokens = await response.json();
+
+    if (!response.ok) {
+      throw refreshedTokens;
+    }
+
+    return {
+      ...token,
+      accessToken: refreshedTokens.access_token,
+      accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
+      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
+    };
+
+  } catch (error) {
+    console.log(error);
+    return {
+      ...token,
+      error: 'RefreshAccessTokenError'
+    };
+  }
+
+}
+
 export const { handlers: { GET, POST }, signIn, signOut, auth } = NextAuth({
   pages: {
     // signIn: '/auth/login'
   },
   providers,
   callbacks: {
-    jwt({ token, user, account }) {
-      if (user) {
-        token.id = user.id;
-        token.accessToken = user.token;
-      } else if (account) {
-        token.accessToken = account.access_token;
-        if (account.expires_in) {
-          token.exp = Math.floor(Date.now() / 1000 + account.expires_in);
-        }
-        token.refreshToken = account.refresh_token;
-
+    async jwt({ token, user, account }): Promise<JWT> {
+      if (account && user) {
+        invariant(account.expires_in);
+        return {
+          accessToken: account.access_token,
+          accessTokenExpires: Date.now() + account.expires_in * 1000,
+          refreshToken: account.refresh_token,
+          user,
+        };
       }
-      return token;
+      if (token.accessTokenExpires && (Date.now() < token.accessTokenExpires)) {
+        return token;
+      }
+
+      return await refreshAccessToken(token);
     },
     session({ token, session }): Session {
-      session.accessToken = token.accessToken as string;
-      session.userId = token.id as string;
+      if (token) {
+        session.user = token.user as User & AdapterUser;
+        session.accessToken = token.accessToken;
+        session.error = token.error;
+      }
       return session;
     }
   }

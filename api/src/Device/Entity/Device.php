@@ -23,6 +23,7 @@ use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\EnumDeviceFeature;
+use Dungap\Device\Controller\PowerOffAction;
 use Dungap\Device\Controller\PowerOnAction;
 use Dungap\Device\Controller\ScanDeviceAction;
 use Dungap\Device\Repository\DeviceRepository;
@@ -33,23 +34,40 @@ use Symfony\Component\Uid\Uuid;
     shortName: 'device',
     operations: [
         new GetCollection(),
-        new Post(),
+        new Post(
+            security: 'is_granted("ROLE_ADMIN")'
+        ),
         new Get(),
-        new Put(),
-        new Patch(),
-        new Delete(),
+        new Put(
+            security: 'is_granted("ROLE_ADMIN")'
+        ),
+        new Patch(
+            security: 'is_granted("ROLE_ADMIN")'
+        ),
+        new Delete(
+            security: 'is_granted("ROLE_ADMIN")'
+        ),
         new Post(
             uriTemplate: '/devices/scan',
             controller: ScanDeviceAction::class,
             description: 'Scan available devices on network',
             read: false,
             name: 'api_device_scan',
+            security: 'is_granted("ROLE_ADMIN")'
         ),
         new Get(
             uriTemplate: '/devices/{id}/power-on',
             controller: PowerOnAction::class,
             write: false,
-            name: 'api_device_power_on'
+            name: 'api_device_power_on',
+            security: 'is_granted("ROLE_ADMIN")'
+        ),
+        new Get(
+            uriTemplate: '/devices/{id}/power-off',
+            controller: PowerOffAction::class,
+            write: false,
+            name: 'api_device_power_off',
+            security: 'is_granted("ROLE_ADMIN")'
         ),
     ],
     mercure: true

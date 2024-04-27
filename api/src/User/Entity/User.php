@@ -14,6 +14,8 @@ namespace Dungap\User\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\UserInterface;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
@@ -27,7 +29,13 @@ use Symfony\Component\Uid\Uuid;
             security: 'is_granted("ROLE_ADMIN")'
         ),
         new Get(
-            security: 'object === user'
+            security: 'object === user or is_granted("ROLE_ADMIN")'
+        ),
+        new Put(
+            security: 'object === user or is_granted("ROLE_ADMIN")'
+        ),
+        new Patch(
+            security: 'object === user or is_granted("ROLE_ADMIN")'
         )
     ],
     mercure: true

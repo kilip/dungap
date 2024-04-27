@@ -13,6 +13,7 @@ namespace Dungap\Device\Controller;
 
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Device\Command\PowerOffCommand;
+use Dungap\Device\Entity\Device;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -26,7 +27,7 @@ class PowerOffAction
     }
 
     public function __invoke(
-        DeviceInterface $device
+        Device|DeviceInterface $device
     ): Response {
         $command = new PowerOffCommand($device->getId());
         $this->messageBus->dispatch($command);
