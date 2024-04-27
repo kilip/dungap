@@ -35,6 +35,6 @@
     "mac-address": "AA:BB:CC:DD:EE:FF",
     "radius": "false",
     "server": "dhcp-main",
-    "status": "bound"
+    "status": "waiting"
   }
 ]

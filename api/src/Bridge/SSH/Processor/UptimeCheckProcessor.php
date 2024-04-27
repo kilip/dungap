@@ -26,12 +26,24 @@ final readonly class UptimeCheckProcessor implements UptimeProcessorInterface
 
     public function process(DeviceInterface $device): ?\DateTimeImmutable
     {
-        $ssh = $this->secureFactory->createSshClient($device);
-        $ssh->addCommand('uptime -s');
-        $ssh->run();
-        $output = trim($ssh->getOutput());
-        $this->logger?->info('processing date time for {0}: {1}', [$device->getIpAddress(), $output]);
+        try{
+            $ssh = $this->secureFactory->createSshClient($device);
+            $ssh->addCommand('uptime -s');
+            $ssh->run();
+            $output = trim($ssh->getOutput());
+            $this->logger?->info('processing date time for {0}: {1}', [$device->getIpAddress(), $output]);
+            $exp = explode("\n", $output);
+            $lastLine = $output[count($exp) - 1];
+            $this->logger?->notice("Last Update Time {0}", [$lastLine]);
+            $value =  date_create_immutable_from_format('Y-m-d H:i:s', $lastLine);
 
-        return date_create_immutable_from_format('Y-m-d H:i:s', $output);
+            if($value instanceof \DateTimeImmutable){
+                return $value;
+            }
+        }catch (\Exception $e){
+            $this->logger?->error($e->getMessage());
+        }
+
+        return null;
     }
 }

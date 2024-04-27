@@ -27,7 +27,7 @@ class PowerOffAction
     }
 
     public function __invoke(
-        Device|DeviceInterface $device
+        Device $device
     ): Response {
         $command = new PowerOffCommand($device->getId());
         $this->messageBus->dispatch($command);

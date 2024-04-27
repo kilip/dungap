@@ -56,5 +56,6 @@ class DeviceRepository extends ServiceEntityRepository implements DeviceReposito
     {
         $this->getEntityManager()->persist($device);
         $this->getEntityManager()->flush();
+        $this->getEntityManager()->refresh($device);
     }
 }

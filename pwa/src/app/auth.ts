@@ -66,6 +66,11 @@ const providers: Provider[] = [
     clientId: config.authentikId,
     clientSecret: config.authentikSecret,
     issuer: config.authentikIssuer,
+    authorization: {
+      params: {
+        scope: "openid profile email offline_access"
+      }
+    }
   })
 ];
 
@@ -104,10 +109,10 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
       accessToken: refreshedTokens.access_token,
       accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
+      error: undefined
     };
 
   } catch (error) {
-    console.log(error);
     return {
       ...token,
       error: 'RefreshAccessTokenError'
@@ -129,6 +134,7 @@ export const { handlers: { GET, POST }, signIn, signOut, auth } = NextAuth({
           accessToken: account.access_token,
           accessTokenExpires: Date.now() + account.expires_in * 1000,
           refreshToken: account.refresh_token,
+          error: undefined,
           user,
         };
       }

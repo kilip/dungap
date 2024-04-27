@@ -35,6 +35,7 @@ class PowerOffProcessor implements PowerOffProcessorInterface
         try {
             $ssh = $this->secureFactory->createSshClient($device);
             $ssh->addCommand('sudo poweroff');
+            $ssh->run();
         } catch (\Exception $exception) {
             $this->logger?->error('Failed to poweroff by using SSH, message: {0}', [$exception->getMessage()]);
 

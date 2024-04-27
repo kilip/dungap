@@ -23,8 +23,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-#[AsMessageHandler()]
-readonly class CheckOnlineHandler
+#[AsMessageHandler]
+final readonly class CheckOnlineHandler
 {
     /**
      * @param array<int,UptimeProcessorInterface> $uptimeProcessors
@@ -84,12 +84,17 @@ readonly class CheckOnlineHandler
 
     private function generateUptime(DeviceInterface $device): \DateTimeImmutable
     {
-        foreach ($this->uptimeProcessors as $uptimeProcessor) {
-            $uptime = $uptimeProcessor->process($device);
-            if (!is_null($uptime)) {
-                return $uptime;
+        try{
+            foreach ($this->uptimeProcessors as $uptimeProcessor) {
+                $uptime = $uptimeProcessor->process($device);
+                if (!is_null($uptime)) {
+                    return $uptime;
+                }
             }
+        }catch (\Exception $e){
+            $this->logger->error($e->getMessage());
         }
+
 
         return new \DateTimeImmutable();
     }

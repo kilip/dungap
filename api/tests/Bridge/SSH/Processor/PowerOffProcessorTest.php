@@ -9,8 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Bridge\SSH\Processor;
+namespace Dungap\Tests\Bridge\SSH\Processor;
 
+use Dungap\Bridge\SSH\Processor\PowerOffProcessor;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\SecureFactoryInterface;
 use Dungap\Contracts\Device\SshInterface;
