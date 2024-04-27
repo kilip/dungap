@@ -77,11 +77,11 @@
         '/login-check'
 			)
 		)
-    || header({'Accept': "text/x-component"})
-		|| path('/favicon.ico', '/manifest.json', '/robots.txt', '/sitemap*', '/_next*', '/__next*', '/api/auth/*')
+		|| path('/favicon.ico', '/app/*', '/node_modules/*', '/@id/*', '/@vite/*')
 		|| path('*.svg')
 		|| query({'_rsc': '*'})
     `
+
 
 	# Comment the following line if you don't want Next.js to catch requests for HTML documents.
 	# In this case, they will be handled by the PHP app.
