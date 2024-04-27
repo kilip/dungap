@@ -6,3 +6,12 @@ indent_size = 4
 
 [{,*.*}Caddyfile]
 indent_style = tab
+
+[*.json]
+indent_size = 2
+
+[*.{ts,tsx}]
+indent_size = 2
+
+[*.{yaml,yml}]
+indent_size = 2

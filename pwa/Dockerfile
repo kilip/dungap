@@ -26,11 +26,11 @@ ENV NEXT_TELEMETRY_DISABLED 1
 # Development image
 FROM base as dev
 
-EXPOSE 3000
-ENV PORT 3000
+EXPOSE 5173
+ENV PORT 5173
 ENV HOSTNAME localhost
 
-CMD ["sh", "-c", "pnpm install; pnpm dev"]
+CMD ["sh", "-c", "pnpm install; pnpm dev --host"]
 
 
 FROM base AS builder
@@ -40,10 +40,8 @@ RUN pnpm fetch --prod
 
 COPY --link . .
 
-ARG AUTH_SECRET
-
-RUN	pnpm install --frozen-lockfile --offline --prod && \
-	pnpm run build
+RUN	pnpm install && \
+	pnpm build
 
 
 # Production image, copy all the files and run next
@@ -56,24 +54,23 @@ ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN addgroup --system --gid 1001 nodejs; \
-	adduser --system --uid 1001 nextjs
+	adduser --system --uid 1001 remix
 
 COPY --from=builder --link /srv/app/public ./public
 
 # Set the correct permission for prerender cache
-RUN mkdir .next; \
-	chown nextjs:nodejs .next
+# RUN mkdir .next; \
+#	chown remix:nodejs .next
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --link --chown=1001:1001 /srv/app/.next/standalone ./
-COPY --from=builder --link --chown=1001:1001 /srv/app/.next/static ./.next/static
+COPY --from=builder --link --chown=1001:1001 /srv/app/ ./
 
-USER nextjs
+USER remix
 
 EXPOSE 3000
 
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["node", "server.js"]
+CMD ["npm", "run", "start"]
