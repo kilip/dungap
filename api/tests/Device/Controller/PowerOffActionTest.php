@@ -13,6 +13,7 @@ namespace Dungap\Tests\Device\Controller;
 
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Device\Command\PowerOffCommand;
+use Dungap\Device\Entity\Device;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Envelope;
@@ -24,7 +25,7 @@ class PowerOffActionTest extends TestCase
     public function testInvoke(): void
     {
         $messageBus = $this->createMock(MessageBusInterface::class);
-        $device = $this->createMock(DeviceInterface::class);
+        $device = $this->createMock(Device::class);
         $action = new \Dungap\Device\Controller\PowerOffAction($messageBus);
 
         $messageBus->expects($this->once())

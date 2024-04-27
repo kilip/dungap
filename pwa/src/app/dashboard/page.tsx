@@ -14,7 +14,13 @@ async function getServerSideProps(
   const page = 1;
   try {
     const response: FetchResponse<PagedCollection<Device>> | undefined =
-      await fetchApi("/devices", {}, session);
+      await fetchApi(
+        "/devices",
+        {
+          cache: "no-cache",
+        },
+        session
+      );
 
     if (!response?.data) {
       throw new Error("Can not fetch from /devices");

@@ -1,5 +1,5 @@
 import { Session } from "next-auth";
-import { PowerOn } from "../../../device/actions";
+import { powerOff, powerOn } from "../../../device/actions";
 import { Show, Props as ShowProps } from "../../../device/components/Show";
 import { Device } from "../../../types/device";
 import { fetchApi, FetchResponse } from "../../../util/dataAccess";
@@ -13,7 +13,8 @@ interface Props {
 async function getServerSideProps(
   id: string,
   session: Session | null,
-  powerOn: typeof PowerOn
+  powerOn: typeof powerOn,
+  powerOff: typeof powerOff
 ): Promise<ShowProps | undefined> {
   try {
     const response: FetchResponse<Device> | undefined = await fetchApi(
@@ -27,9 +28,9 @@ async function getServerSideProps(
       session
     );
     if (!response?.data) {
-      throw new Error(`Unable to retrieve data from /books/${id}.`);
+      throw new Error(`Unable to retrieve data from /devices/${id}.`);
     }
-    return { data: response.data, hubURL: response.hubURL, powerOn };
+    return { data: response.data, hubURL: response.hubURL, powerOn, powerOff };
   } catch (error) {
     console.log(error);
   }
@@ -40,6 +41,6 @@ async function getServerSideProps(
 export default async function Page({ params }: Props) {
   const id = params.id;
   const session: Session | null = await auth();
-  const props = await getServerSideProps(params.id, session, PowerOn);
+  const props = await getServerSideProps(params.id, session, powerOn, powerOff);
   return <>{props && <Show {...props} />}</>;
 }

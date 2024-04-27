@@ -35,7 +35,7 @@ class OnlineChecker implements OnlineCheckerInterface
                     ipAddress: $response->address,
                     hostname: $response->hostName,
                     macAddress: $response->macAddress,
-                    online: null != $response->activeAddress,
+                    online: 'bound' == $response->status,
                 );
             }
         }
