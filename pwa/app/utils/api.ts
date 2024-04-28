@@ -1,7 +1,8 @@
 import { Session } from "@remix-run/node";
+import { MimeType } from "~/types/common";
 
-const MIME_TYPE = "application/ld+json";
-const ENTRYPOINT = process.env.API_ENTRYPOINT ?? 'http://api';
+export const MIME_TYPE = "application/ld+json";
+export const ENTRYPOINT = process.env.API_ENTRYPOINT ?? 'https://localhost';
 
 export interface FetchResponse<TData> {
   hubURL: string | null;
@@ -43,20 +44,20 @@ export async function fetchApi<TData>(
 
   if (typeof init.method === 'undefined') init.method = 'GET';
 
-  let defaultHeaders = {};
+  let defaultHeaders = {
+    Accept: MimeType.Hydra,
+  };
+
   if (init.body) {
-    defaultHeaders = {
-      'Accept': MIME_TYPE,
-      'Content-Type': init.method === 'PATCH' ? 'application/merge-patch+json' : MIME_TYPE,
-    };
+    defaultHeaders = Object.assign(defaultHeaders, {
+      'Content-Type': init.method === 'PATCH' ? 'application/merge-patch+json' : MimeType.Hydra
+    });
   }
 
   if (session && session.get('user')) {
-
-    defaultHeaders = {
-      ...defaultHeaders,
+    defaultHeaders = Object.assign(defaultHeaders, {
       Authorization: `Bearer ${session.get('user').accessToken}`
-    };
+    });
   }
 
   init.headers = {
@@ -68,9 +69,20 @@ export async function fetchApi<TData>(
   if (r.status === 204) return undefined;
 
   const text = await r.text();
-  const json = JSON.parse(text);
+  let json = {
+    'hydra:title': r.statusText,
+    'hydra:description': r.statusText,
+    violations: []
+  };
 
-  if (r.ok) {
+  try {
+    json = JSON.parse(text);
+  } catch (error) {
+  }
+
+
+  if (r.status < 400) {
+    const json = JSON.parse(text);
     return {
       hubURL: extractHubURL(r),
       data: json,
@@ -78,7 +90,8 @@ export async function fetchApi<TData>(
     };
   }
 
-  const errorMessage = json[ 'hydra.title' ];
+
+  const errorMessage = json[ 'hydra:title' ];
   const status = json[ "hydra:description" ] || r.statusText;
 
   if (!json.violations) throw Error(errorMessage);
