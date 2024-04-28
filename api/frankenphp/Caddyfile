@@ -70,15 +70,17 @@
 	# Matches requests for HTML documents, for static files and for Next.js files,
 	# except for known API paths and paths with extensions handled by API Platform
 	@pwa expression `(
-			header({'Accept': '*text/html*'})
+      header({'Accept': '*text/html*'})
 			&& !path(
 				'/docs*', '/graphql*', '/bundles*', '/contexts*', '/_profiler*', '/_wdt*',
 				'*.json*', '*.html', '*.csv', '*.yml', '*.yaml', '*.xml',
         '/login-check'
 			)
 		)
+    || query({'_data': '*'})
+    || path('/dashboard')
 		|| path('/favicon.ico', '/app/*', '/node_modules/*', '/@id/*', '/@vite/*')
-		|| path('*.svg')
+		|| path('*.svg', '*.png')
 		|| query({'_rsc': '*'})
     `
 
