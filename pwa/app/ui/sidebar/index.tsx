@@ -9,7 +9,9 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
+  // eslint-disable-next-line
   const trigger = useRef<any>(null);
+  // eslint-disable-next-line
   const sidebar = useRef<any>(null);
   const { user } = useUser();
 

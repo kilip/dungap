@@ -14,3 +14,28 @@ jobs:
     name: API Test
     uses: kilip/dungap/.github/workflows/api.yaml@main
     secrets: inherit
+
+  pwa:
+    name: PWA Test
+    uses: kilip/dungap/.github/workflows/pwa.yaml@main
+    secrets: inherit
+
+  build:
+    name: Build Images
+    uses: kilip/dungap/.github/workflows/build-images.yaml@main
+    needs: [api, pwa]
+    secrets: inherit
+    if: >
+      needs.api.result != 'failure'
+      && needs.pwa.result != 'failure' 
+      && github.event_name != 'pull_request'
+
+  release:
+    name: Create Release
+    uses: kilip/dungap/.github/workflows/release.yaml@main
+    needs: [api, pwa, build]
+    secrets: inherit
+    if: >
+      needs.build.result != 'failure'
+      && github.event_name != 'pull_request'
+      && github.ref_name != 'main'

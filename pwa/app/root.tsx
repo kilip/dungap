@@ -14,8 +14,8 @@ import { PropsWithChildren, useEffect, useState } from "react";
 import tailwindcss from "./assets/main.css?url";
 import satoshicss from "./assets/satoshi.css?url";
 import { User } from "./auth/auth.server";
+import { UserContextType } from "./auth/context/user";
 import { getSession } from "./auth/session.server";
-import { UserContextType } from "./types/common";
 import { GeneralErrorBoundary } from "./ui/ErrorBoundary";
 
 export const links: LinksFunction = () => [

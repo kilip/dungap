@@ -4,12 +4,14 @@ import { PagedCollection } from "~/types/collection";
 import { Item } from "~/types/item";
 import { mercureSubscribe, useMercure } from "./mercure";
 
+// eslint-disable-next-line
 const { MockEvent, EventSource } = require('mocksse');
 
 global.EventSource = EventSource;
 
 window.origin = 'https://localhost/dashboard';
 const hubURL = 'https://localhost/mercure';
+// eslint-disable-next-line
 const setData = (item: Item) => {
 };
 describe('mercureSubscribe()', () => {
@@ -20,7 +22,7 @@ describe('mercureSubscribe()', () => {
     } as Item;
 
     expect(() => {
-      const evt = mercureSubscribe(hubURL, item, setData);
+      mercureSubscribe(hubURL, item, setData);
     }).toThrow(/^@id is missing/);
 
   });

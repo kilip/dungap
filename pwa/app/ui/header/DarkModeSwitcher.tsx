@@ -5,14 +5,15 @@ const DarkModeSwitcher = () => {
 
   return (
     <li>
+      {/* eslint-disable-next-line */}
       <label
         className={`relative m-0 block h-7.5 w-14 rounded-full ${
           colorMode === "dark" ? "bg-primary" : "bg-stroke"
         }`}
-        htmlFor="chooseColor"
       >
         <input
           id="chooseColor"
+          name="chooseColor"
           type="checkbox"
           onChange={() => {
             if (typeof setColorMode === "function") {

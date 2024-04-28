@@ -1,0 +1,93 @@
+name: PWA Tests
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+defaults:
+  run:
+    working-directory: "./pwa"
+
+jobs:
+  lint:
+    name: ⬣ ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          #cache: pnpm
+          #cache-dependency-path: ./pnpm-lock.yaml
+          node-version: 20
+
+      - name: 📥 Install deps
+        run: pnpm install
+
+      - name: 🔬 Lint
+        run: pnpm run lint
+
+  typecheck:
+    name: ʦ TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          #cache: pnpm
+          #cache-dependency-path: ./package.json
+          node-version: 20
+
+      - name: 📥 Install deps
+        run: pnpm install
+
+      - name: 🔎 Type check
+        run: pnpm run typecheck
+
+  vitest:
+    name: ⚡ Vitest
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          #cache: pnpm
+          #cache-dependency-path: ./pnpm-lock.yaml
+          node-version: 20
+
+      - name: 📥 Install deps
+        run: pnpm install
+
+      - name: ⚡ Run vitest
+        run: pnpm coverage
+
+      - name: Upload coverage results to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          directory: pwa/coverage
+          name: vitest
+          flags: vitest
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+          codecov_yml_path: codecov.yml
+        continue-on-error: true

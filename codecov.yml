@@ -1,0 +1,25 @@
+coverage:
+  status:
+    project:
+      api:
+        informational: true
+        target: 80.0
+        threshold: 50.0
+        flags:
+          - phpunit
+        paths:
+          - "api"
+        branches:
+          - main
+        if_ci_failed: error
+      pwa:
+        informational: true
+        target: 80.0
+        threshold: 50.0
+        flags:
+          - vitest
+        paths:
+          - "pwa"
+        branches:
+          - main
+        if_ci_failed: error

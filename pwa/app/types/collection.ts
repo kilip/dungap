@@ -15,5 +15,6 @@ export interface PagedCollection<T> {
   };
 }
 
+// eslint-disable-next-line
 export const isPagedCollection = <T>(data: any): data is PagedCollection<T> =>
   "hydra:member" in data && Array.isArray(data[ "hydra:member" ]);

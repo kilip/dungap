@@ -85,7 +85,7 @@ describe('fetchApi()', () => {
     fetchMock.get('path:/devices', 500);
 
     await expect(async () => {
-      const d = await fetchApi('/devices', {}, session);
+      await fetchApi('/devices', {}, session);
     }).rejects.toThrow(/^Internal Server Error$/);
   });
 

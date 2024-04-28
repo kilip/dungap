@@ -3,14 +3,12 @@ name: Build Images
 on:
   workflow_dispatch:
   workflow_call:
-  push:
-    branches: ["main"]
-    tags: ["v*"]
 
 env:
   IMAGE_PREFIX: ghcr.io/kilip/dungap
   API_DOCKER_IMAGE: ghcr.io/kilip/dungap-api:${{ github.sha }}
   PWA_DOCKER_IMAGE: ghcr.io/kilip/dungap-pwa:${{ github.sha }}
+
 jobs:
   build:
     name: Build Container Image

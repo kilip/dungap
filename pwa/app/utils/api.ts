@@ -77,6 +77,7 @@ export async function fetchApi<TData>(
 
   try {
     json = JSON.parse(text);
+    // eslint-disable-next-line
   } catch (error) {
   }
 
