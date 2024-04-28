@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { isPagedCollection, PagedCollection } from "~/types/collection";
-import { isItem, Item } from "~/types/item";
+import { PagedCollection, isPagedCollection } from "~/types/collection";
+import { Item, isItem } from "~/types/item";
 
-const mercureSubscribe = <T extends Item | PagedCollection<Item> | null | undefined>(
+export const mercureSubscribe = <T extends Item | PagedCollection<Item> | null | undefined>(
   hubURL: string,
   data: T | PagedCollection<T>,
   setData: (data: T) => void

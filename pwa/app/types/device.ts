@@ -7,7 +7,7 @@ export interface Device extends Item {
   hostname?: string;
   nickname?: string;
   group?: string;
-  online: boolean;
-  draft: boolean;
-  uptime: number;
+  online?: boolean;
+  draft?: boolean;
+  uptime?: number;
 }
