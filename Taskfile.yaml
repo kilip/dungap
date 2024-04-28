@@ -1,145 +1,60 @@
 ---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
-vars:
-    COMPOSE_FILES: '-f compose.yaml -f {{or .COMPOSE_OVERRIDE_FILE "compose.override.yaml" }}'
-
 tasks:
-    default: task -l
+  default: task -l
 
-    test:
-        cmds:
-            - echo "{{.COMPOSE_FILES}}"
-    secrets:
-        desc: generate random secrets
-        cmds:
-            - openssl rand -base64 -hex 32
+  build:*:
+    cmds:
+      - docker build --target {{.target}} -f docker/Dockerfile -t dungap:{{.target}} .
+    vars:
+      target: "{{index .MATCH 0}}"
 
-    pass:init:
-        desc: generate secrets from password store
-        cmds:
-            - pass dungap/ssh-private-key > api/config/ssh/dungap
-            - pass dungap/ssh-public-key > api/config/ssh/dungap.pub
+  up:
+    cmd: docker compose up -d
 
-    boot:prod:
-        desc: boot docker container
-        cmds:
-            - docker compose -f compose.yaml -f compose.prod.yaml up -d
+  up:prod:
+    cmd: docker compose -f compose.yaml -f compose.prod.yaml up -d
 
-    up:
-        desc: create and start the container
-        cmds:
-            - docker compose {{.COMPOSE_FILES}} up -d {{.CLI_ARGS}}
+  stop:
+    cmd: docker compose stop
 
-    up:*:
-        desc: boot docker container
-        cmds:
-            - task: up
-              vars:
-                  CLI_ARGS: "{{.container}} {{.CLI_ARGS}}"
+  start:
+    cmd: docker compose start
+
+  restart:
+    cmds:
+      - task: stop
+      - task: start
+
+  logs:
+    cmd: docker compose logs -f --tail 50
+
+  logs:franken:
+    cmd: docker compose exec dungap tail -f /var/log/caddy.log
+
+  logs:pwa:
+    cmd: docker compose exec dungap tail -f /var/log/pwa.log
+
+  rm:
+    cmds:
+      - task: stop
+      - docker compose rm -f
+
+  shell:
+    cmds:
+      - docker compose exec dungap bash
+
+  sf:cc:
+    cmds:
+      - task: .sf
         vars:
-            container: "{{index .MATCH 0}}"
+          CLI_ARGS: "cache:clear {{.CLI_ARGS}}"
 
-    start:
-        desc: start docker container
-        cmds:
-            - docker compose start {{.CLI_ARGS}}
+  sf:
+    cmds:
+      - task: .sf
 
-    start:*:
-        desc: start docker container
-        cmds:
-            - task: start
-              vars:
-                  CLI_ARGS: "{{.container}} {{.CLI_ARGS}}"
-        vars:
-            container: "{{index .MATCH 0}}"
-
-    stop:
-        desc: stop docker container
-        cmds:
-            - docker compose stop {{.CLI_ARGS}}
-
-    stop:*:
-        desc: stop docker container
-        cmds:
-            - task: stop
-              vars:
-                  CLI_ARGS: "{{.container}} {{.CLI_ARGS}}"
-        vars:
-            container: "{{index .MATCH 0}}"
-
-    restart:*:
-        desc: restart docker container
-        cmds:
-            - task: stop:{{.container}}
-            - task: start:{{.container}}
-        vars:
-            container: "{{index .MATCH 0}}"
-
-    rm:
-        desc: remove container
-        cmds:
-            - docker compose rm {{.container}} {{.CLI_ARGS}}
-
-    rm:*:
-        desc: remove container
-        cmds:
-            - task: rm
-              CLI_ARGS: "{{.container}} {{.CLI_ARGS}}"
-        vars:
-            container: "{{index .MATCH 0}}"
-
-    build:prod:
-        desc: Build production images
-        cmds:
-            - docker compose -f compose.yaml -f compose.prod.yaml build {{.CLI_ARGS}}
-
-    build:
-        desc: build dev container
-        cmds:
-            - docker compose {{.COMPOSE_FILES}} build {{.CLI_ARGS}}
-
-    build:*:
-        cmds:
-            - task: build
-              vars:
-                  CLI_ARGS: "{{.container}} {{.CLI_ARGS}}"
-        vars:
-            container: "{{index .MATCH 0}}"
-
-    logs:*:
-        desc: show api container log
-        cmds:
-            - docker compose logs -f {{.container}} --tail 10
-        vars:
-            container: "{{index .MATCH 0}}"
-
-    api:shell:
-        desc: execute bash shell in api container
-        cmds:
-            - docker compose exec api bash
-
-    sf:
-        desc: execute bin/console command in api container
-        cmds:
-            - docker compose exec api bin/console {{.CLI_ARGS}}
-
-    sf:cc:
-        desc: clear symfony cache
-        cmds:
-            - docker compose exec api bin/console cache:clear {{.CLI_ARGS}}
-
-    composer:
-        desc: execute composer in api container
-        cmds:
-            - docker compose exec api composer {{.CLI_ARGS}}
-
-    pnpm:
-        desc: execute pnpm in pwa container
-        cmds:
-            - docker compose exec pwa pnpm {{.CLI_ARGS}}
-
-    ps:
-        desc: show doctrine status
-        cmds:
-            - docker compose ps
+  .sf:
+    cmd: docker compose exec dungap /srv/api/bin/console {{.CLI_ARGS}}

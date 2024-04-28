@@ -26,7 +26,7 @@
 		}
 	}
 
-	root * /app/public
+	root * /srv/api/public
 	encode {
 		zstd
 		br
@@ -74,14 +74,15 @@
 			&& !path(
 				'/docs*', '/graphql*', '/bundles*', '/contexts*', '/_profiler*', '/_wdt*',
 				'*.json*', '*.html', '*.csv', '*.yml', '*.yaml', '*.xml',
-        '/login-check'
+        		'/login-check'
 			)
 		)
+	|| !header({'Accept': 'application/ld+json'})
     || query({'_data': '*'})
-    || path('/dashboard')
-		|| path('/favicon.ico', '/app/*', '/node_modules/*', '/@id/*', '/@vite/*')
-		|| path('*.svg', '*.png')
-		|| query({'_rsc': '*'})
+	|| path('/favicon.ico', '/app/*', '/node_modules/*', '/@id/*', '/@vite/*', '/assets/*')
+	|| path('/img/*')
+	|| path('*.svg', '*.png')
+	|| query({'_rsc': '*'})
     `
 
 
