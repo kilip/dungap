@@ -27,8 +27,7 @@ jobs:
     secrets: inherit
     if: >
       needs.api.result != 'failure'
-      && needs.pwa.result != 'failure' 
-      && github.event_name != 'pull_request'
+      && needs.pwa.result != 'failure'
     with:
       pushImages: "${{ github.event_name == 'pull_request' && 'false' || 'true'}}"
 

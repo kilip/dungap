@@ -83,8 +83,8 @@ jobs:
           echo "tag_testing=${IMAGE_PREFIX}:testingz" >> "$GITHUB_OUTPUT"
 
           if [[ 'main' == ${ref_name} ]]; then
-            echo "tag_rolling=${IMAGE_PREFIX}:main" >> "$GITHUB_OUTPUT"
-            echo "tag_version=${IMAGE_PREFIX}:main-${date_tag}" >> "$GITHUB_OUTPUT"
+            echo "tag_rolling=${IMAGE_PREFIX}:nightly" >> "$GITHUB_OUTPUT"
+            echo "tag_version=${IMAGE_PREFIX}:nightly-${date_tag}" >> "$GITHUB_OUTPUT"
           else
             echo "tag_rolling=${IMAGE_PREFIX}:latest" >> "$GITHUB_OUTPUT"
             echo "tag_version=${IMAGE_PREFIX}:${ref_name}" >> "$GITHUB_OUTPUT"
