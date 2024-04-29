@@ -11,7 +11,7 @@
 
 namespace Dungap\Security\Listener;
 
-use Dungap\Contracts\UserInterface;
+use Dungap\Contracts\User\UserInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 

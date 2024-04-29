@@ -37,7 +37,7 @@ final readonly class PowerOnHandler
         if (!$device instanceof DeviceInterface) {
             throw DeviceException::powerOnNonExistingDevice($command->deviceId);
         }
-        $this->logger?->notice('turning on device "{0}"', [$device->getNickname()]);
+        $this->logger?->notice('turning on device "{0}"', [$device->getName()]);
 
         $this->dispatcher->dispatch($device, DeviceConstant::EventDevicePowerOn);
     }

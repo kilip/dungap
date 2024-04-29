@@ -1,0 +1,25 @@
+doctrine:
+  orm:
+    mappings:
+      Device:
+        type: attribute
+        is_bundle: false
+        dir: "%kernel.project_dir%/src/Device/Entity"
+        prefix: 'Dungap\Device\Entity'
+        alias: Node
+      User:
+        type: attribute
+        is_bundle: false
+        dir: "%kernel.project_dir%/src/User/Entity"
+        prefix: 'Dungap\User\Entity'
+        alias: User
+      Setting:
+        type: attribute
+        is_bundle: false
+        dir: "%kernel.project_dir%/src/Setting/Entity"
+        prefix: 'Dungap\Setting\Entity'
+        alias: Setting
+    resolve_target_entities:
+      Dungap\Contracts\Device\CategoryInterface: Dungap\Device\Entity\Category
+      Dungap\Contracts\Device\DeviceInterface: Dungap\Device\Entity\Device
+      Dungap\Contracts\User\UserInterface: Dungap\User\Entity\User

@@ -14,15 +14,15 @@ declare(strict_types=1);
 namespace Dungap\Security\Provider;
 
 use Doctrine\Persistence\ManagerRegistry;
+use Dungap\Contracts\User\UserInterface;
 use Dungap\Contracts\User\UserRepositoryInterface;
-use Dungap\Contracts\UserInterface;
 use Dungap\User\Entity\User;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\AttributesBasedUserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 /**
- * @implements AttributesBasedUserProviderInterface<UserInterface>
+ * @implements AttributesBasedUserProviderInterface<\Dungap\Contracts\User\UserInterface>
  */
 final readonly class AttributesUserProvider implements AttributesBasedUserProviderInterface
 {

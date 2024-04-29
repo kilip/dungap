@@ -11,7 +11,6 @@
 
 namespace Dungap\Device\Controller;
 
-use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Device\Command\PowerOffCommand;
 use Dungap\Device\Entity\Device;
 use Symfony\Component\HttpFoundation\Response;

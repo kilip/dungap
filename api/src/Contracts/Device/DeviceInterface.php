@@ -17,9 +17,17 @@ interface DeviceInterface
 {
     public function getId(): ?Uuid;
 
-    public function setNickname(string $nickname): self;
+    public function setName(string $nickname): self;
 
-    public function getNickname(): ?string;
+    public function getName(): ?string;
+
+    public function setNotes(string $notes): self;
+
+    public function getNotes(): ?string;
+
+    public function setCategory(CategoryInterface $category): self;
+
+    public function getCategory(): ?CategoryInterface;
 
     public function setHostname(string $hostname): self;
 

@@ -11,8 +11,6 @@
 
 namespace Dungap\Contracts\User;
 
-use Dungap\Contracts\UserInterface;
-
 interface UserRepositoryInterface
 {
     public function findByUsernameOrEmail(string $usernameOrEmail): ?UserInterface;

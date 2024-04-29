@@ -11,8 +11,8 @@
 
 namespace Dungap\Tests\Security\Task;
 
+use Dungap\Contracts\User\UserInterface;
 use Dungap\Contracts\User\UserRepositoryInterface;
-use Dungap\Contracts\UserInterface;
 use Dungap\Security\Task\SecurityInstallTask;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
