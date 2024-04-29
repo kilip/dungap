@@ -29,6 +29,8 @@ jobs:
       needs.api.result != 'failure'
       && needs.pwa.result != 'failure' 
       && github.event_name != 'pull_request'
+    with:
+      pushImages: "${{ github.event_name == 'pull_request' && 'false' || 'true'}}"
 
   release:
     name: Create Release

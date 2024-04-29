@@ -2,46 +2,32 @@ name: Build Images
 
 on:
   workflow_dispatch:
+    inputs:
+      pushImages:
+        required: false
+        default: "false"
+        type: string
   workflow_call:
+    inputs:
+      pushImages:
+        required: false
+        default: "false"
+        type: string
 
 env:
   IMAGE_PREFIX: ghcr.io/kilip/dungap
-  API_DOCKER_IMAGE: ghcr.io/kilip/dungap-api:${{ github.sha }}
-  PWA_DOCKER_IMAGE: ghcr.io/kilip/dungap-pwa:${{ github.sha }}
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build:
     name: Build Container Image
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker images
-        uses: docker/bake-action@v4
-        with:
-          pull: true
-          load: true
-          files: |
-            compose.yaml
-            compose.prod.yaml
-          set: |
-            *.cache-from=type=gha,scope=${{github.ref}}
-            *.cache-from=type=gha,scope=refs/heads/main
-            *.cache-to=type=gha,scope=${{github.ref}},mode=max
-
-      - name: GHCR login
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup build tags
         id: tag
@@ -51,41 +37,45 @@ jobs:
           PWA_IMAGE=${IMAGE_PREFIX}-pwa
 
           echo "API_DATE=${API_IMAGE}:main-${date_tag}" >> "$GITHUB_OUTPUT"
-          echo "PWA_DATE=${PWA_IMAGE}:main-${date_tag}" >> "$GITHUB_OUTPUT"
 
-          echo "API_LATEST=${API_IMAGE}:latest" >> "$GITHUB_OUTPUT"
-          echo "PWA_LATEST=${PWA_IMAGE}:latest" >> "$GITHUB_OUTPUT"
+      - name: Setup Goss
+        uses: e1himself/goss-installation-action@v1.2.1
+        with:
+          version: v0.3.21
 
-          echo "API_REF=${API_IMAGE}:${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
-          echo "PWA_REF=${PWA_IMAGE}:${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
 
-      - name: docker push sha tag
-        run: |
-          docker push $API_DOCKER_IMAGE
-          docker push $PWA_DOCKER_IMAGE
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: push ref name tag
-        run: |
-          docker tag $API_DOCKER_IMAGE ${{ steps.tag.outputs.API_REF }}
-          docker push ${{ steps.tag.outputs.API_REF }}
+      - name: GHCR login
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-          docker tag $PWA_DOCKER_IMAGE ${{ steps.tag.outputs.PWA_REF }}
-          docker push ${{ steps.tag.outputs.PWA_REF }}
+      - name: Build container image for testing
+        uses: docker/build-push-action@v5
+        with:
+          target: production
+          context: .
+          platforms: linux/amd64 # load does not support muti-arch https://github.com/docker/buildx/issues/290
+          load: true
+          tags: ${IMAGE_PREFIX}:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: push timestamp image
-        if: github.ref_name == 'main'
-        run: |
-          docker tag $API_DOCKER_IMAGE ${{ steps.tag.outputs.API_DATE }}
-          docker push ${{ steps.tag.outputs.API_DATE }}
-
-          docker tag $PWA_DOCKER_IMAGE ${{ steps.tag.outputs.PWA_DATE }}
-          docker push ${{ steps.tag.outputs.PWA_DATE }}
-
-      - name: push latest image
-        if: github.ref_name != 'main'
-        run: |
-          docker tag $API_DOCKER_IMAGE ${{ steps.tag.outputs.API_LATEST }}
-          docker push ${{ steps.tag.outputs.API_LATEST }}
-
-          docker tag $PWA_DOCKER_IMAGE ${{ steps.tag.outputs.PWA_LATEST}}
-          docker push ${{ steps.tag.outputs.PWA_LATEST }}
+      - name: Run Goss tests
+        id: dgoss
+        shell: bash
+        env:
+          CONTAINER_RUNTIME: docker
+          GOSS_FILE: ./docker/goss.yaml
+          GOSS_OPTS: --retry-timeout 60s --sleep 2s --color --format documentation
+          GOSS_SLEEP: 2
+          GOSS_FILES_STRATEGY: cp
+          CONTAINER_LOG_OUTPUT: goss_container_log_output
+        run: dgoss run ${IMAGE_PREFIX}:test
