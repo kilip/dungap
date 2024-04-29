@@ -8,3 +8,29 @@ file:
     exists: true
   /srv/pwa:
     exists: true
+  /usr/local/bin/api-entrypoint:
+    exists: true
+  /usr/local/bin/dungap-entrypoint:
+    exists: true
+
+http:
+  dungap:
+    url: https://localhost/dashboard
+    status: 200
+    allow-insecure: true
+    timeout: 5000
+    method: GET
+
+port:
+  metrics:
+    listening: true
+    port: "tcp:2019"
+  https:
+    listening: true
+    port: "tcp6:443"
+  mercure:
+    listening: true
+    port: "udp6:443"
+  pwa:
+    listening: true
+    port: "tcp6:3000"

@@ -35,7 +35,7 @@ jobs:
   release:
     name: Create Release
     uses: kilip/dungap/.github/workflows/release.yaml@main
-    needs: [api, pwa, build]
+    needs: [build]
     secrets: inherit
     if: >
       needs.build.result != 'failure'

@@ -91,7 +91,11 @@ FROM base as production
 # api start
 WORKDIR /srv/api
 ENV APP_ENV=prod
+ENV SERVER_NAME=localhost
 ENV FRANKENPHP_CONFIG="import worker.Caddyfile"
+ENV MERCURE_PUBLISHER_JWT_KEY=!ChangeThisMercureHubJWTSecretKey!
+ENV MERCURE_SUBSCRIBER_JWT_KEY=!ChangeThisMercureHubJWTSecretKey!
+
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 COPY --link ./docker/frankenphp/conf.d/app.prod.ini $PHP_INI_DIR/conf.d/
 COPY --link ./docker/frankenphp/worker.Caddyfile /etc/caddy/worker.Caddyfile
@@ -123,6 +127,6 @@ ADD ./pwa /srv/pwa
 COPY --link docker/supervisor.d/caddy.prod.ini /etc/supervisor.d/
 COPY --link docker/supervisor.d/pwa.prod.ini /etc/supervisor.d/
 
-
 RUN rm -rf /var/cache/apk
+VOLUME /var/log/dungap
 WORKDIR /

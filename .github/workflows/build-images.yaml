@@ -15,7 +15,11 @@ on:
         type: string
 
 env:
+  APP_ENV: prod
   IMAGE_PREFIX: ghcr.io/kilip/dungap
+  DATABASE_URL: postgres://dungap:dungap-rocks@localhost/dungap
+  PGPASSWORD: dungap-rocks
+  MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
 
 permissions:
   contents: read
@@ -29,19 +33,67 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup postgres
+        run: |
+          sudo systemctl start postgresql
+          sudo -u postgres psql -d template1 -c "CREATE USER dungap WITH PASSWORD 'dungap-rocks' CREATEDB"
+          createdb -h localhost -p 5432 -U dungap dungap
+          pg_isready -d dungap -h localhost -p 5432 -U dungap
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: pecl, composer
+          extensions: intl, bcmath, curl, openssl, mbstring, mongodb
+          coverage: none
+          ini-values: memory_limit=-1
+
+      - name: Get composer cache directory
+        id: composercache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composercache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Update project dependencies
+        run: |
+          composer install --no-interaction --no-progress --ansi
+        working-directory: ./api
+
+      - name: Install database schema
+        run: bin/console doctrine:schema:update --force --complete
+        working-directory: ./api
+
       - name: Setup build tags
-        id: tag
+        id: vars
         run: |
           date_tag=$(date +'%Y%m%d%H%M%S')
-          API_IMAGE=${IMAGE_PREFIX}-api
-          PWA_IMAGE=${IMAGE_PREFIX}-pwa
+          TEST_IMAGE=${IMAGE_PREFIX}:test
+          LATEST=${IMAGE_PREFIX}:latest
+          ref_name="${{github.ref_name}}"
 
-          echo "API_DATE=${API_IMAGE}:main-${date_tag}" >> "$GITHUB_OUTPUT"
+          echo "docker_file=./docker/Dockerfile" >> $GITHUB_OUTPUT
+
+          echo "date_tag=main-${date_tag}" >> "$GITHUB_OUTPUT"
+          echo "tag_testing=${IMAGE_PREFIX}:testingz" >> "$GITHUB_OUTPUT"
+
+          if [[ 'main' == ${ref_name} ]]; then
+            echo "tag_rolling=${IMAGE_PREFIX}:main" >> "$GITHUB_OUTPUT"
+            echo "tag_version=${IMAGE_PREFIX}:main-${date_tag}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag_rolling=${IMAGE_PREFIX}:latest" >> "$GITHUB_OUTPUT"
+            echo "tag_version=${IMAGE_PREFIX}:${ref_name}" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Setup Goss
         uses: e1himself/goss-installation-action@v1.2.1
         with:
-          version: v0.3.21
+          version: v0.4.6
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
@@ -64,9 +116,18 @@ jobs:
           context: .
           platforms: linux/amd64 # load does not support muti-arch https://github.com/docker/buildx/issues/290
           load: true
-          tags: ${IMAGE_PREFIX}:test
+          tags: ${{steps.vars.outputs.tag_testing}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          file: ${{steps.vars.outputs.docker_file}}
+
+      - name: Prepare Goss Tests
+        shell: bash
+        run: |-
+          echo "DATABASE_URL=${DATABASE_URL}" >> .env.goss
+          echo "MESSENGER_TRANSPORT_DSN=${MESSENGER_TRANSPORT_DSN}" >> .env.goss
+          mkdir -p vars/log
+          cp .env.goss vars/log/
 
       - name: Run Goss tests
         id: dgoss
@@ -77,5 +138,33 @@ jobs:
           GOSS_OPTS: --retry-timeout 60s --sleep 2s --color --format documentation
           GOSS_SLEEP: 2
           GOSS_FILES_STRATEGY: cp
-          CONTAINER_LOG_OUTPUT: goss_container_log_output
-        run: dgoss run ${IMAGE_PREFIX}:test
+          CONTAINER_LOG_OUTPUT: ./vars/log/container.log
+        run: |-
+          dgoss run \
+            --network host \
+            --env-file .env.goss \
+            -v ./vars/log:/var/log/dungap \
+            ${{steps.vars.outputs.tag_testing}}
+
+      - name: Upload goss logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: goss
+          path: vars/log/*
+        continue-on-error: true
+
+      - name: Build all platforms
+        id: release
+        uses: docker/build-push-action@v5
+        if: ${{ inputs.pushImages == 'true'}}
+        with:
+          context: .
+          platforms: ${{ steps.vars.outputs.chan_platforms }}
+          file: ${{ steps.vars.outputs.docker_file }}
+          push: ${{ inputs.pushImages == 'true' }}
+          tags: |-
+            ${{ steps.vars.outputs.tag_rolling }}
+            ${{ steps.vars.outputs.tag_version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

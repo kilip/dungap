@@ -8,6 +8,8 @@ tasks:
   build:*:
     cmds:
       - docker build --target {{.target}} -f docker/Dockerfile -t dungap:{{.target}} .
+      - task: goss
+        tag: "{{.target}}"
     vars:
       target: "{{index .MATCH 0}}"
 
@@ -58,3 +60,15 @@ tasks:
 
   .sf:
     cmd: docker compose exec dungap /srv/api/bin/console {{.CLI_ARGS}}
+
+  goss:
+    cmds:
+      - dgoss run --env-file ./.env.goss dungap:production
+    vars:
+      tag: production
+    env:
+      GOSS_FILE: ./docker/goss.yaml
+      GOSS_OPTS: --retry-timeout 30s --sleep 2s --color --format documentation
+      GOSS_SLEEP: 2
+      GOSS_FILES_STRATEGY: cp
+      CONTAINER_LOG_OUTPUT: ./vars/goss.log

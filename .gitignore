@@ -1,2 +1,4 @@
 .env
 compose.local.yaml
+vars/*
+!vars/.gitkeep
