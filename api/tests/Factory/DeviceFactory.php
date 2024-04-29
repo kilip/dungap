@@ -48,7 +48,7 @@ final class DeviceFactory extends ModelFactory
     protected function getDefaults(): array
     {
         $data = [
-            'nickname' => self::faker()->unique()->word(),
+            'name' => self::faker()->unique()->word(),
             'hostname' => self::faker()->unique()->domainWord(),
             'ipAddress' => self::faker()->unique()->ipv4(),
             'macAddress' => self::faker()->unique()->macAddress(),

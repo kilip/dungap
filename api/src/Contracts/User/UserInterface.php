@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Contracts;
+namespace Dungap\Contracts\User;
 
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;

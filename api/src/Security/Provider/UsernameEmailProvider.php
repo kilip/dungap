@@ -12,8 +12,8 @@
 namespace Dungap\Security\Provider;
 
 use Doctrine\Persistence\ManagerRegistry;
+use Dungap\Contracts\User\UserInterface;
 use Dungap\Contracts\User\UserRepositoryInterface;
-use Dungap\Contracts\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;

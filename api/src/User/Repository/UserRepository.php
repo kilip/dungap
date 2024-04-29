@@ -13,8 +13,8 @@ namespace Dungap\User\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Dungap\Contracts\User\UserInterface;
 use Dungap\Contracts\User\UserRepositoryInterface;
-use Dungap\Contracts\UserInterface;
 use Dungap\User\Entity\User;
 
 /**

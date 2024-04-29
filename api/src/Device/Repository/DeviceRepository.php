@@ -47,6 +47,20 @@ class DeviceRepository extends ServiceEntityRepository implements DeviceReposito
         return $this->findOneBy(['hostname' => $hostname]);
     }
 
+    public function findByName(string $name): ?DeviceInterface
+    {
+        return $this->findOneBy(['name' => $name]);
+    }
+
+    public function findByIpOrName(string $ip, string $name): ?DeviceInterface
+    {
+        if (!is_null($device = $this->findByIpAddress($ip))) {
+            return $device;
+        }
+
+        return $this->findByName($name);
+    }
+
     public function create(): DeviceInterface
     {
         return new Device();

@@ -11,7 +11,7 @@
 
 namespace Dungap\Tests\Security\Listener;
 
-use Dungap\Contracts\UserInterface;
+use Dungap\Contracts\User\UserInterface;
 use Dungap\Security\Listener\JWTAuthenticationSuccessListener;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use PHPUnit\Framework\TestCase;

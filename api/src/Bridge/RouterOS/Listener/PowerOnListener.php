@@ -38,7 +38,7 @@ class PowerOnListener
             return;
         }
 
-        $this->logger?->info('[RouterOS] /tool/wol with mac {0}', [$mac, $device->getNickname()]);
+        $this->logger?->info('[RouterOS] /tool/wol with mac {0}', [$mac, $device->getName()]);
 
         $payload = [
             'mac' => $mac,

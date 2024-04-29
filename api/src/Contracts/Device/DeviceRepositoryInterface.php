@@ -19,7 +19,15 @@ interface DeviceRepositoryInterface
 
     public function findByIpAddress(string $ipAddress): ?DeviceInterface;
 
+    public function findByName(string $name): ?DeviceInterface;
+
     public function findByHostname(string $hostname): ?DeviceInterface;
+
+    /**
+     * Find by device by ip first.
+     * If still not found then find by device name.
+     */
+    public function findByIpOrName(string $ip, string $name): ?DeviceInterface;
 
     public function create(): DeviceInterface;
 

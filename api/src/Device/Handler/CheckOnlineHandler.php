@@ -84,17 +84,16 @@ final readonly class CheckOnlineHandler
 
     private function generateUptime(DeviceInterface $device): \DateTimeImmutable
     {
-        try{
+        try {
             foreach ($this->uptimeProcessors as $uptimeProcessor) {
                 $uptime = $uptimeProcessor->process($device);
                 if (!is_null($uptime)) {
                     return $uptime;
                 }
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
         }
-
 
         return new \DateTimeImmutable();
     }

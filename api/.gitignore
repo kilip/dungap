@@ -1,6 +1,8 @@
 ###> dungap ###
 config/ssh/*
 !config/ssh/.gitkeep
+config/dungap/*
+!config/dungap/.gitkeep
 ###< dungap ###
 
 ###> symfony/framework-bundle ###

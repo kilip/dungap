@@ -27,6 +27,7 @@ public/bundles/
 tests/
 var/
 vendor/
+config/dungap/
 .editorconfig
 .env.*.local
 .env.local

@@ -21,6 +21,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
+use Dungap\Contracts\Device\CategoryInterface;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\EnumDeviceFeature;
 use Dungap\Device\Controller\PowerOffAction;
@@ -51,23 +52,23 @@ use Symfony\Component\Uid\Uuid;
             uriTemplate: '/devices/scan',
             controller: ScanDeviceAction::class,
             description: 'Scan available devices on network',
+            security: 'is_granted("ROLE_ADMIN")',
             read: false,
-            name: 'api_device_scan',
-            security: 'is_granted("ROLE_ADMIN")'
+            name: 'api_device_scan'
         ),
         new Get(
             uriTemplate: '/devices/{id}/power-on',
             controller: PowerOnAction::class,
+            security: 'is_granted("ROLE_ADMIN")',
             write: false,
-            name: 'api_device_power_on',
-            security: 'is_granted("ROLE_ADMIN")'
+            name: 'api_device_power_on'
         ),
         new Get(
             uriTemplate: '/devices/{id}/power-off',
             controller: PowerOffAction::class,
+            security: 'is_granted("ROLE_ADMIN")',
             write: false,
-            name: 'api_device_power_off',
-            security: 'is_granted("ROLE_ADMIN")'
+            name: 'api_device_power_off'
         ),
     ],
     mercure: true
@@ -83,7 +84,10 @@ class Device implements DeviceInterface
 
     #[ApiFilter(OrderFilter::class)]
     #[ORM\Column(type: 'string', unique: true, nullable: true)]
-    private ?string $nickname = null;
+    private ?string $name = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $notes = null;
 
     #[ApiFilter(OrderFilter::class)]
     #[ORM\Column(type: 'string', nullable: true)]
@@ -94,6 +98,9 @@ class Device implements DeviceInterface
 
     #[ORM\Column(type: 'string', unique: true, nullable: true)]
     private ?string $macAddress = null;
+
+    #[ORM\ManyToOne(targetEntity: CategoryInterface::class, cascade: ['persist'])]
+    private CategoryInterface $category;
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $netVendor = null;
@@ -156,14 +163,14 @@ class Device implements DeviceInterface
         return in_array($feature->value, $this->features);
     }
 
-    public function getNickname(): ?string
+    public function getName(): ?string
     {
-        return $this->nickname;
+        return $this->name;
     }
 
-    public function setNickname(?string $nickname): Device
+    public function setName(?string $nickname): Device
     {
-        $this->nickname = $nickname;
+        $this->name = $nickname;
 
         return $this;
     }
@@ -248,6 +255,30 @@ class Device implements DeviceInterface
     public function setUptime(\DateTimeImmutable $uptime = null): Device
     {
         $this->uptime = $uptime;
+
+        return $this;
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(?string $notes): Device
+    {
+        $this->notes = $notes;
+
+        return $this;
+    }
+
+    public function getCategory(): CategoryInterface
+    {
+        return $this->category;
+    }
+
+    public function setCategory(CategoryInterface $category): Device
+    {
+        $this->category = $category;
 
         return $this;
     }
