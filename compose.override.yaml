@@ -6,8 +6,8 @@ services:
       - /srv/api/var
       - ./docker/frankenphp/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./docker/frankenphp/conf.d/app.dev.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
-      - ./docker/supervisor:/etc/supervisor.d/
       - ./pwa:/srv/pwa
+      - ./vars/log:/var/log/dungap
       # - /app/vendor
     environment:
       MERCURE_EXTRA_DIRECTIVES: demo

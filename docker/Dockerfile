@@ -73,7 +73,7 @@ WORKDIR /
 COPY --link docker/supervisor.d/caddy.dev.ini /etc/supervisor.d/
 COPY --link docker/supervisor.d/pwa.dev.ini /etc/supervisor.d/
 # dev stage end
-
+WORKDIR /
 
 FROM base AS builder
 WORKDIR /srv/pwa

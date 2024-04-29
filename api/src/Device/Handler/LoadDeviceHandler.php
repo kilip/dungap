@@ -15,6 +15,7 @@ use Dungap\Contracts\Device\CategoryInterface;
 use Dungap\Contracts\Device\CategoryRepositoryInterface;
 use Dungap\Contracts\Device\DeviceRepositoryInterface;
 use Dungap\Setting\Command\NewConfigurationCommand;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
@@ -23,6 +24,7 @@ final readonly class LoadDeviceHandler
     public function __construct(
         private DeviceRepositoryInterface $deviceRepository,
         private CategoryRepositoryInterface $categoryRepository,
+        private ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -30,8 +32,12 @@ final readonly class LoadDeviceHandler
     {
         $configs = $command->configs;
 
-        foreach ($configs['devices'] as $device) {
-            $this->loadDevice($device);
+        foreach ($configs['devices'] as $deviceConfig) {
+            try{
+                $this->loadDevice($deviceConfig);
+            }catch(\Exception $e){
+                $this->logger?->error('Failed storing device {0}, error: {1}', [$deviceConfig['name'],$e->getMessage()]);
+            }
         }
     }
 

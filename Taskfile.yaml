@@ -34,10 +34,10 @@ tasks:
     cmd: docker compose logs -f --tail 50
 
   logs:franken:
-    cmd: docker compose exec dungap tail -f /var/log/caddy.log
+    cmd: docker compose exec dungap tail -f /var/log/dungap/caddy.log
 
   logs:pwa:
-    cmd: docker compose exec dungap tail -f /var/log/pwa.log
+    cmd: docker compose exec dungap tail -f /var/log/dungap/pwa.log
 
   rm:
     cmds:

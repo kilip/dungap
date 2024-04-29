@@ -35,6 +35,7 @@ class Definition implements ConfigurationInterface
                             ->end()
                             ->scalarNode('ip')->defaultNull()->end()
                             ->scalarNode('mac')->defaultNull()->end()
+                            ->scalarNode('category')->defaultNull()->end()
                         ->end()
                     ->end()
                 ->end()

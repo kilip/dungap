@@ -11,6 +11,7 @@ services:
       TRUSTED_PROXIES: ${TRUSTED_PROXIES:-127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
       TRUSTED_HOSTS: ^${SERVER_NAME:-itstoni\.com|localhost}|api$$
       MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      DUNGAP_CONFIG_DIRS: /config,/srv/api/config/dungap
       OIDC_UPSTREAM: https://localhost/change/me
       OIDC_SERVER_URL: ${OIDC_SERVER_URL:-https://localhost/oidc/realms/demo}
     ports:
