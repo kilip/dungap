@@ -14,12 +14,20 @@ file:
     exists: true
 
 http:
-  dungap:
-    url: https://localhost/dashboard
+  pwa:
+    url: https://localhost
     status: 200
     allow-insecure: true
     timeout: 5000
     method: GET
+  api:
+    url: https://localhost/devices
+    status: 200
+    allow-insecure: true
+    timeout: 5000
+    method: GET
+    headers:
+      - "Content-Type: application/ld+json"
 
 port:
   metrics:

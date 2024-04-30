@@ -1,7 +1,20 @@
-#!/bin/bash
+#!/bin/sh
+
+set -e
 
 cd /srv/api
-source /usr/local/bin/api-entrypoint
 
-# TODO remove this line fixed in goss testing
-exec /srv/api/bin/console doctrine:schema:update --force --complete
+echo $PWD
+
+if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
+	if [ -z "$(ls -A 'vendor/' 2>/dev/null)" ]; then
+		composer install --prefer-dist --no-progress --no-interaction
+	fi
+
+	setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
+	setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
+fi
+
+php bin/console doctrine:schema:update --force --complete
+
+exec docker-php-entrypoint "$@"

@@ -1,6 +1,8 @@
 # Development environment override
 services:
   dungap:
+    build:
+      target: dev
     volumes:
       - ./api:/srv/api
       - /srv/api/var

@@ -5,16 +5,21 @@ version: "3"
 tasks:
   default: task -l
 
-  build:*:
+  #build:*:
+  #  cmds:
+  #    - docker build --target {{.target}} -f docker/Dockerfile -t dungap:{{.target}} .
+  #    - task: goss
+  #      tag: "{{.target}}"
+  #  vars:
+  #    target: "{{index .MATCH 0}}"
+
+  build:
     cmds:
-      - docker build --target {{.target}} -f docker/Dockerfile -t dungap:{{.target}} .
+      - docker compose -f compose.yaml -f compose.override.yaml build {{.CLI_ARGS}}
       - task: goss
-        tag: "{{.target}}"
-    vars:
-      target: "{{index .MATCH 0}}"
 
   up:
-    cmd: docker compose up -d
+    cmd: docker compose -f compose.yaml -f compose.override.yaml up -d
 
   up:prod:
     cmd: docker compose -f compose.yaml -f compose.prod.yaml up -d
@@ -61,11 +66,27 @@ tasks:
   .sf:
     cmd: docker compose exec dungap /srv/api/bin/console {{.CLI_ARGS}}
 
-  goss:
+  make:
+    desc: Build production image and test it with goss
     cmds:
-      - dgoss run --env-file ./.env.goss dungap:production
-    vars:
-      tag: production
+      - docker build --target production -f docker/Dockerfile -t dungap:production . {{.CLI_ARGS}}
+      - task: goss
+
+  goss:
+    desc: Verify docker container for production
+    cmds:
+      - |
+        docker run -it --rm \
+          --network host \
+          --env-file .env \
+          --entrypoint dungap-entrypoint \
+          -v ./vars/dungap:/var/log/dungap \
+          dungap:production
+      - |
+        dgoss run \
+          -v ./vars/dungap:/var/log/dungap \
+          --env-file .env \
+          dungap:production
     env:
       GOSS_FILE: ./docker/goss.yaml
       GOSS_OPTS: --retry-timeout 30s --sleep 2s --color --format documentation

@@ -40,35 +40,6 @@ jobs:
           createdb -h localhost -p 5432 -U dungap dungap
           pg_isready -d dungap -h localhost -p 5432 -U dungap
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          tools: pecl, composer
-          extensions: intl, bcmath, curl, openssl, mbstring, mongodb
-          coverage: none
-          ini-values: memory_limit=-1
-
-      - name: Get composer cache directory
-        id: composercache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composercache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - name: Update project dependencies
-        run: |
-          composer install --no-interaction --no-progress --ansi
-        working-directory: ./api
-
-      - name: Install database schema
-        run: bin/console doctrine:schema:update --force --complete
-        working-directory: ./api
-
       - name: Setup build tags
         id: vars
         run: |
@@ -128,6 +99,12 @@ jobs:
           echo "MESSENGER_TRANSPORT_DSN=${MESSENGER_TRANSPORT_DSN}" >> .env.goss
           mkdir -p vars/log
           cp .env.goss vars/log/
+          docker run \
+            --rm \
+            --network host \
+            --env-file .env.goss \
+            --entrypoint dungap-entrypoint \
+            ${{steps.vars.outputs.tag_testing}}
 
       - name: Run Goss tests
         id: dgoss
