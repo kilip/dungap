@@ -52,10 +52,7 @@ final class DeviceFactory extends ModelFactory
             'hostname' => self::faker()->unique()->domainWord(),
             'ipAddress' => self::faker()->unique()->ipv4(),
             'macAddress' => self::faker()->unique()->macAddress(),
-            'netVendor' => self::faker()->randomElement(['Routerboard', 'Inventec', 'Realtek', 'Raspberry Pi Foundation']),
             'draft' => self::faker()->randomElement([true, false]),
-            'online' => false,
-            'uptime' => null,
         ];
 
         return $data;

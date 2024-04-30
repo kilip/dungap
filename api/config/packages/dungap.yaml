@@ -13,6 +13,12 @@ doctrine:
         dir: "%kernel.project_dir%/src/User/Entity"
         prefix: 'Dungap\User\Entity'
         alias: User
+      Feature:
+        type: attribute
+        is_bundle: false
+        dir: "%kernel.project_dir%/src/Feature/Entity"
+        prefix: 'Dungap\Feature\Entity'
+        alias: Feature
       Setting:
         type: attribute
         is_bundle: false
@@ -23,3 +29,12 @@ doctrine:
       Dungap\Contracts\Device\CategoryInterface: Dungap\Device\Entity\Category
       Dungap\Contracts\Device\DeviceInterface: Dungap\Device\Entity\Device
       Dungap\Contracts\User\UserInterface: Dungap\User\Entity\User
+      Dungap\Contracts\Feature\FeatureInterface: Dungap\Feature\Entity\Feature
+
+
+api_platform:
+  resource_class_directories:
+    - '%kernel.project_dir%/src/Device/Entity'
+    - '%kernel.project_dir%/src/Feature/Entity'
+    - '%kernel.project_dir%/src/User/Entity'
+    - '%kernel.project_dir%/src/Setting/Entity'

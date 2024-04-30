@@ -41,35 +41,7 @@ interface DeviceInterface
 
     public function getMacAddress(): ?string;
 
-    public function setNetVendor(string $netVendor): self;
-
-    public function getNetVendor(): ?string;
-
     public function setDraft(true $draft): self;
 
     public function isDraft(): bool;
-
-    public function setOnline(bool $online): self;
-
-    public function isOnline(): bool;
-
-    public function setUptime(\DateTimeImmutable $uptime = null): self;
-
-    public function getUptime(): ?\DateTimeImmutable;
-
-    public function addFeature(EnumDeviceFeature $feature): self;
-
-    public function removeFeature(EnumDeviceFeature $feature): self;
-
-    public function hasFeature(EnumDeviceFeature $feature): bool;
-
-    /**
-     * @return array<int,string>
-     */
-    public function getFeatures(): array;
-
-    /**
-     * @param array<int,string> $features
-     */
-    public function setFeatures(array $features): self;
 }

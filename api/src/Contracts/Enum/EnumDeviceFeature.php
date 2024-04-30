@@ -9,12 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Device\Command;
+namespace Dungap\Contracts\Enum;
 
-class PowerOffCommand
+enum EnumDeviceFeature: string
 {
-    public function __construct(
-        public string $deviceId,
-    ) {
-    }
+    case PowerOff = 'PowerOff';
+    case PowerOn = 'PowerOn';
+    case Reboot = 'Reboot';
+    case Uptime = 'Uptime';
+    case SSH = 'SSH';
 }

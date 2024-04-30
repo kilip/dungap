@@ -13,5 +13,5 @@ namespace Dungap\Bridge\RouterOS;
 
 class Constant
 {
-    public const RouterOS = 'RouterOS';
+    public const DriverName = 'RouterOS';
 }
