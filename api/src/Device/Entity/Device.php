@@ -23,10 +23,7 @@ use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Device\CategoryInterface;
 use Dungap\Contracts\Device\DeviceInterface;
-use Dungap\Contracts\Device\EnumDeviceFeature;
-use Dungap\Device\Controller\PowerOffAction;
-use Dungap\Device\Controller\PowerOnAction;
-use Dungap\Device\Controller\ScanDeviceAction;
+use Dungap\Device\Controller\PowerOff;
 use Dungap\Device\Repository\DeviceRepository;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
@@ -48,24 +45,9 @@ use Symfony\Component\Uid\Uuid;
         new Delete(
             security: 'is_granted("ROLE_ADMIN")'
         ),
-        new Post(
-            uriTemplate: '/devices/scan',
-            controller: ScanDeviceAction::class,
-            description: 'Scan available devices on network',
-            security: 'is_granted("ROLE_ADMIN")',
-            read: false,
-            name: 'api_device_scan'
-        ),
-        new Get(
-            uriTemplate: '/devices/{id}/power-on',
-            controller: PowerOnAction::class,
-            security: 'is_granted("ROLE_ADMIN")',
-            write: false,
-            name: 'api_device_power_on'
-        ),
         new Get(
             uriTemplate: '/devices/{id}/power-off',
-            controller: PowerOffAction::class,
+            controller: PowerOff::class,
             security: 'is_granted("ROLE_ADMIN")',
             write: false,
             name: 'api_device_power_off'
@@ -102,65 +84,12 @@ class Device implements DeviceInterface
     #[ORM\ManyToOne(targetEntity: CategoryInterface::class, cascade: ['persist'])]
     private CategoryInterface $category;
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $netVendor = null;
-
     #[ORM\Column(type: 'boolean')]
     private bool $draft = false;
-
-    #[ORM\Column(type: 'boolean')]
-    private bool $online = false;
-
-    #[ORM\Column(type: 'datetimetz_immutable', nullable: true)]
-    private ?\DateTimeImmutable $uptime = null;
-
-    /**
-     * @var array<int,string>
-     */
-    #[ORM\Column(type: 'json')]
-    private array $features = [];
 
     public function getId(): ?Uuid
     {
         return $this->id;
-    }
-
-    public function addFeature(EnumDeviceFeature $feature): DeviceInterface
-    {
-        if (!$this->hasFeature($feature)) {
-            $this->features[] = $feature->value;
-        }
-
-        return $this;
-    }
-
-    public function getFeatures(): array
-    {
-        return $this->features;
-    }
-
-    public function setFeatures(array $features): DeviceInterface
-    {
-        $this->features = $features;
-
-        return $this;
-    }
-
-    public function removeFeature(EnumDeviceFeature $feature): DeviceInterface
-    {
-        if ($this->hasFeature($feature)) {
-            $key = array_search($feature->value, $this->features);
-            if ($key) {
-                unset($this->features[$key]);
-            }
-        }
-
-        return $this;
-    }
-
-    public function hasFeature(EnumDeviceFeature $feature): bool
-    {
-        return in_array($feature->value, $this->features);
     }
 
     public function getName(): ?string
@@ -211,18 +140,6 @@ class Device implements DeviceInterface
         return $this;
     }
 
-    public function getNetVendor(): ?string
-    {
-        return $this->netVendor;
-    }
-
-    public function setNetVendor(?string $netVendor): Device
-    {
-        $this->netVendor = $netVendor;
-
-        return $this;
-    }
-
     public function isDraft(): bool
     {
         return $this->draft;
@@ -231,30 +148,6 @@ class Device implements DeviceInterface
     public function setDraft(bool $draft): Device
     {
         $this->draft = $draft;
-
-        return $this;
-    }
-
-    public function isOnline(): bool
-    {
-        return $this->online;
-    }
-
-    public function setOnline(bool $online): Device
-    {
-        $this->online = $online;
-
-        return $this;
-    }
-
-    public function getUptime(): ?\DateTimeImmutable
-    {
-        return $this->uptime;
-    }
-
-    public function setUptime(\DateTimeImmutable $uptime = null): Device
-    {
-        $this->uptime = $uptime;
 
         return $this;
     }

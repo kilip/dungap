@@ -9,12 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Device\Command;
+namespace Dungap\Contracts\Feature;
 
-class PowerOffCommand
+interface FeatureRepositoryInterface
 {
-    public function __construct(
-        public string $deviceId,
-    ) {
-    }
+    public function findByDevice(string $deviceId, string $feature): ?FeatureInterface;
 }

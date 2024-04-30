@@ -49,7 +49,7 @@ class Config
 
     public function checkConfiguration(): void
     {
-        $dirs = explode(',', $this->configDirs);
+        $dirs = $this->generateDirs();
         $cache = $this->cache;
         $fresh = $cache->isFresh();
 
@@ -101,5 +101,21 @@ class Config
     public function getDevices(): array
     {
         return $this->configs['devices'];
+    }
+
+    /**
+     * @return array<int,string>
+     */
+    private function generateDirs(): array
+    {
+        $dirs = [];
+        $exp = explode(',', $this->configDirs);
+        foreach ($exp as $dir) {
+            if (is_dir($dir)) {
+                $dirs[] = realpath($dir);
+            }
+        }
+
+        return $dirs;
     }
 }

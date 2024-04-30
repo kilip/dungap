@@ -9,12 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Device\Command;
+namespace Dungap\Contracts\Enum;
 
-class PowerOffCommand
+enum EnumDeviceEvent: string
 {
-    public function __construct(
-        public string $deviceId,
-    ) {
-    }
+    case EventConfigureDevice = 'EventConfigureDevice';
 }
