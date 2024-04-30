@@ -1,0 +1,36 @@
+name: Build Tags
+description: Generates build tags from current commit
+
+outputs:
+  rolling:
+    description: rolling tag value
+    value: ${{ steps.vars.outputs.rolling }}
+  version:
+    description: rolling tag value
+    value: ${{ steps.vars.outputs.version }}
+  testing:
+    description: testing tag value
+    value: ${{ steps.vars.outputs.testing }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: generate build tags
+      shell: bash
+      id: vars
+      run: |
+        prefix="ghcr.io/kilip/dungap"
+        date_tag=$(date +'%Y%m%d%H%M%S')
+        ref_name="${{github.ref_name}}"
+
+        echo "docker_file=./docker/Dockerfile" >> $GITHUB_OUTPUT
+
+        echo "testing=${prefix}:testingz" >> "$GITHUB_OUTPUT"
+
+        if [[ 'main' == ${ref_name} ]]; then
+          echo "rolling=${prefix}:nightly" >> "$GITHUB_OUTPUT"
+          echo "version=${prefix}:nightly-${date_tag}" >> "$GITHUB_OUTPUT"
+        else
+          echo "rolling=${prefix}:latest" >> "$GITHUB_OUTPUT"
+          echo "version=${prefix}:${ref_name}" >> "$GITHUB_OUTPUT"
+        fi

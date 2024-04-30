@@ -8,18 +8,36 @@ file:
     exists: true
   /srv/pwa:
     exists: true
+  /srv/pwa/build:
+    exists: true
+  /srv/pwa/public:
+    exists: true
+  /srv/pwa/node_modules:
+    exists: true
   /usr/local/bin/api-entrypoint:
     exists: true
   /usr/local/bin/dungap-entrypoint:
     exists: true
 
 http:
-  dungap:
+  pwa:
     url: https://localhost/dashboard
     status: 200
     allow-insecure: true
     timeout: 5000
     method: GET
+    request-headers:
+      - "Accept: text/html"
+    headers:
+      - "Content-Type: text/html"
+  api:
+    url: https://localhost/devices
+    status: 200
+    allow-insecure: true
+    timeout: 5000
+    method: GET
+    headers:
+      - "Content-Type: application/ld+json"
 
 port:
   metrics:

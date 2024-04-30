@@ -1,0 +1,29 @@
+name: Build Testing Container
+description: Generates build tags from current commit
+
+inputs:
+  testingTag:
+    description: Testing tag value
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Setup Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build container image for testing
+      uses: docker/build-push-action@v5
+      with:
+        target: production
+        context: .
+        platforms: linux/amd64 # load does not support muti-arch https://github.com/docker/buildx/issues/290
+        load: true
+        tags: ${{ inputs.testingTag }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        file: ./docker/Dockerfile

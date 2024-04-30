@@ -1,0 +1,43 @@
+name: Build And Push Image
+description: Generates build tags from current commit
+
+inputs:
+  rolling:
+    description: rolling version value
+  version:
+    description: version value
+  platforms:
+    description: platform value
+    default: "linux/amd64"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Setup Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: GHCR login
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build all platforms
+      id: release
+      uses: docker/build-push-action@v5
+      if: ${{ inputs.pushImages == 'true'}}
+      with:
+        context: .
+        platforms: ${{ inputs.platform }}
+        file: ./docker/Dockerfile
+        push: true
+        tags: |-
+          ${{ inputs.rolling }}
+          ${{ inputs.version }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max

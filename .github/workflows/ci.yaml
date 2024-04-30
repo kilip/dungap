@@ -20,23 +20,32 @@ jobs:
     uses: kilip/dungap/.github/workflows/pwa.yaml@main
     secrets: inherit
 
-  build:
-    name: Build Images
-    uses: kilip/dungap/.github/workflows/build-images.yaml@main
+  e2e:
+    name: E2E Testing
+    uses: kilip/dungap/.github/workflows/e2e.yaml@main
     needs: [api, pwa]
     secrets: inherit
     if: >
       needs.api.result != 'failure'
       && needs.pwa.result != 'failure'
+
+  deploy:
+    name: Deploy
+    uses: kilip/dungap/.github/workflows/deploy.yaml@main
+    needs: [e2e]
+    secrets: inherit
+    if: >
+      needs.e2e.result != 'failure'
+      && github.event_name != 'pull_request'
     with:
-      pushImages: "${{ github.event_name == 'pull_request' && 'false' || 'true'}}"
+      pushImages: "true"
 
   release:
     name: Create Release
     uses: kilip/dungap/.github/workflows/release.yaml@main
-    needs: [build]
+    needs: [e2e]
     secrets: inherit
     if: >
-      needs.build.result != 'failure'
+      needs.e2e.result != 'failure'
       && github.event_name != 'pull_request'
       && github.ref_name != 'main'
