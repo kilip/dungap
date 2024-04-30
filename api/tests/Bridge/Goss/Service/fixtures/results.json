@@ -1,0 +1,37 @@
+{
+  "results": [
+    {
+      "duration": 377626,
+      "end-time": "2024-05-01T09:31:18.30408449+08:00",
+      "err": null,
+      "matcher-result": {
+        "actual": true,
+        "expected": true,
+        "extra-elements": null,
+        "found-elements": null,
+        "message": "matches expectation",
+        "missing-elements": null,
+        "transform-chain": null,
+        "untransformed-value": null
+      },
+      "meta": null,
+      "property": "reachable",
+      "resource-id": "some-id: tcp://192.168.1.1:22",
+      "resource-type": "Addr",
+      "result": 0,
+      "skipped": false,
+      "start-time": "2024-05-01T09:31:18.303706843+08:00",
+      "successful": true,
+      "summary-line": "Addr: some-id: tcp://192.168.1.1:22: reachable: matches expectation: true",
+      "summary-line-compact": "Addr: some-id: tcp://192.168.1.1:22: reachable: matches expectation: true",
+      "title": ""
+    }
+  ],
+  "summary": {
+    "failed-count": 0,
+    "skipped-count": 0,
+    "summary-line": "Count: 1, Failed: 0, Skipped: 0, Duration: 0.000s",
+    "test-count": 1,
+    "total-duration": 377626
+  }
+}
