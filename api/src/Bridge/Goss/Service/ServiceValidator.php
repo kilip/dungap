@@ -16,6 +16,7 @@ use Dungap\Bridge\Goss\Contracts\GossReportFactoryInterface;
 use Dungap\Bridge\Goss\Contracts\GossReportInterface;
 use Dungap\Bridge\Goss\Contracts\GossServiceValidatorInterface;
 use Dungap\Bridge\Goss\GossException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -25,12 +26,12 @@ final class ServiceValidator implements GossServiceValidatorInterface
     public function __construct(
         private readonly GossReportFactoryInterface $reportFactory,
         #[Autowire('%env(DUNGAP_GOSS_EXECUTABLE)%')]
-        private readonly string $executableFile,
+        private readonly string                     $executableFile, private readonly LoggerInterface $logger,
         #[Autowire('%env(DUNGAP_GOSS_SLEEP)%')]
-        private readonly string $sleep = '2s',
+        private readonly string                     $sleep = '2s',
         #[Autowire('%env(DUNGAP_GOSS_RETRY_TIMEOUT)%')]
-        private string $retryTimeout = '10s',
-        private ?Process $process = null,
+        private string                              $retryTimeout = '10s',
+        private ?Process                            $process = null,
     ) {
     }
 
@@ -64,6 +65,7 @@ final class ServiceValidator implements GossServiceValidatorInterface
             'GOSS_FILE' => $configFile->getFileName(),
             'GOSS_RETRY_TIMEOUT' => $this->retryTimeout,
             'GOSS_SLEEP' => $this->sleep,
+            'GOSS_MAX_CONCURRENT' => 1,
         ];
 
         if (PHP_OS_FAMILY == 'Windows') {
@@ -79,16 +81,21 @@ final class ServiceValidator implements GossServiceValidatorInterface
         };
         // @codeCoverageIgnoreEnd
 
-        $exitCode = $process->run($callback);
+        $process->run($callback);
 
-        if ($exitCode <= 1) {
-            try {
-                return $this->reportFactory->create($output);
-            } catch (\Exception $e) {
-                throw GossException::createOutputFailed($output, $e->getMessage());
+
+        $this->logger->info("Goss Output\n{0}", [$output]);
+
+        try {
+            if(
+                preg_match_all('/{"results.*}$/im', $output, $matches)
+            ){
+                $num = count($matches[0]);
+                $json = $matches[0][$num-1];
+                return $this->reportFactory->create($json);
             }
+        } catch (\Exception $e) {
+            throw GossException::createOutputFailed($output, $e->getMessage());
         }
-
-        throw GossException::validationError($exitCode, $configFile->getFileName(), $output);
     }
 }

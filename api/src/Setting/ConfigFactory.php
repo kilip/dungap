@@ -16,6 +16,7 @@ use Dungap\Contracts\Setting\ConfigInterface;
 use Dungap\Setting\Command\NewConfigurationCommand;
 use Dungap\Setting\Config\Config;
 use Dungap\Setting\Config\Definition;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\Resource\FileResource;
@@ -45,12 +46,12 @@ class ConfigFactory implements ConfigFactoryInterface
      */
     public function __construct(
         #[Autowire('%kernel.cache_dir%/dungap')]
-        string $cachePath,
+        string                               $cachePath,
         #[Autowire('%env(DUNGAP_CONFIG_DIRS)%')]
-        private readonly string $configDirs,
-        private MessageBusInterface $messageBus,
+        private readonly string              $configDirs,
+        private readonly MessageBusInterface $messageBus, private readonly LoggerInterface $logger,
         #[Autowire('%kernel.debug%')]
-        bool $debug = false,
+        bool                                 $debug = false,
     ) {
         $cachePath = "{$cachePath}/config";
         $this->cache = new ConfigCache($cachePath, $debug);
@@ -65,7 +66,6 @@ class ConfigFactory implements ConfigFactoryInterface
 
         if (empty($dirs)) {
             $this->config = new Config();
-
             return;
         }
 
@@ -91,6 +91,7 @@ class ConfigFactory implements ConfigFactoryInterface
         $this->config = $unserialized[0];
 
         if (!$fresh) {
+            $this->logger->notice('Reloading Configuration');
             $this->messageBus->dispatch(new NewConfigurationCommand($this->config));
         }
     }

@@ -43,7 +43,7 @@ class GossConfigRepository extends ServiceEntityRepository implements GossConfig
     public function register(GossConfigInterface $config): void
     {
         $existing = $this->findOneBy([
-            'service' => $config->getService(),
+            'service' => $config->getService()->getId(),
         ]);
         if (is_null($existing)) {
             $this->store($config);

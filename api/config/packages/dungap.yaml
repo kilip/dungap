@@ -47,6 +47,9 @@ doctrine:
 
 
 api_platform:
+  eager_loading:
+    max_joins: 100
+    force_eager: false
   resource_class_directories:
     - '%kernel.project_dir%/src/Device/Entity'
     - '%kernel.project_dir%/src/Feature/Entity'

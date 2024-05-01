@@ -44,7 +44,7 @@ class ServiceRepository extends ServiceEntityRepository implements ServiceReposi
     public function register(ServiceInterface $service): void
     {
         $existing = $this->findOneBy([
-            'device' => $service->getDevice(),
+            'device' => $service->getDevice()->getId(),
             'port' => $service->getPort(),
         ]);
 

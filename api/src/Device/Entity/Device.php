@@ -13,6 +13,7 @@ namespace Dungap\Device\Entity;
 
 use ApiPlatform\Doctrine\Odm\Filter\OrderFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -21,8 +22,10 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToMany;
 use Dungap\Contracts\Device\CategoryInterface;
 use Dungap\Contracts\Device\DeviceInterface;
+use Dungap\Contracts\Service\ServiceInterface;
 use Dungap\Device\Controller\PowerOff;
 use Dungap\Device\Repository\DeviceRepository;
 use Symfony\Bridge\Doctrine\Types\UuidType;
@@ -86,6 +89,10 @@ class Device implements DeviceInterface
 
     #[ORM\Column(type: 'boolean')]
     private bool $draft = false;
+
+    #[OneToMany(targetEntity: ServiceInterface::class, mappedBy: 'device', fetch: 'EAGER')]
+    #[ApiProperty(fetchEager: true)]
+    private iterable $services;
 
     public function getId(): ?Uuid
     {
@@ -174,5 +181,15 @@ class Device implements DeviceInterface
         $this->category = $category;
 
         return $this;
+    }
+
+    public function getServices(): iterable
+    {
+        return $this->services;
+    }
+
+    public function setServices(iterable $services): void
+    {
+        $this->services = $services;
     }
 }
