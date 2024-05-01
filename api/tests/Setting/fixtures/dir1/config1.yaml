@@ -1,4 +1,4 @@
-scanner:
+scanners:
   - port: 80
   - port: 1080
 devices:

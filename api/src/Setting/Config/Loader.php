@@ -16,12 +16,12 @@ use Symfony\Component\Yaml\Yaml;
 
 class Loader extends FileLoader
 {
-    public function load(mixed $resource, ?string $type = null): mixed
+    public function load(mixed $resource, string $type = null): mixed
     {
         return Yaml::parse(file_get_contents($resource));
     }
 
-    public function supports(mixed $resource, ?string $type = null): bool
+    public function supports(mixed $resource, string $type = null): bool
     {
         return is_string($resource);
     }

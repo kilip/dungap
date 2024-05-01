@@ -20,12 +20,12 @@ class SecurityInstallTask implements InstallInterface
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
-        #[Autowire('%env(SECURITY_DEFAULT_ADMIN_USERNAME)%')]
+        #[Autowire('%env(DUNGAP_DEFAULT_ADMIN_USERNAME)%')]
         private string $defaultAdminUsername,
-        #[Autowire('%env(SECURITY_DEFAULT_ADMIN_EMAIL)%')]
+        #[Autowire('%env(DUNGAP_DEFAULT_ADMIN_EMAIL)%')]
         private string $defaultAdminEmail,
 
-        #[Autowire('%env(SECURITY_DEFAULT_ADMIN_PASSWORD)%')]
+        #[Autowire('%env(DUNGAP_DEFAULT_ADMIN_PASSWORD)%')]
         private string $defaultAdminPassword,
     ) {
     }

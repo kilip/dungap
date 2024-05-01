@@ -14,7 +14,7 @@ namespace Dungap\Bridge\Goss\Contracts;
 interface GossConfigFactoryInterface
 {
     /**
-     * @param array<int, GossConfigInterface> $services
+     * @param array<int, GossConfigInterface> $configs
      */
-    public function create(array $services): GossConfigFileInterface;
+    public function create(array $configs): GossConfigFileInterface;
 }

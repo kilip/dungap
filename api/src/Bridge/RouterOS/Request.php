@@ -18,11 +18,11 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 final readonly class Request implements RequestInterface
 {
     public function __construct(
-        #[Autowire('%env(ROUTEROS_BASE_URL)%')]
+        #[Autowire('%env(DUNGAP_ROUTEROS_BASE_URL)%')]
         private string $baseUrl,
-        #[Autowire('%env(ROUTEROS_USERNAME)%')]
+        #[Autowire('%env(DUNGAP_ROUTEROS_USERNAME)%')]
         private string $username,
-        #[Autowire('%env(ROUTEROS_PASSWORD)%')]
+        #[Autowire('%env(DUNGAP_ROUTEROS_PASSWORD)%')]
         private string $password,
 
         private HttpClientInterface $httpClient

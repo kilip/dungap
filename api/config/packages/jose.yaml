@@ -24,13 +24,13 @@ services:
         alias: 'alg'
   Jose\Component\Checker\AudienceChecker:
     arguments:
-      $audience: '%env(OIDC_AUD)%'
+      $audience: '%env(DUNGAP_OIDC_AUD)%'
     tags:
       - name: 'jose.checker.header'
         alias: 'aud'
   Jose\Component\Checker\IssuerChecker:
     arguments:
-      $issuers: ['%env(OIDC_ISSUER)%']
+      $issuers: ['%env(DUNGAP_OIDC_ISSUER)%']
     tags:
       - name: 'jose.checker.header'
         alias: 'iss'

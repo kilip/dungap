@@ -11,6 +11,13 @@
 
 namespace Dungap\Feature\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Dungap\Contracts\Device\DeviceInterface;
@@ -18,6 +25,17 @@ use Dungap\Contracts\Feature\FeatureInterface;
 use Dungap\Feature\Repository\FeatureRepository;
 use Faker\Core\Uuid;
 
+#[ApiResource(
+    operations: [
+        new Post(security: 'is_granted("ROLE_ADMIN")'),
+        new GetCollection(),
+        new Get(),
+        new Put(security: 'is_granted("ROLE_ADMIN")'),
+        new Patch(security: 'is_granted("ROLE_ADMIN")'),
+        new Delete(security: 'is_granted("ROLE_ADMIN")'),
+    ],
+    mercure: true
+)]
 #[ORM\Entity(repositoryClass: FeatureRepository::class)]
 class Feature implements FeatureInterface
 {

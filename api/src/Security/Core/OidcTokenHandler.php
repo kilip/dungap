@@ -39,7 +39,7 @@ final class OidcTokenHandler implements AccessTokenHandlerInterface
         private CacheInterface $cache,
         #[Autowire('@jose.jws_loader.oidc')]
         private JWSLoader $jwsLoader,
-        #[Autowire('%env(resolve:OIDC_ISSUER)%')]
+        #[Autowire('%env(resolve:DUNGAP_OIDC_ISSUER)%')]
         private string $oidcIssuer,
         private readonly HttpClientInterface $securityAuthorizationClient,
         private string $claim = 'email',

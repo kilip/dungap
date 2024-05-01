@@ -16,6 +16,9 @@ use Dungap\Tests\Factory\DeviceFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
+/**
+ * @covers \Dungap\Device\Entity\Device
+ */
 class DeviceTest extends ApiTestCase
 {
     // use ResetDatabase, Factories;
@@ -33,7 +36,7 @@ class DeviceTest extends ApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
 
         $this->assertJsonContains([
-            '@context' => '/contexts/device',
+            '@context' => '/contexts/Device',
             '@id' => '/devices',
             '@type' => 'hydra:Collection',
             'hydra:totalItems' => 100,

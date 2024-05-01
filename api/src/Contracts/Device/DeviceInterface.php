@@ -19,25 +19,25 @@ interface DeviceInterface
 
     public function setName(string $nickname): self;
 
-    public function getName(): ?string;
+    public function getName(): string;
 
-    public function setNotes(string $notes): self;
+    public function setNotes(string $notes = null): self;
 
     public function getNotes(): ?string;
 
-    public function setCategory(CategoryInterface $category): self;
+    public function setCategory(CategoryInterface $category = null): self;
 
     public function getCategory(): ?CategoryInterface;
 
-    public function setHostname(string $hostname): self;
+    public function setHostname(string $hostname = null): self;
 
     public function getHostname(): ?string;
 
-    public function setIpAddress(string $ipAddress): self;
+    public function setIpAddress(string $ipAddress = null): self;
 
     public function getIpAddress(): ?string;
 
-    public function setMacAddress(string $macAddress): self;
+    public function setMacAddress(string $macAddress = null): self;
 
     public function getMacAddress(): ?string;
 

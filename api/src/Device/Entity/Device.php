@@ -29,7 +29,7 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ApiResource(
-    shortName: 'device',
+    shortName: 'Device',
     operations: [
         new GetCollection(),
         new Post(
@@ -65,8 +65,8 @@ class Device implements DeviceInterface
     private ?Uuid $id = null;
 
     #[ApiFilter(OrderFilter::class)]
-    #[ORM\Column(type: 'string', unique: true, nullable: true)]
-    private ?string $name = null;
+    #[ORM\Column(type: 'string', unique: true)]
+    private string $name;
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $notes = null;
@@ -92,12 +92,12 @@ class Device implements DeviceInterface
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(?string $nickname): Device
+    public function setName(string $nickname = null): Device
     {
         $this->name = $nickname;
 
@@ -109,7 +109,7 @@ class Device implements DeviceInterface
         return $this->hostname;
     }
 
-    public function setHostname(?string $hostname): Device
+    public function setHostname(string $hostname = null): Device
     {
         $this->hostname = $hostname;
 
@@ -121,7 +121,7 @@ class Device implements DeviceInterface
         return $this->ipAddress;
     }
 
-    public function setIpAddress(?string $ipAddress): Device
+    public function setIpAddress(string $ipAddress = null): Device
     {
         $this->ipAddress = $ipAddress;
 
@@ -133,7 +133,7 @@ class Device implements DeviceInterface
         return $this->macAddress;
     }
 
-    public function setMacAddress(?string $macAddress): Device
+    public function setMacAddress(string $macAddress = null): Device
     {
         $this->macAddress = $macAddress;
 
@@ -157,7 +157,7 @@ class Device implements DeviceInterface
         return $this->notes;
     }
 
-    public function setNotes(?string $notes): Device
+    public function setNotes(string $notes = null): Device
     {
         $this->notes = $notes;
 
@@ -169,7 +169,7 @@ class Device implements DeviceInterface
         return $this->category;
     }
 
-    public function setCategory(CategoryInterface $category): Device
+    public function setCategory(CategoryInterface $category = null): Device
     {
         $this->category = $category;
 

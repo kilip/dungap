@@ -23,10 +23,12 @@ class Definition implements ConfigurationInterface
 
         $root
             ->children()
-                ->arrayNode('scanner')
+                ->arrayNode('scanners')
                     ->arrayPrototype()
                         ->children()
-                            ->integerNode('port')->end()
+                            ->integerNode('port')
+                                ->isRequired()
+                            ->end()
                             ->integerNode('timeout')->defaultValue(1000)->end()
                         ->end()
                     ->end()

@@ -23,9 +23,9 @@ readonly class SecureFactory implements SecureFactoryInterface
 {
     public function __construct(
         private SettingFactoryInterface $settingFactory,
-        #[Autowire('%env(SSH_USERNAME)%')]
+        #[Autowire('%env(DUNGAP_SSH_USERNAME)%')]
         private string $username,
-        #[Autowire('%env(resolve:SSH_PRIVATE_KEY)%')]
+        #[Autowire('%env(resolve:DUNGAP_SSH_PRIVATE_KEY)%')]
         private string $privateKey,
         private ?LoggerInterface $logger = null,
     ) {

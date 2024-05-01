@@ -11,7 +11,7 @@
 
 namespace Dungap\Tests\Setting\Task;
 
-use Dungap\Setting\Config;
+use Dungap\Setting\ConfigFactory;
 use Dungap\Setting\Task\ConfigurationReloaderTask;
 use PHPUnit\Framework\TestCase;
 
@@ -19,7 +19,7 @@ class ConfigurationReloaderTaskTest extends TestCase
 {
     public function testRun(): void
     {
-        $config = $this->createMock(Config::class);
+        $config = $this->createMock(ConfigFactory::class);
         $task = new ConfigurationReloaderTask($config);
 
         $config->expects($this->once())

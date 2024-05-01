@@ -25,11 +25,25 @@ doctrine:
         dir: "%kernel.project_dir%/src/Setting/Entity"
         prefix: 'Dungap\Setting\Entity'
         alias: Setting
+      Service:
+        type: attribute
+        is_bundle: false
+        dir: "%kernel.project_dir%/src/Service/Entity"
+        prefix: 'Dungap\Service\Entity'
+        alias: Service
+      Goss:
+        type: attribute
+        is_bundle: false
+        dir: "%kernel.project_dir%/src/Bridge/Goss/Entity"
+        prefix: 'Dungap\Bridge\Goss\Entity'
+        alias: Goss
     resolve_target_entities:
       Dungap\Contracts\Device\CategoryInterface: Dungap\Device\Entity\Category
       Dungap\Contracts\Device\DeviceInterface: Dungap\Device\Entity\Device
       Dungap\Contracts\User\UserInterface: Dungap\User\Entity\User
       Dungap\Contracts\Feature\FeatureInterface: Dungap\Feature\Entity\Feature
+      Dungap\Contracts\Service\ServiceInterface: Dungap\Service\Entity\Service
+      Dungap\Bridge\Goss\Contracts\GossConfigInterface: Dungap\Bridge\Goss\Entity\GossConfig
 
 
 api_platform:
@@ -38,3 +52,5 @@ api_platform:
     - '%kernel.project_dir%/src/Feature/Entity'
     - '%kernel.project_dir%/src/User/Entity'
     - '%kernel.project_dir%/src/Setting/Entity'
+    - '%kernel.project_dir%/src/Service/Entity'
+    - '%kernel.project_dir%/src/Bridge/Goss/Entity'

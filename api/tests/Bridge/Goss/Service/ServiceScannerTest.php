@@ -16,62 +16,76 @@ use Dungap\Bridge\Goss\Contracts\GossConfigFactoryInterface;
 use Dungap\Bridge\Goss\Contracts\GossConfigFileInterface;
 use Dungap\Bridge\Goss\Contracts\GossConfigInterface;
 use Dungap\Bridge\Goss\Contracts\GossConfigRepositoryInterface;
-use Dungap\Bridge\Goss\Contracts\GossInterface;
+use Dungap\Bridge\Goss\Contracts\GossReportInterface;
+use Dungap\Bridge\Goss\Contracts\GossServiceValidatorInterface;
 use Dungap\Bridge\Goss\Service\ServiceScanner;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Service\ServiceInterface;
 use Dungap\Contracts\Service\ServiceRepositoryInterface;
-use Dungap\Contracts\Setting\ConfigInterface\ConfigInterface;
+use Dungap\Contracts\Setting\ConfigFactoryInterface;
+use Dungap\Contracts\Setting\ConfigInterface;
+use Dungap\Setting\Config\Scanner;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Uid\Uuid;
 
 class ServiceScannerTest extends TestCase
 {
     private MockObject|ServiceRepositoryInterface $serviceRepository;
     private MockObject|DeviceInterface $device;
     private MockObject|ConfigInterface $config;
-    private MockObject|GossConfigFactoryInterface $configFactory;
+    private MockObject|GossConfigFactoryInterface $gossConfigFactory;
     private MockObject|GossConfigFileInterface $configFile;
 
     private MockObject|ServiceInterface $service;
     private MockObject|GossConfigInterface $gossConfig;
     private MockObject|GossConfigRepositoryInterface $gossRepository;
+    private MockObject|LoggerInterface $logger;
+    private MockObject|GossReportInterface $report;
     private ServiceScanner $serviceScanner;
 
-    private MockObject|GossInterface $goss;
+    private MockObject|GossServiceValidatorInterface $goss;
 
     protected function setUp(): void
     {
         $this->serviceRepository = $this->createMock(ServiceRepositoryInterface::class);
         $this->device = $this->createMock(DeviceInterface::class);
-        $this->config = $this->createMock(ConfigInterface::class);
+        $configFactory = $this->createMock(ConfigFactoryInterface::class);
         $this->gossConfig = $this->createMock(GossConfigInterface::class);
         $this->service = $this->createMock(ServiceInterface::class);
-        $this->configFactory = $this->createMock(GossConfigFactoryInterface::class);
+        $this->gossConfigFactory = $this->createMock(GossConfigFactoryInterface::class);
         $this->configFile = $this->createMock(GossConfigFileInterface::class);
         $this->gossRepository = $this->createMock(GossConfigRepositoryInterface::class);
-        $this->goss = $this->createMock(GossInterface::class);
+        $this->report = $this->createMock(GossReportInterface::class);
+        $this->goss = $this->createMock(GossServiceValidatorInterface::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
+        $this->config = $this->createMock(ConfigInterface::class);
+
+        $this->device->method('getId')
+            ->willReturn(Uuid::v4());
 
         $this->serviceScanner = new ServiceScanner(
-            $this->config,
+            $configFactory,
             $this->serviceRepository,
-            $this->configFactory,
+            $this->gossConfigFactory,
             $this->gossRepository,
-            $this->goss
+            $this->goss,
+            $this->logger
         );
+
+        $configFactory->method('create')
+            ->willReturn($this->config);
     }
 
     public function testRun(): void
     {
         $this->config->expects($this->once())
-            ->method('getScanner')
+            ->method('getScanners')
             ->willReturn([
-                ['port' => 22, 'timeout' => 500],
-                ['port' => 80, 'timeout' => 500],
+                new Scanner(22),
+                new Scanner(80),
             ]);
-        $this->serviceRepository->expects($this->exactly(2))
-            ->method('create')
-            ->willReturn($this->service);
 
         $this->service->expects($this->exactly(2))
             ->method('setPort');
@@ -83,6 +97,7 @@ class ServiceScannerTest extends TestCase
         $this->gossRepository->expects($this->exactly(2))
             ->method('create')
             ->willReturn($this->gossConfig);
+
         $this->gossConfig->expects($this->exactly(2))
             ->method('setType')
             ->with(Constant::ValidatorTypeAddress);
@@ -90,16 +105,56 @@ class ServiceScannerTest extends TestCase
             ->method('setTimeout')
             ->with(500)
         ;
+        $this->serviceRepository->expects($this->exactly(2))
+            ->method('create')
+            ->willReturn($this->service);
 
-        $this->configFactory->expects($this->once())
+        $this->gossConfigFactory->expects($this->once())
             ->method('create')
             ->with([$this->gossConfig, $this->gossConfig])
             ->willReturn($this->configFile);
 
         $this->goss->expects($this->once())
-            ->method('run')
-            ->with($this->configFile);
+            ->method('validate')
+            ->with($this->configFile)
+            ->willReturn($this->report)
+        ;
 
-        $this->serviceScanner->scan($this->device);
+        $this->report->expects($this->exactly(2))
+            ->method('hasResult')
+            ->with($this->gossConfig)
+            ->willReturn(true, true);
+
+        // also test when $serviceRepository throws exception
+        $this->serviceRepository->expects($this->exactly(2))
+            ->method('register')
+            ->with($this->isInstanceOf(ServiceInterface::class))
+            ->will($this->returnCallback(function () {
+                static $counter = 1;
+                if ($counter > 1) {
+                    throw new \Exception('test exception');
+                }
+                ++$counter;
+            }));
+
+        $this->gossRepository->expects($this->once())
+            ->method('register')
+            ->with($this->gossConfig);
+
+        $this->logger->expects($this->once())
+            ->method('error');
+        $this->serviceScanner->scan([$this->device]);
+    }
+
+    public function testRunWithError(): void
+    {
+        $this->config->expects($this->once())
+            ->method('getScanners')
+            ->willThrowException(new \Exception('test exception'));
+
+        $this->logger->expects($this->once())
+            ->method('error');
+
+        $this->serviceScanner->scan([$this->device]);
     }
 }

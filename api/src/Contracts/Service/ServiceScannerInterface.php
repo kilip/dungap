@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Bridge\Goss\Contracts;
+namespace Dungap\Contracts\Service;
 
-use Dungap\Bridge\Goss\Result\Result;
+use Dungap\Contracts\Device\DeviceInterface;
 
-interface GossInterface
+interface ServiceScannerInterface
 {
     /**
-     * @return array<int,Result>
+     * @param iterable<DeviceInterface> $devices
      */
-    public function run(GossConfigFileInterface $configFile): array;
+    public function scan(iterable $devices): void;
 }

@@ -9,8 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Bridge\Goss\Result;
+namespace Dungap\Bridge\Goss\Config;
 
-class Result
+class Addr
 {
+    public function __construct(
+        public string $address,
+        public int $timeout = 500,
+        public bool $reachable = true,
+    ) {
+    }
 }

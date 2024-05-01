@@ -12,7 +12,7 @@
 namespace Dungap\Setting\Task;
 
 use Dungap\Contracts\Task\TaskInterface;
-use Dungap\Setting\Config;
+use Dungap\Setting\ConfigFactory;
 use Dungap\Task\TaskTrait;
 
 class ConfigurationReloaderTask implements TaskInterface
@@ -20,7 +20,7 @@ class ConfigurationReloaderTask implements TaskInterface
     use TaskTrait;
 
     public function __construct(
-        private Config $config
+        private ConfigFactory $config
     ) {
     }
 

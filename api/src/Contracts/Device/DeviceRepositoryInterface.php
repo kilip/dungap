@@ -27,7 +27,7 @@ interface DeviceRepositoryInterface
      * Find by device by ip first.
      * If still not found then find by device name.
      */
-    public function findByIpOrName(string $ip, string $name): ?DeviceInterface;
+    public function findByIpOrName(string $name, string $ip = null): ?DeviceInterface;
 
     public function create(): DeviceInterface;
 

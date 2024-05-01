@@ -11,7 +11,13 @@
 
 namespace Dungap\Bridge\Goss\Contracts;
 
+use Dungap\Contracts\Service\ServiceInterface;
+
 interface GossConfigRepositoryInterface
 {
+    public function findByService(ServiceInterface $service): ?GossConfigInterface;
+
     public function create(): GossConfigInterface;
+
+    public function register(GossConfigInterface $config): void;
 }

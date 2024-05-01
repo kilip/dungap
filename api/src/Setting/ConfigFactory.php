@@ -11,7 +11,10 @@
 
 namespace Dungap\Setting;
 
+use Dungap\Contracts\Setting\ConfigFactoryInterface;
+use Dungap\Contracts\Setting\ConfigInterface;
 use Dungap\Setting\Command\NewConfigurationCommand;
+use Dungap\Setting\Config\Config;
 use Dungap\Setting\Config\Definition;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Definition\Processor;
@@ -19,16 +22,23 @@ use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AttributeLoader;
+use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Yaml\Yaml;
 
-class Config
+class ConfigFactory implements ConfigFactoryInterface
 {
     private ConfigCache $cache;
 
-    /**
-     * @var array<string,mixed>
-     */
-    private array $configs = [];
+    private ConfigInterface $config;
 
     /**
      * @param string $configDirs A comma separated list of configuration directories
@@ -53,6 +63,12 @@ class Config
         $cache = $this->cache;
         $fresh = $cache->isFresh();
 
+        if (empty($dirs)) {
+            $this->config = new Config();
+
+            return;
+        }
+
         if (!$fresh) {
             $resources = [];
             $finder = Finder::create()
@@ -69,10 +85,13 @@ class Config
             $cache->write($content, $resources);
         }
 
-        include $cache->getPath();
+        $serialized = file_get_contents($cache->getPath());
+        $unserialized = unserialize($serialized);
+
+        $this->config = $unserialized[0];
 
         if (!$fresh) {
-            $this->messageBus->dispatch(new NewConfigurationCommand($this->configs));
+            $this->messageBus->dispatch(new NewConfigurationCommand($this->config));
         }
     }
 
@@ -83,24 +102,25 @@ class Config
     {
         $processor = new Processor();
         $config = $processor->processConfiguration(new Definition(), $configs);
+        $json = json_encode($config, JSON_PRETTY_PRINT);
 
-        return "<?php\n\$this->configs = ".var_export($config, true).';';
-    }
+        $normalizer = new ObjectNormalizer(
+            classMetadataFactory: new ClassMetadataFactory(new AttributeLoader()),
+            nameConverter: new CamelCaseToSnakeCaseNameConverter(),
+            propertyAccessor: new PropertyAccessor(),
+            propertyTypeExtractor: new ReflectionExtractor(),
+        );
+        $normalizers = [
+            $normalizer,
+            new GetSetMethodNormalizer(),
+            new ArrayDenormalizer(),
+        ];
+        $serializer = new Serializer($normalizers, [new JsonEncoder()]);
+        $data = $serializer->deserialize($json, Config::class, 'json', [
+            'json_decode_associative' => true,
+        ]);
 
-    /**
-     * @return array<string,mixed>
-     */
-    public function getAll(): array
-    {
-        return $this->configs;
-    }
-
-    /**
-     * @return array<string,mixed>
-     */
-    public function getDevices(): array
-    {
-        return $this->configs['devices'];
+        return serialize([$data]);
     }
 
     /**
@@ -117,5 +137,10 @@ class Config
         }
 
         return $dirs;
+    }
+
+    public function create(): ConfigInterface
+    {
+        return $this->config;
     }
 }

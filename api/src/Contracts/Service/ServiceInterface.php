@@ -12,9 +12,12 @@
 namespace Dungap\Contracts\Service;
 
 use Dungap\Contracts\Device\DeviceInterface;
+use Symfony\Component\Uid\Uuid;
 
 interface ServiceInterface
 {
+    public function getId(): ?Uuid;
+
     public function setPort(int $port): void;
 
     public function getPort(): int;

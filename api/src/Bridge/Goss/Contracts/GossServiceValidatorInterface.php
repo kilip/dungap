@@ -9,12 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Contracts\Setting\ConfigInterface;
+namespace Dungap\Bridge\Goss\Contracts;
 
-interface ConfigInterface
+interface GossServiceValidatorInterface
 {
-    /**
-     * @return array<int, mixed>
-     */
-    public function getScanner(): array;
+    public function validate(GossConfigFileInterface $configFile): GossReportInterface;
 }

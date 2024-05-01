@@ -11,13 +11,12 @@
 
 namespace Dungap\Setting\Command;
 
+use Dungap\Contracts\Setting\ConfigInterface;
+
 class NewConfigurationCommand
 {
-    /**
-     * @param array<string,mixed> $configs
-     */
     public function __construct(
-        public array $configs
+        public ConfigInterface $config
     ) {
     }
 }

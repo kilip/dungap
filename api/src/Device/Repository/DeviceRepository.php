@@ -52,10 +52,12 @@ class DeviceRepository extends ServiceEntityRepository implements DeviceReposito
         return $this->findOneBy(['name' => $name]);
     }
 
-    public function findByIpOrName(string $ip, string $name): ?DeviceInterface
+    public function findByIpOrName(string $name, string $ip = null): ?DeviceInterface
     {
-        if (!is_null($device = $this->findByIpAddress($ip))) {
-            return $device;
+        if (!is_null($ip)) {
+            if (!is_null($device = $this->findByIpAddress($ip))) {
+                return $device;
+            }
         }
 
         return $this->findByName($name);

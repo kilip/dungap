@@ -12,14 +12,14 @@
 namespace Dungap\Tests\Setting;
 
 use Dungap\Setting\Command\NewConfigurationCommand;
-use Dungap\Setting\Config;
+use Dungap\Setting\ConfigFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class ConfigTest extends TestCase
+class ConfigFactoryTest extends TestCase
 {
     private string $cachePath;
     private MockObject|MessageBusInterface $bus;
@@ -43,14 +43,15 @@ class ConfigTest extends TestCase
             ->with($this->isInstanceOf(NewConfigurationCommand::class))
             ->willReturn(new Envelope(new \stdClass()));
 
-        $config = new Config(
+        $factory = new ConfigFactory(
             cachePath: $this->cachePath,
             configDirs: $configDirs,
             messageBus: $this->bus,
         );
 
-        $this->assertNotEmpty($configs = $config->getAll());
-        $this->assertArrayHasKey('devices', $configs);
-        $this->assertCount(2, $config->getDevices());
+        $config = $factory->create();
+
+        $this->assertNotEmpty($config->getDevices());
+        $this->assertNotEmpty($config->getScanners());
     }
 }

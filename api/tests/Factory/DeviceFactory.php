@@ -53,6 +53,7 @@ final class DeviceFactory extends ModelFactory
             'ipAddress' => self::faker()->unique()->ipv4(),
             'macAddress' => self::faker()->unique()->macAddress(),
             'draft' => self::faker()->randomElement([true, false]),
+            'notes' => self::faker()->text(),
         ];
 
         return $data;
