@@ -9,12 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Bridge\Goss\Contracts;
+namespace Dungap\Contracts\Service;
 
-interface GossConfigFactoryInterface
+interface ValidatorResultInterface
 {
-    /**
-     * @param array<int, GossConfigInterface> $configs
-     */
-    public function create(array $configs): GossConfigFileInterface;
+    public function getServiceId(): string;
+
+    public function isSuccessful(): bool;
 }

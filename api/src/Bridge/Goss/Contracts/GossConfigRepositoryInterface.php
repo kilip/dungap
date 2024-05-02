@@ -15,6 +15,11 @@ use Dungap\Contracts\Service\ServiceInterface;
 
 interface GossConfigRepositoryInterface
 {
+    /**
+     * @return iterable<GossConfigInterface>
+     */
+    public function findAll(): iterable;
+
     public function findByService(ServiceInterface $service): ?GossConfigInterface;
 
     public function create(): GossConfigInterface;

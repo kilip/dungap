@@ -13,6 +13,7 @@ namespace Dungap\Bridge\Goss;
 
 class Constant
 {
+    public const GossFileName = 'goss.yaml';
     public const DriverName = 'goss';
 
     public const ValidatorTypeAddress = 'address';

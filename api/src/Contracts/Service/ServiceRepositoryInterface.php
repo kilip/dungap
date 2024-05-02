@@ -12,7 +12,6 @@
 namespace Dungap\Contracts\Service;
 
 use Dungap\Contracts\Device\DeviceInterface;
-use Symfony\Component\Uid\Uuid;
 
 interface ServiceRepositoryInterface
 {

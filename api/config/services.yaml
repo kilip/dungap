@@ -6,6 +6,8 @@
 parameters:
   dungap.cache_dir: '%kernel.cache_dir%/dungap'
   dungap.config_dirs: '%env(resolve:DUNGAP_CONFIG_DIRS)%'
+  dungap.goss.config.file_name: 'goss.yaml'
+  dungap.goss.config.dir: '%dungap.cache_dir%/goss'
 services:
   # default configuration for services in *this* file
   _defaults:
@@ -36,3 +38,6 @@ services:
   dungap.service_scanner:
     class: Dungap\Bridge\Goss\Service\ServiceScanner
     public: true
+
+  dungap.service_validator:
+    class: Dungap\Bridge\Goss\Service\Validator

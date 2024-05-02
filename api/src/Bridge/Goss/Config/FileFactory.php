@@ -12,8 +12,9 @@
 namespace Dungap\Bridge\Goss\Config;
 
 use Dungap\Bridge\Goss\Constant;
-use Dungap\Bridge\Goss\Contracts\GossConfigFactoryInterface;
-use Dungap\Bridge\Goss\Contracts\GossConfigFileInterface;
+use Dungap\Bridge\Goss\Contracts\GossConfigRepositoryInterface;
+use Dungap\Bridge\Goss\Contracts\GossFileFactoryInterface;
+use Dungap\Bridge\Goss\Contracts\GossFileInterface;
 use Dungap\Bridge\Goss\Contracts\GossConfigInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -23,15 +24,18 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Yaml\Dumper;
 
-class ConfigFactory implements GossConfigFactoryInterface
+class FileFactory implements GossFileFactoryInterface
 {
+
     public function __construct(
-        #[Autowire('%kernel.cache_dir%/dungap/goss/config')]
+        private GossConfigRepositoryInterface $configRepository,
+        #[Autowire('%dungap.goss.config.dir%')]
         private string $targetDir,
+
     ) {
     }
 
-    public function create(array $configs): GossConfigFileInterface
+    public function create(array $configs, string $fileName): GossFileInterface
     {
         $config = new Config();
         foreach ($configs as $item) {
@@ -52,12 +56,25 @@ class ConfigFactory implements GossConfigFactoryInterface
             'yaml_inline' => 5,
         ]);
 
-        $fileName = $this->targetDir.'/'.uniqid('config').'.yaml';
-        $configFile = new ConfigFile($fileName);
+        $target = "{$this->targetDir}/{$fileName}";
+        $configFile = new GossFile($target);
         $configFile->write($yaml);
 
         return $configFile;
     }
+
+    public function configure(): void
+    {
+        $all = $this->configRepository->findAll();
+        $this->create($all, Constant::GossFileName);
+    }
+
+    public function getFile(): GossFileInterface
+    {
+        $filename = Constant::GossFileName;
+        return new GossFile("{$this->targetDir}/{$filename}");
+    }
+
 
     private function process(Config $config, GossConfigInterface $item): void
     {
@@ -65,10 +82,11 @@ class ConfigFactory implements GossConfigFactoryInterface
         $device = $service->getDevice();
         $port = $service->getPort();
         $ip = $device->getIpAddress();
+        $serviceId = $item->getService()->getId();
 
         if (Constant::ValidatorTypeAddress == $item->getType()) {
             $address = "tcp://{$ip}:{$port}";
-            $id = $item->getId() ?? $address;
+            $id = $serviceId ?? $address;
             $addr = new Addr(
                 $address,
             );

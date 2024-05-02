@@ -12,17 +12,17 @@
 namespace Dungap\Tests\Bridge\Goss\Service;
 
 use Dungap\Bridge\Goss\Constant;
-use Dungap\Bridge\Goss\Contracts\GossConfigFactoryInterface;
-use Dungap\Bridge\Goss\Contracts\GossConfigFileInterface;
+use Dungap\Bridge\Goss\Contracts\GossFileFactoryInterface;
+use Dungap\Bridge\Goss\Contracts\GossFileInterface;
 use Dungap\Bridge\Goss\Contracts\GossConfigInterface;
 use Dungap\Bridge\Goss\Contracts\GossConfigRepositoryInterface;
 use Dungap\Bridge\Goss\Contracts\GossReportInterface;
-use Dungap\Bridge\Goss\Contracts\GossResultInterface;
-use Dungap\Bridge\Goss\Contracts\GossServiceValidatorInterface;
+use Dungap\Bridge\Goss\Contracts\GossInterface;
 use Dungap\Bridge\Goss\Service\ServiceScanner;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Service\ServiceInterface;
 use Dungap\Contracts\Service\ServiceRepositoryInterface;
+use Dungap\Contracts\Service\ValidatorResultInterface;
 use Dungap\Contracts\Setting\ConfigFactoryInterface;
 use Dungap\Contracts\Setting\ConfigInterface;
 use Dungap\Setting\Config\Scanner;
@@ -36,8 +36,8 @@ class ServiceScannerTest extends TestCase
     private MockObject|ServiceRepositoryInterface $serviceRepository;
     private MockObject|DeviceInterface $device;
     private MockObject|ConfigInterface $config;
-    private MockObject|GossConfigFactoryInterface $gossConfigFactory;
-    private MockObject|GossConfigFileInterface $configFile;
+    private MockObject|GossFileFactoryInterface $gossConfigFactory;
+    private MockObject|GossFileInterface $configFile;
 
     private MockObject|ServiceInterface $service;
     private MockObject|GossConfigInterface $gossConfig;
@@ -46,7 +46,7 @@ class ServiceScannerTest extends TestCase
     private MockObject|GossReportInterface $report;
     private ServiceScanner $serviceScanner;
 
-    private MockObject|GossServiceValidatorInterface $goss;
+    private MockObject|GossInterface $goss;
 
     protected function setUp(): void
     {
@@ -55,11 +55,11 @@ class ServiceScannerTest extends TestCase
         $configFactory = $this->createMock(ConfigFactoryInterface::class);
         $this->gossConfig = $this->createMock(GossConfigInterface::class);
         $this->service = $this->createMock(ServiceInterface::class);
-        $this->gossConfigFactory = $this->createMock(GossConfigFactoryInterface::class);
-        $this->configFile = $this->createMock(GossConfigFileInterface::class);
+        $this->gossConfigFactory = $this->createMock(GossFileFactoryInterface::class);
+        $this->configFile = $this->createMock(GossFileInterface::class);
         $this->gossRepository = $this->createMock(GossConfigRepositoryInterface::class);
         $this->report = $this->createMock(GossReportInterface::class);
-        $this->goss = $this->createMock(GossServiceValidatorInterface::class);
+        $this->goss = $this->createMock(GossInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->config = $this->createMock(ConfigInterface::class);
 
@@ -121,7 +121,7 @@ class ServiceScannerTest extends TestCase
             ->willReturn($this->report)
         ;
 
-        $result = $this->createMock(GossResultInterface::class);
+        $result = $this->createMock(ValidatorResultInterface::class);
         $result->expects($this->exactly(2))
             ->method('isSuccessful')
             ->willReturn(true, true);

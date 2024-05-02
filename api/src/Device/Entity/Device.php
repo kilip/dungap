@@ -90,6 +90,9 @@ class Device implements DeviceInterface
     #[ORM\Column(type: 'boolean')]
     private bool $draft = false;
 
+    /**
+     * @var iterable<ServiceInterface>
+     */
     #[OneToMany(targetEntity: ServiceInterface::class, mappedBy: 'device', fetch: 'EAGER')]
     #[ApiProperty(fetchEager: true)]
     private iterable $services;
@@ -183,11 +186,17 @@ class Device implements DeviceInterface
         return $this;
     }
 
+    /**
+     * @return iterable<ServiceInterface>
+     */
     public function getServices(): iterable
     {
         return $this->services;
     }
 
+    /**
+     * @param iterable<ServiceInterface> $services
+     */
     public function setServices(iterable $services): void
     {
         $this->services = $services;

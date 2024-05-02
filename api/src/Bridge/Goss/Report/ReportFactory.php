@@ -12,7 +12,7 @@
 namespace Dungap\Bridge\Goss\Report;
 
 use Dungap\Bridge\Goss\Contracts\GossReportFactoryInterface;
-use Dungap\Bridge\Goss\Contracts\GossReportInterface;
+use Dungap\Contracts\Service\ValidatorReportInterface;
 use Dungap\Util\Serializer\HypenNameConverter;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
@@ -26,7 +26,7 @@ use Symfony\Component\Serializer\Serializer;
 
 class ReportFactory implements GossReportFactoryInterface
 {
-    public function create(string $output): GossReportInterface
+    public function create(string $output): ValidatorReportInterface
     {
         $classMetadataFactory = new ClassMetadataFactory(
             new AttributeLoader(),
@@ -46,9 +46,9 @@ class ReportFactory implements GossReportFactoryInterface
             [new JsonEncoder()]
         );
 
-        $val =  $serializer->deserialize($output, Report::class, 'json');
+        $val = $serializer->deserialize($output, Report::class, 'json');
 
-        if(is_null($val)){
+        if (!$val instanceof Report) {
             $val = new Report(new Summary(), []);
         }
 

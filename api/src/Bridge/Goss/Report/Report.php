@@ -13,17 +13,16 @@ namespace Dungap\Bridge\Goss\Report;
 
 use Dungap\Bridge\Goss\Contracts\GossConfigInterface;
 use Dungap\Bridge\Goss\Contracts\GossReportInterface;
-use Dungap\Bridge\Goss\Contracts\GossResultInterface;
-use Dungap\Bridge\Goss\Report\Result;
 use Dungap\Contracts\Service\ServiceInterface;
-use Dungap\Service\Entity\Service;
+use Dungap\Contracts\Service\ServiceRepositoryInterface;
+use Dungap\Contracts\Service\ValidatorResultInterface;
 
 class Report implements GossReportInterface
 {
     /**
      * @var array<string, int>
      */
-    private array $idMap = [];
+    private array $serviceIds = [];
 
     /**
      * @var array<string,int>
@@ -42,35 +41,22 @@ class Report implements GossReportInterface
         private readonly Summary $summary,
         iterable                 $results,
     ) {
-        foreach($results as $result) {
+        foreach ($results as $result) {
             $this->addResult($result);
         }
     }
 
-    public function hasResult(GossConfigInterface $config): bool
-    {
-        return true;
-    }
-
     public function addResult(Result $result): void
     {
-
         $this->results[] = $result;
-
-        $idRegex = "/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/";
-        $tcpRegex = '/tcp.*$/';
-        preg_match($idRegex, $result->resourceId, $idMatches);
-        preg_match($tcpRegex, $result->resourceId, $tcpMatches);
-
-        $index = count($this->results)-1;
-        if(array_key_exists(0, $idMatches)) {
-            $this->idMap[$idMatches[0]] = $index;
-        }
-        if(array_key_exists(0, $tcpMatches)) {
-            $this->tcpMap[$tcpMatches[0]] = $index;
-        }
+        $index = count($this->results) - 1;
+        $this->serviceIds[$result->getServiceId()] = $index;
+        $this->tcpMap[$result->getTcpId()] = $index;
     }
 
+    /**
+     * @return iterable<ValidatorResultInterface>
+     */
     public function getResults(): iterable
     {
         return $this->results;
@@ -81,13 +67,18 @@ class Report implements GossReportInterface
         return $this->summary;
     }
 
-    public function findByService(ServiceInterface $service): ?GossResultInterface
+    public function findByService(ServiceInterface $service): ?ValidatorResultInterface
     {
-        $address = $service->getDevice()->getIpAddress();
-        $port = $service->getPort();
-        $key = "tcp://{$address}:{$port}";
-        $index =  array_key_exists($key, $this->tcpMap) ? $this->tcpMap[$key] : null;
+        $serviceId = $service->getId();
 
+        if(array_key_exists($serviceId, $this->serviceIds)){
+            $index = $this->serviceIds[$serviceId];
+        }else{
+            $address = $service->getDevice()->getIpAddress();
+            $port = $service->getPort();
+            $key = "tcp://{$address}:{$port}";
+            $index = array_key_exists($key, $this->tcpMap) ? $this->tcpMap[$key] : null;
+        }
         return is_null($index) ? null : $this->results[$index];
     }
 }

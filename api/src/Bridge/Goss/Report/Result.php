@@ -11,12 +11,15 @@
 
 namespace Dungap\Bridge\Goss\Report;
 
-use Dungap\Bridge\Goss\Contracts\GossResultInterface;
+use Dungap\Bridge\Goss\Util;
+use Dungap\Contracts\Service\ValidatorResultInterface;
 
-class Result implements GossResultInterface
+class Result implements ValidatorResultInterface
 {
-    public string $resourceId;
-    public bool $successful;
+    private string $resourceId;
+    private bool $successful;
+    private string $serviceId;
+    private string $tcpId;
 
     public function getResourceId(): string
     {
@@ -26,6 +29,9 @@ class Result implements GossResultInterface
     public function setResourceId(string $resourceId): void
     {
         $this->resourceId = $resourceId;
+        $this->tcpId = Util::getTcpID($resourceId);
+        $serviceId = Util::getServiceId($resourceId) ?? $this->tcpId;
+        $this->serviceId = $serviceId;
     }
 
     public function isSuccessful(): bool
@@ -36,5 +42,15 @@ class Result implements GossResultInterface
     public function setSuccessful(bool $successful): void
     {
         $this->successful = $successful;
+    }
+
+    public function getServiceId(): string
+    {
+        return $this->serviceId;
+    }
+
+    public function getTcpId(): string
+    {
+        return $this->tcpId;
     }
 }

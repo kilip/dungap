@@ -12,11 +12,11 @@
 namespace Dungap\Bridge\Goss\Service;
 
 use Dungap\Bridge\Goss\Constant;
-use Dungap\Bridge\Goss\Contracts\GossConfigFactoryInterface;
+use Dungap\Bridge\Goss\Contracts\GossFileFactoryInterface;
 use Dungap\Bridge\Goss\Contracts\GossConfigInterface;
 use Dungap\Bridge\Goss\Contracts\GossConfigRepositoryInterface;
 use Dungap\Bridge\Goss\Contracts\GossReportInterface;
-use Dungap\Bridge\Goss\Contracts\GossServiceValidatorInterface;
+use Dungap\Bridge\Goss\Contracts\GossInterface;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Service\ServiceRepositoryInterface;
 use Dungap\Contracts\Service\ServiceScannerInterface;
@@ -28,12 +28,12 @@ use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 final readonly class ServiceScanner implements ServiceScannerInterface
 {
     public function __construct(
-        private ConfigFactoryInterface $config,
-        private ServiceRepositoryInterface $serviceRepository,
-        private GossConfigFactoryInterface $configFactory,
+        private ConfigFactoryInterface        $config,
+        private ServiceRepositoryInterface    $serviceRepository,
+        private GossFileFactoryInterface      $configFactory,
         private GossConfigRepositoryInterface $gossRepository,
-        private GossServiceValidatorInterface $goss,
-        private LoggerInterface $logger,
+        private GossInterface                 $goss,
+        private LoggerInterface               $logger,
     ) {
     }
 
@@ -44,9 +44,9 @@ final readonly class ServiceScanner implements ServiceScannerInterface
     {
         try {
             $configs = $this->generateConfigs($devices);
-            $configFile = $this->configFactory->create($configs);
+            $configFile = $this->configFactory->create($configs, uniqid('goss_').'.yaml');
             $output = $this->goss->validate($configFile);
-            if(!is_null($output)){
+            if (!is_null($output)) {
                 $this->processOutput($configs, $output);
             }
         } catch (\Exception $e) {
@@ -79,16 +79,16 @@ final readonly class ServiceScanner implements ServiceScannerInterface
     {
         $config = $this->config->create();
         foreach ($config->getScanners() as $item) {
-            $service =  $this->serviceRepository->findByPort($device, $item->port);
-            if(is_null($service)){
+            $service = $this->serviceRepository->findByPort($device, $item->port);
+            if (is_null($service)) {
                 $service = $this->serviceRepository->create();
             }
             $service->setPort($item->port);
             $service->setDevice($device);
 
             $gossConfig = $this->gossRepository->create();
-            if(!is_null($service->getId())){
-                if(!is_null($test = $this->gossRepository->findByService($service))){
+            if (!is_null($service->getId())) {
+                if (!is_null($test = $this->gossRepository->findByService($service))) {
                     $gossConfig = $test;
                 }
             }
@@ -106,7 +106,7 @@ final readonly class ServiceScanner implements ServiceScannerInterface
     {
         foreach ($configs as $config) {
             $result = $output->findByService($config->getService());
-            if(!is_null($result) && $result->isSuccessful()){
+            if (!is_null($result) && $result->isSuccessful()) {
                 $this->registerService($config);
             }
         }
@@ -124,9 +124,9 @@ final readonly class ServiceScanner implements ServiceScannerInterface
             ]);
         }
 
-        try{
+        try {
             $this->gossRepository->register($config);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->logger->error('Error while configuring goss for: {0} port: {1}. Error: {2}', [
                 $config->getService()->getDevice(),
                 $config->getService()->getPort(),

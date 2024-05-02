@@ -11,13 +11,12 @@
 
 namespace Dungap\Bridge\Goss\Contracts;
 
-interface GossResultInterface
+interface GossFileFactoryInterface
 {
-    public function getResourceId(): string;
-
-    public function setResourceId(string $resourceId): void;
-
-    public function setSuccessful(bool $successful): void;
-
-    public function isSuccessful(): bool;
+    /**
+     * @param array<int, GossConfigInterface> $configs
+     */
+    public function create(array $configs, string $fileName): GossFileInterface;
+    public function configure(): void;
+    public function getFile(): GossFileInterface;
 }

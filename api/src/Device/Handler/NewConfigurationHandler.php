@@ -11,16 +11,19 @@
 
 namespace Dungap\Device\Handler;
 
+use Dungap\Bridge\Goss\Contracts\GossFileFactoryInterface;
 use Dungap\Contracts\Device\CategoryInterface;
 use Dungap\Contracts\Device\CategoryRepositoryInterface;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\DeviceRepositoryInterface;
 use Dungap\Contracts\Service\ServiceScannerInterface;
+use Dungap\Service\Command\ConfigureValidatorCommand;
 use Dungap\Setting\Command\NewConfigurationCommand;
 use Dungap\Setting\Config\Device;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsMessageHandler]
 final readonly class NewConfigurationHandler
@@ -30,6 +33,7 @@ final readonly class NewConfigurationHandler
         private CategoryRepositoryInterface $categories,
         #[Autowire('@dungap.service_scanner')]
         private ServiceScannerInterface $serviceScanner,
+        private MessageBusInterface $messageBus,
         private LoggerInterface $logger,
     ) {
     }
@@ -46,6 +50,7 @@ final readonly class NewConfigurationHandler
                 }
             }
             $this->serviceScanner->scan($devices);
+            $this->messageBus->dispatch(new ConfigureValidatorCommand);
         } catch (\Exception $e) {
             $this->logger->error('Error while try to handle new configuration: {0}', [$e->getMessage()]);
         }
@@ -55,7 +60,6 @@ final readonly class NewConfigurationHandler
     {
         $device = $this->devices->findByIpOrName($deviceConfig->name, $deviceConfig->ip);
         try {
-
             $category = $this->loadCategory($deviceConfig->category);
             if (is_null($device)) {
                 $device = $this->devices->create();
@@ -66,15 +70,13 @@ final readonly class NewConfigurationHandler
             $device->setMacAddress($deviceConfig->mac);
             $device->setCategory($category);
             $this->devices->store($device);
-
         } catch (\Exception $e) {
             $this->logger->error('Error while try to handle configuration for device {0}: {1}', [
                 $deviceConfig->name,
                 $e->getMessage(),
             ]);
-
-
         }
+
         return $device;
     }
 

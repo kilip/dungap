@@ -11,9 +11,10 @@
 
 namespace Dungap\Tests\Bridge\Goss\Service;
 
-use Dungap\Bridge\Goss\Config\ConfigFactory;
+use Dungap\Bridge\Goss\Config\FileFactory;
 use Dungap\Bridge\Goss\Constant;
-use Dungap\Bridge\Goss\Contracts\GossConfigFileInterface;
+use Dungap\Bridge\Goss\Contracts\GossConfigRepositoryInterface;
+use Dungap\Bridge\Goss\Contracts\GossFileInterface;
 use Dungap\Bridge\Goss\Contracts\GossConfigInterface;
 use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Service\ServiceInterface;
@@ -25,12 +26,14 @@ class ConfigFactoryTest extends TestCase
     private MockObject|GossConfigInterface $gossConfig;
     private MockObject|ServiceInterface $service;
     private MockObject|DeviceInterface $device;
+    private MockObject|GossConfigRepositoryInterface $configRepository;
 
     protected function setUp(): void
     {
-        $this->gossConfig = $this->getMockBuilder(GossConfigInterface::class)->getMock();
-        $this->service = $this->getMockBuilder(ServiceInterface::class)->getMock();
-        $this->device = $this->getMockBuilder(DeviceInterface::class)->getMock();
+        $this->gossConfig = $this->createMock(GossConfigInterface::class);
+        $this->service = $this->createMock(ServiceInterface::class);
+        $this->device = $this->createMock(DeviceInterface::class);
+        $this->configRepository = $this->createMock(GossConfigRepositoryInterface::class);
 
         $this->service->method('getDevice')
             ->willReturn($this->device);
@@ -49,13 +52,17 @@ class ConfigFactoryTest extends TestCase
 
     public function testCreate(): void
     {
-        $factory = new ConfigFactory(
+        $factory = new FileFactory(
+            $this->configRepository,
             sys_get_temp_dir().'/dungap/goss/config'
         );
 
-        $configFile = $factory->create([$this->gossConfig]);
+        $configFile = $factory->create(
+            [$this->gossConfig],
+            uniqid('goss_').'.yaml'
+        );
 
-        $this->assertInstanceOf(GossConfigFileInterface::class, $configFile);
+        $this->assertInstanceOf(GossFileInterface::class, $configFile);
         $this->assertFileExists($configFile->getFileName());
     }
 }

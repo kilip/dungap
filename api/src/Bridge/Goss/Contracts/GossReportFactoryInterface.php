@@ -11,7 +11,9 @@
 
 namespace Dungap\Bridge\Goss\Contracts;
 
+use Dungap\Contracts\Service\ValidatorReportInterface;
+
 interface GossReportFactoryInterface
 {
-    public function create(string $output): GossReportInterface;
+    public function create(string $output): ValidatorReportInterface;
 }

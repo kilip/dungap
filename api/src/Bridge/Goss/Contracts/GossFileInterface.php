@@ -11,7 +11,7 @@
 
 namespace Dungap\Bridge\Goss\Contracts;
 
-interface GossConfigFileInterface
+interface GossFileInterface
 {
     public function write(string $contents): void;
 

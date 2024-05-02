@@ -17,7 +17,6 @@ use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Service\ServiceInterface;
 use Dungap\Contracts\Service\ServiceRepositoryInterface;
 use Dungap\Service\Entity\Service;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<Service>

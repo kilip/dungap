@@ -46,13 +46,13 @@ class ConfigFactory implements ConfigFactoryInterface
      */
     public function __construct(
         #[Autowire('%dungap.cache_dir%')]
-        string                               $cachePath,
+        string $cachePath,
         #[Autowire('%dungap.config_dirs%')]
-        private readonly string              $configDirs,
+        private readonly string $configDirs,
         private readonly MessageBusInterface $messageBus,
         private readonly LoggerInterface $logger,
         #[Autowire('%kernel.debug%')]
-        bool                                 $debug = false,
+        bool $debug = false,
     ) {
         $cachePath = "{$cachePath}/config";
         $this->cache = new ConfigCache($cachePath, $debug);
@@ -67,6 +67,7 @@ class ConfigFactory implements ConfigFactoryInterface
 
         if (empty($dirs)) {
             $this->config = new Config();
+
             return;
         }
 

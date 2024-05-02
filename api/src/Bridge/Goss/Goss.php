@@ -9,34 +9,34 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Bridge\Goss\Service;
+namespace Dungap\Bridge\Goss;
 
-use Dungap\Bridge\Goss\Contracts\GossConfigFileInterface;
+use Dungap\Bridge\Goss\Contracts\GossFileInterface;
 use Dungap\Bridge\Goss\Contracts\GossReportFactoryInterface;
 use Dungap\Bridge\Goss\Contracts\GossReportInterface;
-use Dungap\Bridge\Goss\Contracts\GossServiceValidatorInterface;
+use Dungap\Bridge\Goss\Contracts\GossInterface;
 use Dungap\Bridge\Goss\GossException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
-final class ServiceValidator implements GossServiceValidatorInterface
+final class Goss implements GossInterface
 {
     public function __construct(
         private readonly GossReportFactoryInterface $reportFactory,
         #[Autowire('%env(DUNGAP_GOSS_EXECUTABLE)%')]
-        private readonly string                     $executableFile,
+        private readonly string $executableFile,
         private readonly LoggerInterface $logger,
         #[Autowire('%env(DUNGAP_GOSS_SLEEP)%')]
-        private readonly string                     $sleep = '2s',
+        private readonly string $sleep = '2s',
         #[Autowire('%env(DUNGAP_GOSS_RETRY_TIMEOUT)%')]
-        private string                              $retryTimeout = '10s',
-        private ?Process                            $process = null,
+        private string $retryTimeout = '10s',
+        private ?Process $process = null,
     ) {
     }
 
-    public function validate(GossConfigFileInterface $configFile): ?GossReportInterface
+    public function validate(GossFileInterface $configFile): GossReportInterface
     {
         $executableFile = $this->executableFile;
 
@@ -82,14 +82,17 @@ final class ServiceValidator implements GossServiceValidatorInterface
         };
         // @codeCoverageIgnoreEnd
 
-        $process->run($callback);
+        $this->logger->notice('start running goss validator', $commands);
+        $exitCode = $process->run($callback);
+        $this->logger->notice('goss exit code {0}', [$exitCode]);
 
         try {
-            $json = "{}";
-            if(preg_match_all('/{"results.*}$/im', $output, $matches)){
+            $json = '{}';
+            if (preg_match_all('/{"results.*}$/im', $output, $matches)) {
                 $num = count($matches[0]);
-                $json = $matches[0][$num-1];
+                $json = $matches[0][$num - 1];
             }
+
             return $this->reportFactory->create($json);
         } catch (\Exception $e) {
             throw GossException::createOutputFailed($output, $e->getMessage());

@@ -11,10 +11,10 @@
 
 namespace Dungap\Bridge\Goss\Config;
 
-use Dungap\Bridge\Goss\Contracts\GossConfigFileInterface;
+use Dungap\Bridge\Goss\Contracts\GossFileInterface;
 use Dungap\Util\Common;
 
-class ConfigFile implements GossConfigFileInterface
+class GossFile implements GossFileInterface
 {
     public function __construct(
         private string $filename,

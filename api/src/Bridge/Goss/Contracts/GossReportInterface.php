@@ -12,18 +12,9 @@
 namespace Dungap\Bridge\Goss\Contracts;
 
 use Dungap\Bridge\Goss\Report\Summary;
-use Dungap\Contracts\Service\ServiceInterface;
+use Dungap\Contracts\Service\ValidatorReportInterface;
 
-interface GossReportInterface
+interface GossReportInterface extends ValidatorReportInterface
 {
     public function getSummary(): Summary;
-
-    /**
-     * @return iterable<GossResultInterface>
-     */
-    public function getResults(): iterable;
-
-    public function hasResult(GossConfigInterface $config): bool;
-
-    public function findByService(ServiceInterface $service): ?GossResultInterface;
 }

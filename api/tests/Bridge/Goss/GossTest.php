@@ -9,27 +9,27 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Tests\Bridge\Goss\Service;
+namespace Dungap\Tests\Bridge\Goss;
 
-use Dungap\Bridge\Goss\Contracts\GossConfigFileInterface;
+use Dungap\Bridge\Goss\Contracts\GossFileInterface;
 use Dungap\Bridge\Goss\Contracts\GossReportFactoryInterface;
 use Dungap\Bridge\Goss\Contracts\GossReportInterface;
 use Dungap\Bridge\Goss\GossException;
-use Dungap\Bridge\Goss\Service\ServiceValidator;
+use Dungap\Bridge\Goss\Goss;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
-class ServiceValidatorTest extends TestCase
+class GossTest extends TestCase
 {
     private MockObject|GossReportFactoryInterface $reportFactory;
     private MockObject|Process $process;
-    private MockObject|GossConfigFileInterface $configFile;
+    private MockObject|GossFileInterface $configFile;
     private MockObject|GossReportInterface $report;
     private MockObject|LoggerInterface $logger;
-    private ServiceValidator $validator;
+    private Goss $validator;
     private string $executableFile = 'goss';
 
     protected function setUp(): void
@@ -39,14 +39,14 @@ class ServiceValidatorTest extends TestCase
         $this->reportFactory = $this->createMock(GossReportFactoryInterface::class);
         $this->executableFile = $finder->find('php');
         $this->process = $this->createMock(Process::class);
-        $this->configFile = $this->createMock(GossConfigFileInterface::class);
+        $this->configFile = $this->createMock(GossFileInterface::class);
         $this->report = $this->createMock(GossReportInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->configFile->expects($this->any())
             ->method('getFileName')
             ->willReturn(__FILE__);
-        $this->validator = new ServiceValidator(
+        $this->validator = new \Dungap\Bridge\Goss\Goss(
             reportFactory: $this->reportFactory,
             executableFile: $this->executableFile,
             logger: $this->logger,
@@ -56,7 +56,7 @@ class ServiceValidatorTest extends TestCase
 
     public function testValidateWithInexistentExecutable(): void
     {
-        $validator = new ServiceValidator(
+        $validator = new \Dungap\Bridge\Goss\Goss(
             $this->reportFactory,
             __FILE__,
             $this->logger
@@ -67,7 +67,7 @@ class ServiceValidatorTest extends TestCase
 
     public function testValidateWithInxistentConfigFile(): void
     {
-        $configFile = $this->createMock(GossConfigFileInterface::class);
+        $configFile = $this->createMock(GossFileInterface::class);
         $configFile->expects($this->atLeastOnce())
             ->method('getFileName')
             ->willReturn('not_exists');

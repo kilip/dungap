@@ -52,7 +52,7 @@ class Service implements ServiceInterface
         fetch: 'LAZY',
         inversedBy: 'services'
     )]
-    #[ORM\JoinColumn(onDelete: "CASCADE")]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     #[ApiProperty(fetchEager: false)]
     private DeviceInterface $device;
 

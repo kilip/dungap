@@ -16,12 +16,15 @@ use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Device\DeviceRepositoryInterface;
 use Dungap\Contracts\Service\ServiceScannerInterface;
 use Dungap\Device\Handler\NewConfigurationHandler;
+use Dungap\Service\Command\ConfigureValidatorCommand;
 use Dungap\Setting\Command\NewConfigurationCommand;
 use Dungap\Setting\Config\Config;
 use Dungap\Setting\Config\Device as DeviceConfig;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class NewConfigurationHandlerTest extends TestCase
 {
@@ -29,6 +32,7 @@ class NewConfigurationHandlerTest extends TestCase
     private MockObject|DeviceInterface $device;
     private MockObject|LoggerInterface $logger;
     private MockObject|ServiceScannerInterface $serviceScanner;
+    private MockObject|MessageBusInterface $messageBus;
     private NewConfigurationCommand $command;
     private NewConfigurationHandler $handler;
 
@@ -39,10 +43,12 @@ class NewConfigurationHandlerTest extends TestCase
         $this->device = $this->createMock(DeviceInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->serviceScanner = $this->createMock(ServiceScannerInterface::class);
+        $this->messageBus = $this->createMock(MessageBusInterface::class);
         $this->handler = new NewConfigurationHandler(
             $this->devices,
             $categories,
             $this->serviceScanner,
+            $this->messageBus,
             $this->logger
         );
 
@@ -68,6 +74,11 @@ class NewConfigurationHandlerTest extends TestCase
             ->method('scan')
             ->with([$this->device]);
 
+        $this->messageBus->expects($this->once())
+            ->method('dispatch')
+            ->with($this->isInstanceOf(ConfigureValidatorCommand::class))
+            ->willReturn(new Envelope(new \stdClass()));
+
         $this->handler->__invoke($this->command);
     }
 
@@ -76,6 +87,11 @@ class NewConfigurationHandlerTest extends TestCase
         $this->devices->expects($this->once())
             ->method('store')
             ->willThrowException(new \Exception());
+
+        $this->messageBus->expects($this->once())
+            ->method('dispatch')
+            ->with($this->isInstanceOf(ConfigureValidatorCommand::class))
+            ->willReturn(new Envelope(new \stdClass()));
 
         $this->logger->expects($this->once())
             ->method('error');

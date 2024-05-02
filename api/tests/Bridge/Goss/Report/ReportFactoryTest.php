@@ -13,8 +13,15 @@ namespace Dungap\Tests\Bridge\Goss\Report;
 
 use Dungap\Bridge\Goss\Contracts\GossReportInterface;
 use Dungap\Bridge\Goss\Report\ReportFactory;
+use Dungap\Device\Entity\Device;
+use Dungap\Service\Entity\Service;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \Dungap\Bridge\Goss\Report\ReportFactory
+ * @covers \Dungap\Bridge\Goss\Report\Report
+ * @covers \Dungap\Bridge\Goss\Report\Result
+ */
 class ReportFactoryTest extends TestCase
 {
     public function testCreate(): void
@@ -26,5 +33,13 @@ class ReportFactoryTest extends TestCase
         $this->assertInstanceOf(GossReportInterface::class, $report);
         $this->assertNotNull($report->getSummary());
         $this->assertTrue($report->getResults()[0]->isSuccessful());
+
+        $device = new Device();
+        $device->setIpAddress('192.168.1.1');
+        $service = new Service();
+        $service->setDevice($device);
+        $service->setPort(22);
+
+        $this->assertNotNull($report->findByService($service));
     }
 }
