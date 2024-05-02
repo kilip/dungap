@@ -11,13 +11,14 @@
 
 namespace Dungap\Contracts\Service;
 
+use Dungap\Contracts\Device\DeviceInterface;
 use Symfony\Component\Uid\Uuid;
 
 interface ServiceRepositoryInterface
 {
     public function create(): ServiceInterface;
 
-    public function findByPort(?Uuid $deviceId, int $port): ?ServiceInterface;
+    public function findByPort(DeviceInterface $device, int $port): ?ServiceInterface;
 
     /**
      * Register service when it's not exists in database.

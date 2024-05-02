@@ -17,6 +17,7 @@ use Dungap\Bridge\Goss\Contracts\GossConfigFileInterface;
 use Dungap\Bridge\Goss\Contracts\GossConfigInterface;
 use Dungap\Bridge\Goss\Contracts\GossConfigRepositoryInterface;
 use Dungap\Bridge\Goss\Contracts\GossReportInterface;
+use Dungap\Bridge\Goss\Contracts\GossResultInterface;
 use Dungap\Bridge\Goss\Contracts\GossServiceValidatorInterface;
 use Dungap\Bridge\Goss\Service\ServiceScanner;
 use Dungap\Contracts\Device\DeviceInterface;
@@ -120,10 +121,14 @@ class ServiceScannerTest extends TestCase
             ->willReturn($this->report)
         ;
 
-        $this->report->expects($this->exactly(2))
-            ->method('hasResult')
-            ->with($this->gossConfig)
+        $result = $this->createMock(GossResultInterface::class);
+        $result->expects($this->exactly(2))
+            ->method('isSuccessful')
             ->willReturn(true, true);
+
+        $this->report->expects($this->exactly(2))
+            ->method('findByService')
+            ->willReturn($result, $result);
 
         // also test when $serviceRepository throws exception
         $this->serviceRepository->expects($this->exactly(2))
@@ -137,12 +142,21 @@ class ServiceScannerTest extends TestCase
                 ++$counter;
             }));
 
-        $this->gossRepository->expects($this->once())
+        $this->gossRepository->expects($this->exactly(2))
             ->method('register')
-            ->with($this->gossConfig);
+            ->with($this->isInstanceOf(GossConfigInterface::class))
+            ->will($this->returnCallback(function () {
+                static $counter = 1;
+                if ($counter > 1) {
+                    throw new \Exception('test exception');
+                }
+                ++$counter;
+            }))
+        ;
 
-        $this->logger->expects($this->once())
+        $this->logger->expects($this->exactly(2))
             ->method('error');
+
         $this->serviceScanner->scan([$this->device]);
     }
 

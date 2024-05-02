@@ -42,9 +42,8 @@ class GossException extends \Exception
     public static function createOutputFailed(string $output, string $error): self
     {
         return new self(sprintf(
-            "GOSS fail to processing output. Error  \"%s\". Output: \n%s",
+            "GOSS fail to processing output. Error  \"%s\".",
             $error,
-            $output,
         ));
     }
 }

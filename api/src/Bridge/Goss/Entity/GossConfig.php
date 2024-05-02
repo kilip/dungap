@@ -54,9 +54,8 @@ class GossConfig implements GossConfigInterface
 
     #[ORM\OneToOne(
         targetEntity: ServiceInterface::class,
-        cascade: ['persist', 'remove'],
-        fetch: 'EAGER',
-        orphanRemoval: true
+        cascade: ['persist'],
+        orphanRemoval: true,
     )]
     private ServiceInterface $service;
 

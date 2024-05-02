@@ -53,8 +53,9 @@ final readonly class NewConfigurationHandler
 
     private function processDevice(Device $deviceConfig): ?DeviceInterface
     {
+        $device = $this->devices->findByIpOrName($deviceConfig->name, $deviceConfig->ip);
         try {
-            $device = $this->devices->findByIpOrName($deviceConfig->name, $deviceConfig->ip);
+
             $category = $this->loadCategory($deviceConfig->category);
             if (is_null($device)) {
                 $device = $this->devices->create();
@@ -66,15 +67,15 @@ final readonly class NewConfigurationHandler
             $device->setCategory($category);
             $this->devices->store($device);
 
-            return $device;
         } catch (\Exception $e) {
             $this->logger->error('Error while try to handle configuration for device {0}: {1}', [
                 $deviceConfig->name,
                 $e->getMessage(),
             ]);
 
-            return null;
+
         }
+        return $device;
     }
 
     private function loadCategory(string $category = null): CategoryInterface

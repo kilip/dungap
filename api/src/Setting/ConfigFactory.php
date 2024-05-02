@@ -45,11 +45,12 @@ class ConfigFactory implements ConfigFactoryInterface
      * @param string $configDirs A comma separated list of configuration directories
      */
     public function __construct(
-        #[Autowire('%kernel.cache_dir%/dungap')]
+        #[Autowire('%dungap.cache_dir%')]
         string                               $cachePath,
-        #[Autowire('%env(DUNGAP_CONFIG_DIRS)%')]
+        #[Autowire('%dungap.config_dirs%')]
         private readonly string              $configDirs,
-        private readonly MessageBusInterface $messageBus, private readonly LoggerInterface $logger,
+        private readonly MessageBusInterface $messageBus,
+        private readonly LoggerInterface $logger,
         #[Autowire('%kernel.debug%')]
         bool                                 $debug = false,
     ) {

@@ -46,6 +46,12 @@ class ReportFactory implements GossReportFactoryInterface
             [new JsonEncoder()]
         );
 
-        return $serializer->deserialize($output, Report::class, 'json');
+        $val =  $serializer->deserialize($output, Report::class, 'json');
+
+        if(is_null($val)){
+            $val = new Report(new Summary(), []);
+        }
+
+        return $val;
     }
 }

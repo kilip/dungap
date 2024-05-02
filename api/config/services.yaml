@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
   dungap.cache_dir: '%kernel.cache_dir%/dungap'
+  dungap.config_dirs: '%env(resolve:DUNGAP_CONFIG_DIRS)%'
 services:
   # default configuration for services in *this* file
   _defaults:

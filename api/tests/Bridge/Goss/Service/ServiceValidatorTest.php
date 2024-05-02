@@ -18,6 +18,7 @@ use Dungap\Bridge\Goss\GossException;
 use Dungap\Bridge\Goss\Service\ServiceValidator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
@@ -27,6 +28,7 @@ class ServiceValidatorTest extends TestCase
     private MockObject|Process $process;
     private MockObject|GossConfigFileInterface $configFile;
     private MockObject|GossReportInterface $report;
+    private MockObject|LoggerInterface $logger;
     private ServiceValidator $validator;
     private string $executableFile = 'goss';
 
@@ -39,6 +41,7 @@ class ServiceValidatorTest extends TestCase
         $this->process = $this->createMock(Process::class);
         $this->configFile = $this->createMock(GossConfigFileInterface::class);
         $this->report = $this->createMock(GossReportInterface::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->configFile->expects($this->any())
             ->method('getFileName')
@@ -46,6 +49,7 @@ class ServiceValidatorTest extends TestCase
         $this->validator = new ServiceValidator(
             reportFactory: $this->reportFactory,
             executableFile: $this->executableFile,
+            logger: $this->logger,
             process: $this->process
         );
     }
@@ -54,7 +58,8 @@ class ServiceValidatorTest extends TestCase
     {
         $validator = new ServiceValidator(
             $this->reportFactory,
-            __FILE__
+            __FILE__,
+            $this->logger
         );
         $this->expectException(GossException::class);
         $validator->validate($this->configFile);
@@ -86,17 +91,6 @@ class ServiceValidatorTest extends TestCase
             ->method('create')
             ->willReturn($this->report);
 
-        $this->validator->validate($this->configFile);
-    }
-
-    public function testWithNonZeroExitCode(): void
-    {
-        $this->process->expects($this->once())
-            ->method('run')
-            ->willReturn(255)
-        ;
-
-        $this->expectException(GossException::class);
         $this->validator->validate($this->configFile);
     }
 

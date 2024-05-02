@@ -60,7 +60,7 @@ class ServiceScannerFunctionalTest extends KernelTestCase
         $services = $this->getService(ServiceRepositoryInterface::class);
         $gossConfigs = $this->getService(GossConfigRepositoryInterface::class);
 
-        $this->assertNotNull($service = $services->findByPort($github->getId(), 22));
+        $this->assertNotNull($service = $services->findByPort($github, 22));
         $this->assertNotNull($gossConfigs->findByService($service));
     }
 }

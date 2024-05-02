@@ -46,7 +46,9 @@ final readonly class ServiceScanner implements ServiceScannerInterface
             $configs = $this->generateConfigs($devices);
             $configFile = $this->configFactory->create($configs);
             $output = $this->goss->validate($configFile);
-            $this->processOutput($configs, $output);
+            if(!is_null($output)){
+                $this->processOutput($configs, $output);
+            }
         } catch (\Exception $e) {
             $this->logger->error(
                 'Error while scanning service. Error: {0}',
@@ -77,11 +79,19 @@ final readonly class ServiceScanner implements ServiceScannerInterface
     {
         $config = $this->config->create();
         foreach ($config->getScanners() as $item) {
-            $service = $this->serviceRepository->create();
+            $service =  $this->serviceRepository->findByPort($device, $item->port);
+            if(is_null($service)){
+                $service = $this->serviceRepository->create();
+            }
             $service->setPort($item->port);
             $service->setDevice($device);
 
             $gossConfig = $this->gossRepository->create();
+            if(!is_null($service->getId())){
+                if(!is_null($test = $this->gossRepository->findByService($service))){
+                    $gossConfig = $test;
+                }
+            }
             $gossConfig->setService($service);
             $gossConfig->setTimeout($item->timeout);
             $gossConfig->setType(Constant::ValidatorTypeAddress);
@@ -95,7 +105,8 @@ final readonly class ServiceScanner implements ServiceScannerInterface
     private function processOutput(array $configs, GossReportInterface $output): void
     {
         foreach ($configs as $config) {
-            if ($output->hasResult($config)) {
+            $result = $output->findByService($config->getService());
+            if(!is_null($result) && $result->isSuccessful()){
                 $this->registerService($config);
             }
         }
@@ -105,9 +116,18 @@ final readonly class ServiceScanner implements ServiceScannerInterface
     {
         try {
             $this->serviceRepository->register($config->getService());
-            $this->gossRepository->register($config);
         } catch (\Exception $e) {
             $this->logger->error('Error while registering service for: {0} port: {1}. Error: {2}', [
+                $config->getService()->getDevice(),
+                $config->getService()->getPort(),
+                $e->getMessage(),
+            ]);
+        }
+
+        try{
+            $this->gossRepository->register($config);
+        }catch (\Exception $e){
+            $this->logger->error('Error while configuring goss for: {0} port: {1}. Error: {2}', [
                 $config->getService()->getDevice(),
                 $config->getService()->getPort(),
                 $e->getMessage(),

@@ -13,5 +13,5 @@ namespace Dungap\Bridge\Goss\Contracts;
 
 interface GossServiceValidatorInterface
 {
-    public function validate(GossConfigFileInterface $configFile): GossReportInterface;
+    public function validate(GossConfigFileInterface $configFile): ?GossReportInterface;
 }

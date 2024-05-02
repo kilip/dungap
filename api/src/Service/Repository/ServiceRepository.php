@@ -13,6 +13,7 @@ namespace Dungap\Service\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Dungap\Contracts\Device\DeviceInterface;
 use Dungap\Contracts\Service\ServiceInterface;
 use Dungap\Contracts\Service\ServiceRepositoryInterface;
 use Dungap\Service\Entity\Service;
@@ -33,10 +34,10 @@ class ServiceRepository extends ServiceEntityRepository implements ServiceReposi
         return new Service();
     }
 
-    public function findByPort(?Uuid $deviceId, int $port): ?ServiceInterface
+    public function findByPort(DeviceInterface $device, int $port): ?ServiceInterface
     {
         return $this->findOneBy([
-            'device' => $deviceId,
+            'device' => $device,
             'port' => $port,
         ]);
     }

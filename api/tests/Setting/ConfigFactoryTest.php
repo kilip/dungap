@@ -15,6 +15,7 @@ use Dungap\Setting\Command\NewConfigurationCommand;
 use Dungap\Setting\ConfigFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -24,10 +25,13 @@ class ConfigFactoryTest extends TestCase
     private string $cachePath;
     private MockObject|MessageBusInterface $bus;
 
+    private MockObject|LoggerInterface $logger;
+
     protected function setUp(): void
     {
         $this->cachePath = sys_get_temp_dir().'/dungap';
         $this->bus = $this->createMock(MessageBusInterface::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
 
         $fs = new Filesystem();
         $fs->remove($this->cachePath);
@@ -47,6 +51,7 @@ class ConfigFactoryTest extends TestCase
             cachePath: $this->cachePath,
             configDirs: $configDirs,
             messageBus: $this->bus,
+            logger: $this->logger
         );
 
         $config = $factory->create();

@@ -26,7 +26,8 @@ final class ServiceValidator implements GossServiceValidatorInterface
     public function __construct(
         private readonly GossReportFactoryInterface $reportFactory,
         #[Autowire('%env(DUNGAP_GOSS_EXECUTABLE)%')]
-        private readonly string                     $executableFile, private readonly LoggerInterface $logger,
+        private readonly string                     $executableFile,
+        private readonly LoggerInterface $logger,
         #[Autowire('%env(DUNGAP_GOSS_SLEEP)%')]
         private readonly string                     $sleep = '2s',
         #[Autowire('%env(DUNGAP_GOSS_RETRY_TIMEOUT)%')]
@@ -35,7 +36,7 @@ final class ServiceValidator implements GossServiceValidatorInterface
     ) {
     }
 
-    public function validate(GossConfigFileInterface $configFile): GossReportInterface
+    public function validate(GossConfigFileInterface $configFile): ?GossReportInterface
     {
         $executableFile = $this->executableFile;
 
@@ -83,17 +84,13 @@ final class ServiceValidator implements GossServiceValidatorInterface
 
         $process->run($callback);
 
-
-        $this->logger->info("Goss Output\n{0}", [$output]);
-
         try {
-            if(
-                preg_match_all('/{"results.*}$/im', $output, $matches)
-            ){
+            $json = "{}";
+            if(preg_match_all('/{"results.*}$/im', $output, $matches)){
                 $num = count($matches[0]);
                 $json = $matches[0][$num-1];
-                return $this->reportFactory->create($json);
             }
+            return $this->reportFactory->create($json);
         } catch (\Exception $e) {
             throw GossException::createOutputFailed($output, $e->getMessage());
         }

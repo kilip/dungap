@@ -12,6 +12,7 @@
 namespace Dungap\Bridge\Goss\Contracts;
 
 use Dungap\Bridge\Goss\Report\Summary;
+use Dungap\Contracts\Service\ServiceInterface;
 
 interface GossReportInterface
 {
@@ -23,4 +24,6 @@ interface GossReportInterface
     public function getResults(): iterable;
 
     public function hasResult(GossConfigInterface $config): bool;
+
+    public function findByService(ServiceInterface $service): ?GossResultInterface;
 }
