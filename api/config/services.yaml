@@ -3,8 +3,12 @@
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+#imports:
+#  - { resource: dungap/ }
+
 parameters:
-  dungap.cache_dir: '%kernel.cache_dir%/dungap'
+  dungap.config_dir: /dungap
+
 services:
   # default configuration for services in *this* file
   _defaults:
@@ -16,18 +20,9 @@ services:
   Dungap\:
     resource: "../src/"
     exclude:
-      - "../src/DependencyInjection/"
-      - "../src/*/Entity/"
       - "../src/Kernel.php"
-      - "../src/Setting/Config/Definition"
+      - "../src/Core/DI/"
+      - "../src/Node/DI/"
 
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
-
-  Dungap\DataFixtures\:
-    resource: "../fixtures"
-
-  dungap.device.scanner:
-    class: Dungap\Bridge\RouterOS\DeviceScanner
-  dungap.device.online_checker:
-    class: Dungap\Bridge\RouterOS\Service\OnlineChecker

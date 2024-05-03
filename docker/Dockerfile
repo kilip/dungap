@@ -17,10 +17,9 @@ RUN set -eux; \
         redis \
         pcov \
         bcmath \
+        sockets \
+        sqlite3 \
     ;
-
-# Install goss latest version to /usr/local/bin
-RUN curl -fsSL https://goss.rocks/install | sh
 
 FROM upstream AS base
 # api start
@@ -39,6 +38,8 @@ COPY --link docker/supervisor.d/tasks.ini /etc/supervisor.d/
 COPY --link docker/supervisord.conf /etc/
 
 VOLUME /var/log/dungap
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 ENTRYPOINT ["api-entrypoint"]
 
@@ -72,6 +73,8 @@ COPY --link docker/supervisor.d/caddy.dev.ini /etc/supervisor.d/
 COPY --link docker/supervisor.d/pwa.dev.ini /etc/supervisor.d/
 # dev stage end
 
+WORKDIR /srv/api
+
 FROM base as pwa-src
 COPY --link ./pwa /srv/pwa
 
@@ -101,10 +104,10 @@ RUN set -eux; \
 COPY --link ./api /srv/api
 RUN set -eux; \
 	mkdir -p var/cache var/log; \
-	composer dump-autoload --classmap-authoritative --no-dev; \
+    composer dump-autoload --classmap-authoritative --no-dev; \
 	composer dump-env prod; \
-	composer run-script --no-dev post-install-cmd; \
-	chmod +x /srv/api/bin/console; sync;
+	#composer run-script --no-dev post-install-cmd; \
+	chmod +x bin/console; sync;
 # api end
 
 # pwa start
@@ -115,7 +118,8 @@ COPY --from=pwa-build --link /srv/pwa/public /srv/pwa/public
 COPY --from=pwa-build --link /srv/pwa/package.json /srv/pwa/
 # pwa end
 
-WORKDIR /
+WORKDIR /srv/api
+
 COPY --link docker/supervisor.d/caddy.prod.ini /etc/supervisor.d/
 COPY --link docker/supervisor.d/pwa.prod.ini /etc/supervisor.d/
 

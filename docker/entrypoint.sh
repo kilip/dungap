@@ -15,6 +15,9 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 	setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
 fi
 
-php bin/console doctrine:schema:update --force --complete
+echo $DUNGAP_DATABASE_DSN
+
+php bin/console doctrine:database:create
+php bin/console doctrine:schema:update --force --complete -vvv
 
 exec docker-php-entrypoint "$@"

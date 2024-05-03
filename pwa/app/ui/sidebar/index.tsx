@@ -112,7 +112,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
               Dashboard
             </MenuItem>
 
-            <MenuItem linkTo="/devices">
+            <MenuItem linkTo="/nodes">
               <svg
                 className="fill-current"
                 width="18"
@@ -138,7 +138,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
                   fill=""
                 />
               </svg>
-              Devices
+              Nodes
             </MenuItem>
 
             <MenuItem linkTo={user ? "/auth/logout" : "/auth/authentik"}>

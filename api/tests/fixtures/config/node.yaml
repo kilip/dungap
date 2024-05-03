@@ -1,0 +1,10 @@
+node:
+  hosts:
+    - name: ares
+      ip: 127.0.0.1
+    - name: zeus
+      ip: 127.0.0.2
+    - name: hera
+      ip: 127.0.0.3
+    - name: mars
+      ip: 127.0.0.4

@@ -1,8 +1,8 @@
 {
-	{$CADDY_GLOBAL_OPTIONS}
+	{$DUNGAP_CADDY_GLOBAL_OPTIONS}
 
 	frankenphp {
-		{$FRANKENPHP_CONFIG}
+		{$DUNGAP_FRANKENPHP_CONFIG}
 	}
 
 	# https://caddyserver.com/docs/caddyfile/directives#sorting-algorithm
@@ -11,9 +11,9 @@
 	order php_server before file_server
 }
 
-{$CADDY_EXTRA_CONFIG}
+{$DUNGAP_CADDY_EXTRA_CONFIG}
 
-{$SERVER_NAME:localhost} {
+{$DUNGAP_SERVER_NAME:localhost} {
 	log {
 		# Redact the authorization query parameter that can be set by Mercure
 		format filter {
@@ -49,15 +49,15 @@
 		# Transport to use (default to Bolt)
 		transport_url {$MERCURE_TRANSPORT_URL:bolt:///data/mercure.db}
 		# Publisher JWT key
-		publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
+		publisher_jwt {env.DUNGAP_JWT_SECRET} {env.MERCURE_PUBLISHER_JWT_ALG}
 		# Subscriber JWT key
-		subscriber_jwt {env.MERCURE_SUBSCRIBER_JWT_KEY} {env.MERCURE_SUBSCRIBER_JWT_ALG}
+		subscriber_jwt {env.DUNGAP_JWT_SECRET} {env.MERCURE_SUBSCRIBER_JWT_ALG}
 		# Allow anonymous subscribers (double-check that it's what you want)
 		anonymous
 		# Enable the subscription API (double-check that it's what you want)
 		subscriptions
 		# Extra directives
-		{$MERCURE_EXTRA_DIRECTIVES}
+		{$DUNGAP_MERCURE_EXTRA_DIRECTIVES}
 	}
 
 	vulcain
@@ -79,13 +79,12 @@
 	|| query({'_data': '*'})
 	|| path('/favicon.ico', '/app/*', '/node_modules/*', '/@id/*', '/@vite/*', '/assets/*')
 	|| path('/img/*')
-	|| path('*.svg', '*.png')
 	|| query({'_rsc': '*'})
 	`
 
 	# Comment the following line if you don't want Next.js to catch requests for HTML documents.
 	# In this case, they will be handled by the PHP app.
-	reverse_proxy @pwa http://{$PWA_UPSTREAM}
+	reverse_proxy @pwa http://{$DUNGAP_PWA_UPSTREAM}
 
 	php_server
 }

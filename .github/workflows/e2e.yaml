@@ -17,9 +17,9 @@ on:
 env:
   APP_ENV: prod
   IMAGE_PREFIX: ghcr.io/kilip/dungap
-  DATABASE_URL: postgres://dungap:dungap-rocks@localhost/dungap
   PGPASSWORD: dungap-rocks
-  MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
+  DUNGAP_DATABASE_DSN: postgres://dungap:dungap-rocks@localhost/dungap
+  DUNGAP_MESSENGER_TRANSPORT: doctrine://default?auto_setup=0
 
 permissions:
   contents: read
@@ -57,8 +57,8 @@ jobs:
       - name: Prepare Goss Tests
         shell: bash
         run: |-
-          echo "DATABASE_URL=${DATABASE_URL}" >> .env.goss
-          echo "MESSENGER_TRANSPORT_DSN=${MESSENGER_TRANSPORT_DSN}" >> .env.goss
+          echo "DUNGAP_DATABASE_DSN=${DUNGAP_DATABASE_DSN}" >> .env.goss
+          echo "DUNGAP_MESSENGER_TRANSPORT=${DUNGAP_MESSENGER_TRANSPORT}" >> .env.goss
           mkdir -p vars/log
           cp .env.goss vars/log/
           docker run \

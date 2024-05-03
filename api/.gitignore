@@ -1,6 +1,4 @@
 ###> dungap ###
-config/ssh/*
-!config/ssh/.gitkeep
 config/dungap/*
 !config/dungap/.gitkeep
 ###< dungap ###
@@ -15,6 +13,10 @@ config/dungap/*
 /vendor/
 ###< symfony/framework-bundle ###
 
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
+
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
 /phpunit.xml
@@ -25,16 +27,8 @@ config/dungap/*
 .phpunit.result.cache
 ###< phpunit/phpunit ###
 
-###> phpstan/phpstan ###
-phpstan.neon
-###< phpstan/phpstan ###
-
 ###> friendsofphp/php-cs-fixer ###
 /.php-cs-fixer.php
 /.php-cs-fixer.cache
 /.php-cs-fixer.result.cache
 ###< friendsofphp/php-cs-fixer ###
-
-###> lexik/jwt-authentication-bundle ###
-/config/jwt/*.pem
-###< lexik/jwt-authentication-bundle ###

@@ -1,5 +1,0 @@
-when@dev:
-  maker:
-    root_namespace: Dungap
-
-#when@test: *dev

@@ -85,7 +85,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           tools: pecl, composer
-          extensions: intl, bcmath, curl, openssl, mbstring, pdo_sqlite, mongodb
+          extensions: intl, bcmath, curl, openssl, mbstring, pdo_sqlite, sockets
           coverage: pcov
           ini-values: memory_limit=-1
 
