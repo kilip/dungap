@@ -3,7 +3,7 @@ import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { getSession } from "~/auth/session.server";
 import { PagedCollection } from "~/types/collection";
-import { Device } from "~/types/device";
+import { Node } from "~/types/node";
 import { fetchApi, FetchResponse } from "~/utils/api";
 import { useMercure } from "~/utils/mercure";
 
@@ -17,34 +17,34 @@ export const meta: MetaFunction = () => {
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get("cookie"));
   const user = session.get("user");
-  let devices: PagedCollection<Device> | undefined = undefined;
+  let nodes: PagedCollection<Node> | undefined = undefined;
   let hubUrl: string | null = null;
 
-  const response: FetchResponse<PagedCollection<Device>> | undefined =
-    await fetchApi("/devices", {}, session);
+  const response: FetchResponse<PagedCollection<Node>> | undefined =
+    await fetchApi("/nodes", {}, session);
 
   if (response?.data) {
-    devices = response.data;
+    nodes = response.data;
     hubUrl = response.hubURL;
   }
 
   return {
     user,
-    devices,
+    nodes,
     hubUrl,
   };
 }
 
 export default function Index() {
   // const { user } = useLoaderData<typeof loader>();
-  const { devices, hubUrl } = useLoaderData<typeof loader>();
-  const collection = useMercure(devices, hubUrl);
+  const { nodes, hubUrl } = useLoaderData<typeof loader>();
+  const collection = useMercure(nodes, hubUrl);
   return (
     <Flex direction="column">
       <Heading size="4">Dashboard</Heading>
       <Grid columns="4" gap="2" width="auto">
-        {collection?.["hydra:member"].map((device) => (
-          <Box key={device.id}>{device.ipAddress}</Box>
+        {collection?.["hydra:member"].map((node) => (
+          <Box key={node.id}>{node.ip}</Box>
         ))}
       </Grid>
     </Flex>

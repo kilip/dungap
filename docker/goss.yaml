@@ -31,7 +31,7 @@ http:
     headers:
       - "Content-Type: text/html"
   api:
-    url: https://localhost/devices
+    url: https://localhost/nodes
     status: 200
     allow-insecure: true
     timeout: 5000

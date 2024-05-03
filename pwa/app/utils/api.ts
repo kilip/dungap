@@ -2,7 +2,7 @@ import { Session } from "@remix-run/node";
 import { MimeType } from "~/types/common";
 
 export const MIME_TYPE = "application/ld+json";
-export const ENTRYPOINT = process.env.API_ENTRYPOINT ?? 'https://localhost';
+export const ENTRYPOINT = process.env.DUNGAP_API_ENTRYPOINT ?? 'https://localhost';
 
 export interface FetchResponse<TData> {
   hubURL: string | null;

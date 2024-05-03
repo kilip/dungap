@@ -1,40 +1,36 @@
+core:
+  config_dirs: /config
+node:
+  hosts: []
+
 doctrine:
   orm:
     mappings:
-      Device:
+      Node:
         type: attribute
         is_bundle: false
-        dir: "%kernel.project_dir%/src/Device/Entity"
-        prefix: 'Dungap\Device\Entity'
+        dir: "%kernel.project_dir%/src/Node/Entity"
+        prefix: 'Dungap\Node\Entity'
         alias: Node
-      User:
+      State:
         type: attribute
         is_bundle: false
-        dir: "%kernel.project_dir%/src/User/Entity"
-        prefix: 'Dungap\User\Entity'
-        alias: User
-      Feature:
-        type: attribute
-        is_bundle: false
-        dir: "%kernel.project_dir%/src/Feature/Entity"
-        prefix: 'Dungap\Feature\Entity'
-        alias: Feature
-      Setting:
-        type: attribute
-        is_bundle: false
-        dir: "%kernel.project_dir%/src/Setting/Entity"
-        prefix: 'Dungap\Setting\Entity'
-        alias: Setting
+        dir: "%kernel.project_dir%/src/State/Entity"
+        prefix: 'Dungap\State\Entity'
+        alias: State
     resolve_target_entities:
-      Dungap\Contracts\Device\CategoryInterface: Dungap\Device\Entity\Category
-      Dungap\Contracts\Device\DeviceInterface: Dungap\Device\Entity\Device
-      Dungap\Contracts\User\UserInterface: Dungap\User\Entity\User
-      Dungap\Contracts\Feature\FeatureInterface: Dungap\Feature\Entity\Feature
-
+      Dungap\Contracts\Node\NodeInterface: Dungap\Node\Entity\Node
+      Dungap\Contracts\State\StateInterface: Dungap\State\Entity\State
 
 api_platform:
   resource_class_directories:
-    - '%kernel.project_dir%/src/Device/Entity'
-    - '%kernel.project_dir%/src/Feature/Entity'
-    - '%kernel.project_dir%/src/User/Entity'
-    - '%kernel.project_dir%/src/Setting/Entity'
+    - "%kernel.project_dir%/src/Node/Entity"
+    - "%kernel.project_dir%/src/State/Entity"
+  mercure:
+    include_type: true
+
+when@dev: &dev
+  core:
+    config_dirs: "../tests/fixtures/config"
+
+when@test: *dev

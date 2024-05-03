@@ -12,14 +12,14 @@ services:
       - ./vars/log:/var/log/dungap
       # - /app/vendor
     environment:
-      MERCURE_EXTRA_DIRECTIVES: demo
+      DUNGAP_MERCURE_EXTRA_DIRECTIVES: demo
       # See https://xdebug.org/docs/all_settings#mode
       XDEBUG_MODE: "${XDEBUG_MODE:-off}"
+    env_file:
+      - .env
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
     tty: true
-    cap_add:
-      - NET_ADMIN
     ports:
       - 5173:5173

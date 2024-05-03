@@ -11,10 +11,20 @@
 
 namespace Dungap;
 
+use Dungap\Core\DI\CoreExtension;
+use Dungap\Node\DI\NodeExtension;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 
 class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
+
+    protected function prepareContainer(ContainerBuilder $container): void
+    {
+        parent::prepareContainer($container);
+        $container->registerExtension(new CoreExtension());
+        $container->registerExtension(new NodeExtension());
+    }
 }

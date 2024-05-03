@@ -2,7 +2,7 @@ import { Session } from "@remix-run/node";
 import { describe, expect, it, vi } from "vitest";
 import { mock } from 'vitest-mock-extended';
 import { RequestMethod } from "~/types/common";
-import { Device } from "~/types/device";
+import { Node } from "~/types/node";
 import { FetchResponse, fetchApi } from "./api";
 import { Payload, create, remove, update } from "./crud";
 
@@ -21,15 +21,15 @@ describe('create()', () => {
 
     api.fetchApi = vi.fn().mockResolvedValue(expectedResponse);
 
-    const payload: Payload<Device> = {
-      nickname: 'test',
-      ipAddress: 'ip',
-      macAddress: 'mac',
+    const payload: Payload<Node> = {
+      name: 'test',
+      ip: 'ip',
+      mac: 'mac',
     };
-    const response: FetchResponse<Device> | undefined = await create('/devices', payload, session);
+    const response: FetchResponse<Node> | undefined = await create('/nodes', payload, session);
 
     expect(api.fetchApi).toBeCalledWith(
-      '/devices',
+      '/nodes',
       {
         method: RequestMethod.POST,
         body: JSON.stringify(payload),
@@ -50,12 +50,12 @@ describe('update()', () => {
       hubURL: 'some-url'
     };
     api.fetchApi = vi.fn().mockResolvedValue(expectedResponse);
-    const payload = { nickname: 'test' };
-    const r: FetchResponse<Device> | undefined = await update('/devices/id', payload, session);
+    const payload = { name: 'test' };
+    const r: FetchResponse<Node> | undefined = await update('/nodes/id', payload, session);
 
     expect(api.fetchApi).toHaveBeenCalledOnce();
     expect(api.fetchApi).toBeCalledWith(
-      '/devices/id',
+      '/nodes/id',
       {
         method: 'PATCH',
         body: JSON.stringify(payload)
@@ -72,9 +72,9 @@ describe('remove()', () => {
     const api = await import('./api');
     api.fetchApi = vi.fn().mockResolvedValue(undefined);
 
-    const r = await remove('/devices/id', session);
+    const r = await remove('/nodes/id', session);
     expect(fetchApi).toHaveBeenCalledOnce();
-    expect(fetchApi).toHaveBeenCalledWith('/devices/id', {
+    expect(fetchApi).toHaveBeenCalledWith('/nodes/id', {
       method: 'DELETE'
     }, session);
     expect(r).toBeUndefined();

@@ -1,8 +1,2 @@
-api_login_check:
-  path: /login-check
-
-device:
-  resource:
-    path: ../src/Device/Controller/
-    namespace: Dungap\Device\Controller
-  type: attribute
+#controllers:
+#  type: attribute
