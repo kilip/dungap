@@ -45,6 +45,14 @@ class Service implements ServiceInterface
     #[ORM\Column(type: 'integer')]
     private int $port;
 
+    #[ORM\Column(type: 'integer')]
+    private int $timeout = 500;
+
+    public function getStateName(): string
+    {
+        return 'node.service.'.$this->port;
+    }
+
     public function getNode(): NodeInterface
     {
         return $this->node;
@@ -63,5 +71,15 @@ class Service implements ServiceInterface
     public function setPort(int $port): void
     {
         $this->port = $port;
+    }
+
+    public function getTimeout(): int
+    {
+        return $this->timeout;
+    }
+
+    public function setTimeout(int $timeout): void
+    {
+        $this->timeout = $timeout;
     }
 }

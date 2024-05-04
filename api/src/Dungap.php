@@ -23,4 +23,5 @@ class Dungap
     public const OnNodeAdded = 'onNodeAdded';
     public const OnStateUpdated = 'onStateUpdated';
     public const OnServiceScanned = 'onServiceScanned';
+    public const OnServiceValidated = 'onServiceValidated';
 }

@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Contracts\Service;
+namespace Dungap\Service\Command;
 
-use Dungap\Contracts\Node\NodeInterface;
-
-interface ServiceValidatorInterface
+class ServiceCheckCommand
 {
-    public function validate(NodeInterface $node, int $port, int $timeout = null): ServiceReportInterface;
+    public function __construct()
+    {
+    }
 }

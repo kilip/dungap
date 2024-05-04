@@ -16,6 +16,8 @@ use Dungap\Contracts\Node\NodeInterface;
 
 interface ServiceInterface extends IdentifiableInterface
 {
+    public function getStateName(): string;
+
     public function setNode(NodeInterface $node): void;
 
     public function getNode(): NodeInterface;
@@ -23,4 +25,8 @@ interface ServiceInterface extends IdentifiableInterface
     public function setPort(int $port): void;
 
     public function getPort(): int;
+
+    public function setTimeout(int $timeout): void;
+
+    public function getTimeout(): int;
 }

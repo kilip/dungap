@@ -66,7 +66,7 @@ class CheckOnlineNodesHandlerTest extends TestCase
 
     public function testInvoke(): void
     {
-        $this->dispatcher->expects($this->exactly(2))
+        $this->dispatcher->expects($this->exactly(1))
             ->method('dispatch')
             ->with($this->isInstanceOf(StateUpdatedEvent::class));
         $this->onlineChecker->expects($this->once())

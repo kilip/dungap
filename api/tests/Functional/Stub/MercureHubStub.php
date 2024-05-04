@@ -1,19 +1,27 @@
 <?php
 
+/*
+ * This file is part of the dungap project.
+ *
+ * (c) Anthonius Munthi <me@itstoni.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Dungap\Tests\Functional\Stub;
 
 use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Jwt\StaticTokenProvider;
 use Symfony\Component\Mercure\Jwt\TokenFactoryInterface;
 use Symfony\Component\Mercure\Jwt\TokenProviderInterface;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Uid\Uuid;
-use Symfony\Component\Mercure\Jwt\StaticTokenProvider;
 
 class MercureHubStub implements HubInterface
 {
     public function __construct(
-    )
-    {
+    ) {
     }
 
     public function getUrl(): string

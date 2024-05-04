@@ -40,7 +40,7 @@ class ServiceScannerTest extends TestCase
             $validator,
             $this->dispatcher,
             [
-                ['port' => 80, 'timeout' => 500]
+                ['port' => 80, 'timeout' => 500],
             ]
         );
 

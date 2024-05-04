@@ -19,7 +19,6 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\State\StateInterface;
-use Dungap\Contracts\State\StateRepositoryInterface;
 use Dungap\State\Repository\StateRepository;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;

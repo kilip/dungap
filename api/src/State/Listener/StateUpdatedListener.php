@@ -50,6 +50,7 @@ class StateUpdatedListener
             $state->setName($event->name);
             $state->setRelId($event->relId);
             $state->setState($event->state);
+            $state->setAttributes($event->attributes);
             $this->states->save($state);
         } catch (\Exception $e) {
             throw StateException::updateStateFailed($event->name, $event->state, $e->getMessage());

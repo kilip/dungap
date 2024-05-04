@@ -20,4 +20,9 @@ use Dungap\Contracts\Node\NodeInterface;
 interface ServiceRepositoryInterface extends RepositoryInterface
 {
     public function findByNodePort(NodeInterface $node, int $port): ?ServiceInterface;
+
+    /**
+     * @return array<ServiceInterface>
+     */
+    public function findAll(): array;
 }

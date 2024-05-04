@@ -24,45 +24,44 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ServiceScannedListenerTest extends TestCase
 {
-    private MockObject|NodeInterface $node;
-    private MockObject|ServiceReportInterface $report;
     private MockObject|ServiceRepositoryInterface $services;
     private MockObject|ServiceInterface $service;
-    private MockObject|EventDispatcherInterface $dispatcher;
 
     private ServiceScannedEvent $event;
     private ServiceScannedListener $listener;
 
     protected function setUp(): void
     {
-        $this->node = $this->createMock(NodeInterface::class);
-        $this->report = $this->createMock(ServiceReportInterface::class);
+        $node = $this->createMock(NodeInterface::class);
+        $report = $this->createMock(ServiceReportInterface::class);
         $this->services = $this->createMock(ServiceRepositoryInterface::class);
         $this->service = $this->createMock(ServiceInterface::class);
-        $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->listener = new ServiceScannedListener(
             $this->services,
-            $this->dispatcher
+            $dispatcher
         );
 
         $this->event = new ServiceScannedEvent(
-            $this->report
+            $report
         );
 
-        $this->report->method('getPort')
+        $report->method('getPort')
             ->willReturn(80);
-        $this->report->method('isSuccessful')
+        $report->method('isSuccessful')
             ->willReturn(true);
-        $this->report->method('getNode')
-            ->willReturn($this->node);
+        $report->method('getNode')
+            ->willReturn($node);
 
         $this->services->method('findByNodePort')
-            ->with($this->node, 80)
+            ->with($node, 80)
             ->willReturn(null);
 
         $this->service->method('getId')
             ->willReturn(Uuid::v7());
-        $this->node->method('getId')
+        $this->service->method('getStateName')
+            ->willReturn('node.service.80');
+        $node->method('getId')
             ->willReturn(Uuid::v7());
     }
 

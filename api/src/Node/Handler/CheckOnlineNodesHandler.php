@@ -63,17 +63,11 @@ final readonly class CheckOnlineNodesHandler
             $node->getId(),
             Dungap::NodeOnlineStateName,
             $state,
+            [
+                'latency' => $report->latency,
+            ]
         );
 
         $this->dispatcher->dispatch($event, Dungap::OnStateUpdated);
-
-        if ($report->success) {
-            $event = new StateUpdatedEvent(
-                $node->getId(),
-                Dungap::NodeLatencyState,
-                strval($report->latency)
-            );
-            $this->dispatcher->dispatch($event, Dungap::OnStateUpdated);
-        }
     }
 }

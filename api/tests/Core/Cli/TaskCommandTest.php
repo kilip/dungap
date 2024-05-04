@@ -12,10 +12,8 @@
 namespace Dungap\Tests\Core\Cli;
 
 use Dungap\Contracts\Core\TaskRunnerInterface;
-use Dungap\Contracts\Service\ServiceScannerInterface;
 use Dungap\Core\Cli\TaskCommand;
 use Dungap\Dungap;
-use Dungap\Service\Service\ServiceScanner;
 use Dungap\Tests\Concern\ContainerConcern;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
