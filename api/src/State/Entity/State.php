@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\State\StateInterface;
 use Dungap\Contracts\State\StateRepositoryInterface;
+use Dungap\State\Repository\StateRepository;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
@@ -29,11 +30,11 @@ use Symfony\Component\Uid\Uuid;
         new GetCollection(),
         new Get(),
         new Patch(security: 'is_granted("ROLE_ADMIN")'),
-        new Delete(security: 'is_granted("ROLE_ADMIN")')
+        new Delete(security: 'is_granted("ROLE_ADMIN")'),
     ],
     mercure: true
 )]
-#[ORM\Entity(repositoryClass: StateRepositoryInterface::class)]
+#[ORM\Entity(repositoryClass: StateRepository::class)]
 class State implements StateInterface
 {
     #[ORM\Id]

@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Core\Entity\UuidConcern;
+use Dungap\Node\Listener\NodeEntityListener;
 
 #[ApiResource(
     operations: [
@@ -27,17 +28,23 @@ use Dungap\Core\Entity\UuidConcern;
         new GetCollection(),
         new Get(),
         new Patch(security: 'is_granted("ROLE_ADMIN")'),
-        new Delete(security: 'is_granted("ROLE_ADMIN")')
+        new Delete(security: 'is_granted("ROLE_ADMIN")'),
     ],
     mercure: true
 )]
 #[ORM\Entity()]
+#[ORM\EntityListeners([
+    NodeEntityListener::class,
+])]
 class Node implements NodeInterface
 {
     use UuidConcern;
 
     #[ORM\Column(type: 'string')]
     private string $name;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $hostname = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $ip = null;
@@ -47,6 +54,10 @@ class Node implements NodeInterface
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $note = null;
+
+    private bool $online = false;
+
+    private ?float $latency = null;
 
     public function getName(): string
     {
@@ -86,5 +97,35 @@ class Node implements NodeInterface
     public function setNote(?string $note): void
     {
         $this->note = $note;
+    }
+
+    public function isOnline(): bool
+    {
+        return $this->online;
+    }
+
+    public function setOnline(bool $online): void
+    {
+        $this->online = $online;
+    }
+
+    public function getHostname(): ?string
+    {
+        return $this->hostname;
+    }
+
+    public function setHostname(?string $hostname): void
+    {
+        $this->hostname = $hostname;
+    }
+
+    public function getLatency(): ?float
+    {
+        return $this->latency;
+    }
+
+    public function setLatency(?float $latency): void
+    {
+        $this->latency = $latency;
     }
 }

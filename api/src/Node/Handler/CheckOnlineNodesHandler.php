@@ -65,7 +65,7 @@ final readonly class CheckOnlineNodesHandler
             $state,
         );
 
-        $this->dispatcher->dispatch($event, Dungap::OnStateChanged);
+        $this->dispatcher->dispatch($event, Dungap::OnStateUpdated);
 
         if ($report->success) {
             $event = new StateUpdatedEvent(
@@ -73,7 +73,7 @@ final readonly class CheckOnlineNodesHandler
                 Dungap::NodeLatencyState,
                 strval($report->latency)
             );
-            $this->dispatcher->dispatch($event, Dungap::OnStateChanged);
+            $this->dispatcher->dispatch($event, Dungap::OnStateUpdated);
         }
     }
 }

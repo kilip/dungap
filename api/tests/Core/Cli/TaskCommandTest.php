@@ -12,10 +12,16 @@
 namespace Dungap\Tests\Core\Cli;
 
 use Dungap\Contracts\Core\TaskRunnerInterface;
+use Dungap\Contracts\Service\ServiceScannerInterface;
+use Dungap\Core\Cli\TaskCommand;
+use Dungap\Dungap;
+use Dungap\Service\Service\ServiceScanner;
 use Dungap\Tests\Concern\ContainerConcern;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class TaskCommandTest extends KernelTestCase
 {
@@ -29,7 +35,13 @@ class TaskCommandTest extends KernelTestCase
     public function testRun(): void
     {
         $runner = $this->createMock(TaskRunnerInterface::class);
+        $dispatcher = $this->createMock(EventDispatcher::class);
         static::getContainer()->set(TaskRunnerInterface::class, $runner);
+        static::getContainer()->set(EventDispatcherInterface::class, $dispatcher);
+
+        $dispatcher->expects($this->once())
+            ->method('dispatch')
+            ->with($this->isInstanceOf(TaskCommand::class), Dungap::OnTaskPreRun);
 
         $app = new Application(self::$kernel);
         $command = $app->find('dungap:task:run');

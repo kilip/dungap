@@ -36,7 +36,7 @@ class CoreExtension extends AbstractExtension
         $projectDir = $builder->getParameter('kernel.project_dir');
         $configDir = $builder->getParameter('dungap.config_dir');
         $configDir = str_replace('%kernel.project_dir%', $projectDir, $configDir);
-        if (is_dir($configDir)) {
+        if (is_dir(realpath($configDir))) {
             $container->import($configDir.'/');
         }
     }

@@ -28,6 +28,7 @@ class TaskRunnerTest extends TestCase
     {
         $this->task = $this->createMock(TaskInterface::class);
         $this->output = $this->createMock(OutputInterface::class);
+
         $this->runner = new TaskRunner([$this->task]);
 
         $this->task->method('getInterval')

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Node\DI;
+namespace Dungap\Service\DI;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -19,27 +19,30 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $builder = new TreeBuilder('node');
+        $builder = new TreeBuilder('service');
+
         $rootNode = $builder->getRootNode();
 
-        $this->addHostsSection($rootNode);
+        $this->addScannerSection($rootNode);
 
         return $builder;
     }
 
-    private function addHostsSection(ArrayNodeDefinition $rootNode): void
+    private function addScannerSection(ArrayNodeDefinition $node): void
     {
-        $rootNode
+        $node
             ->children()
-                ->arrayNode('hosts')
-                    ->defaultValue([])
+                ->arrayNode('scanner')
+                    ->useAttributeAsKey('port', false)
                     ->arrayPrototype()
                         ->children()
-                            ->scalarNode('name')->isRequired()->cannotBeEmpty()->end()
-                            ->scalarNode('ip')->defaultNull()->end()
-                            ->scalarNode('hostname')->defaultNull()->end()
-                            ->scalarNode('mac')->defaultNull()->end()
-                            ->scalarNode('note')->defaultNull()->end()
+                            ->scalarNode('port')
+                                ->isRequired()
+                                ->cannotBeEmpty()
+                            ->end()
+                            ->scalarNode('timeout')
+                                ->defaultValue(500)
+                            ->end()
                         ->end()
                     ->end()
                 ->end()

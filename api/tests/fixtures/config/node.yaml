@@ -1,3 +1,8 @@
+service:
+  scanner:
+    - port: 22
+    - port: 80
+    - port: 443
 node:
   hosts:
     - name: ares
@@ -7,4 +12,4 @@ node:
     - name: hera
       ip: 127.0.0.3
     - name: mars
-      ip: 127.0.0.4
+      ip: 10.0.1.11

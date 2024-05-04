@@ -2,7 +2,9 @@ core:
   config_dirs: /config
 node:
   hosts: []
-
+service:
+  scanner:
+    - port: 22
 doctrine:
   orm:
     mappings:
@@ -18,14 +20,22 @@ doctrine:
         dir: "%kernel.project_dir%/src/State/Entity"
         prefix: 'Dungap\State\Entity'
         alias: State
+      Service:
+        type: attribute
+        is_bundle: false
+        dir: "%kernel.project_dir%/src/Service/Entity"
+        prefix: 'Dungap\Service\Entity'
+        alias: Service
     resolve_target_entities:
       Dungap\Contracts\Node\NodeInterface: Dungap\Node\Entity\Node
       Dungap\Contracts\State\StateInterface: Dungap\State\Entity\State
+      Dungap\Contracts\Service\ServiceInterface: Dungap\Service\Entity\Service
 
 api_platform:
   resource_class_directories:
     - "%kernel.project_dir%/src/Node/Entity"
     - "%kernel.project_dir%/src/State/Entity"
+    - "%kernel.project_dir%/src/Service/Entity"
   mercure:
     include_type: true
 

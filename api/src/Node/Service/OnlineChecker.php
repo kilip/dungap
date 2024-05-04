@@ -15,19 +15,18 @@ use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Contracts\Node\OnlineCheckerInterface;
 use Dungap\Node\State\PingReport;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Stopwatch\Stopwatch;
 
 final readonly class OnlineChecker implements OnlineCheckerInterface
 {
     public function __construct(
         private int $timeout = 1
-    )
-    {
+    ) {
     }
 
     public function check(NodeInterface $node): PingReport
     {
-        return $this->ping($node->getIp());
+        $address = $node->getIp() ?? $node->getHostname();
+        return $this->ping($address);
     }
 
     private function ping(string $host): PingReport
@@ -36,25 +35,25 @@ final readonly class OnlineChecker implements OnlineCheckerInterface
         $timeout = $this->timeout;
 
         // @codeCoverageIgnoreStart
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if ('WIN' === strtoupper(substr(PHP_OS, 0, 3))) {
             // -n = number of pings; -i = ttl; -w = timeout (in milliseconds).
-            $commands = 'ping -n 1 -i ' . $ttl . ' -w ' . ($timeout * 1000) . ' ' . $host;
+            $commands = 'ping -n 1 -i '.$ttl.' -w '.($timeout * 1000).' '.$host;
         }
         // Exec string for Darwin based systems (OS X).
-        else if(strtoupper(PHP_OS) === 'DARWIN') {
+        elseif ('DARWIN' === strtoupper(PHP_OS)) {
             // -n = numeric output; -c = number of pings; -m = ttl; -t = timeout.
-            $commands = 'ping -n -c 1 -m ' . $ttl . ' -t ' . $timeout . ' ' . $host;
+            $commands = 'ping -n -c 1 -m '.$ttl.' -t '.$timeout.' '.$host;
         }
         // Exec string for other UNIX-based systems (Linux).
         else {
             // -n = numeric output; -c = number of pings; -t = ttl; -W = timeout
-            $commands = 'ping -n -c 1 -t ' . $ttl . ' -W ' . $timeout . ' ' . $host . ' 2>&1';
+            $commands = 'ping -n -c 1 -t '.$ttl.' -W '.$timeout.' '.$host.' 2>&1';
         }
         // @codeCoverageIgnoreEnd
 
         $process = Process::fromShellCommandline($commands);
         $output = '';
-        $exitCode = $process->run(function($type, $buffer) use (&$output){
+        $exitCode = $process->run(function ($type, $buffer) use (&$output) {
             $output .= $buffer;
         });
 
@@ -67,7 +66,7 @@ final readonly class OnlineChecker implements OnlineCheckerInterface
         }
 
         return new PingReport(
-            $exitCode === 0,
+            0 === $exitCode,
             $latency
         );
     }
