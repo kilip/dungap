@@ -26,6 +26,12 @@ doctrine:
         dir: "%kernel.project_dir%/src/Service/Entity"
         prefix: 'Dungap\Service\Entity'
         alias: Service
+      User:
+        type: attribute
+        is_bundle: false
+        dir: "%kernel.project_dir%/src/User/Entity"
+        prefix: 'Dungap\User\Entity'
+        alias: User
     resolve_target_entities:
       Dungap\Contracts\Node\NodeInterface: Dungap\Node\Entity\Node
       Dungap\Contracts\State\StateInterface: Dungap\State\Entity\State
@@ -38,6 +44,15 @@ api_platform:
     - "%kernel.project_dir%/src/Service/Entity"
   mercure:
     include_type: true
+
+lexik_jwt_authentication:
+  secret_key: '%env(resolve:DUNGAP_SECURITY_JWT_SECRET_KEY)%'
+  public_key: '%env(resolve:DUNGAP_SECURITY_JWT_PUBLIC_KEY)%'
+  pass_phrase: '%env(DUNGAP_SECURITY_JWT_PASSPHRASE)%'
+  api_platform:
+    check_path: /api/jwt-check
+    username_path: email
+    password_path: security.credentials.password
 
 when@dev: &dev
   core:
