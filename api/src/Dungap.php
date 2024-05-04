@@ -21,5 +21,6 @@ class Dungap
 
     public const OnTaskPreRun = 'onTaskPreRun';
     public const OnNodeAdded = 'onNodeAdded';
-    public const OnStateChanged = 'onStateChanged';
+    public const OnStateUpdated = 'onStateUpdated';
+    public const OnServiceScanned = 'onServiceScanned';
 }

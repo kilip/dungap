@@ -19,6 +19,10 @@ interface NodeInterface extends IdentifiableInterface
 
     public function getName(): string;
 
+    public function setHostname(?string $hostname): void;
+
+    public function getHostname(): ?string;
+
     public function setIp(?string $ip): void;
 
     public function getIp(): ?string;
@@ -30,4 +34,12 @@ interface NodeInterface extends IdentifiableInterface
     public function setNote(?string $note): void;
 
     public function getNote(): ?string;
+
+    public function setOnline(bool $online): void;
+
+    public function isOnline(): bool;
+
+    public function getLatency(): ?float;
+
+    public function setLatency(?float $latency): void;
 }

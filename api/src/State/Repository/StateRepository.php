@@ -36,6 +36,6 @@ class StateRepository extends ServiceEntityRepository implements StateRepository
         return $this->findOneBy([
             'entityId' => $entityId,
             'name' => $name,
-        ]);
+        ], ['updatedAt' => 'DESC']);
     }
 }

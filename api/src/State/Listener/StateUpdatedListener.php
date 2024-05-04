@@ -18,7 +18,7 @@ use Dungap\State\Event\StateUpdatedEvent;
 use Dungap\State\StateException;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-#[AsEventListener(event: Dungap::OnStateChanged)]
+#[AsEventListener(event: Dungap::OnStateUpdated)]
 class StateUpdatedListener
 {
     public function __construct(
