@@ -11,6 +11,8 @@
 
 namespace Dungap\Service;
 
+use Dungap\Contracts\Service\ServiceInterface;
+
 class ServiceException extends \Exception
 {
     public static function serviceScanFailed(
@@ -23,6 +25,26 @@ class ServiceException extends \Exception
             $nodeName,
             $port,
             $error
+        ));
+    }
+
+    public static function failedToValidateService(ServiceInterface $service, \Exception $e): self
+    {
+        return new self(sprintf(
+            'Failed to validate service "%s":%s. Error: %s',
+            $service->getNode()->getName(),
+            $service->getPort(),
+            $e->getMessage(),
+        ));
+    }
+
+    public static function failedToDispatchValidatedEvent(ServiceInterface $service, \Exception $e): self
+    {
+        return new self(sprintf(
+            'Failed to dispatch validate event on service "%s":%s. Error: %s',
+            $service->getNode()->getName(),
+            $service->getPort(),
+            $e->getMessage(),
         ));
     }
 }

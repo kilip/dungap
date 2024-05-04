@@ -15,10 +15,14 @@ use Symfony\Component\Uid\Uuid;
 
 class StateUpdatedEvent
 {
+    /**
+     * @param array<string,mixed> $attributes
+     */
     public function __construct(
         public Uuid $entityId,
         public string $name,
         public string $state,
+        public array $attributes = [],
         public ?Uuid $relId = null
     ) {
     }

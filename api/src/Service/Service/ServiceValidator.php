@@ -18,8 +18,10 @@ use Dungap\Service\Data\ServiceReport;
 
 class ServiceValidator implements ServiceValidatorInterface
 {
-    public function validate(NodeInterface $node, int $port, int $timeout): ServiceReportInterface
+    public function validate(NodeInterface $node, int $port, int $timeout = null): ServiceReportInterface
     {
+        $timeout = $timeout ?? 1000;
+
         // TODO: Implement validate() method.
         return $this->doValidate($node, $port, $timeout);
     }
@@ -44,8 +46,9 @@ class ServiceValidator implements ServiceValidatorInterface
             node: $node,
             port: $port,
             successful: false !== $fp,
-            errorCode: $errno,
+            timeout: $timeout,
             error: $errmsg,
+            errorCode: $errno,
             latency: $latency
         );
     }

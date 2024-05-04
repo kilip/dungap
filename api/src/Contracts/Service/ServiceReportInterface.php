@@ -22,4 +22,6 @@ interface ServiceReportInterface
     public function getLatency(): ?float;
 
     public function isSuccessful(): bool;
+
+    public function getTimeout(): int;
 }

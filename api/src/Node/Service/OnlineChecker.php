@@ -26,6 +26,7 @@ final readonly class OnlineChecker implements OnlineCheckerInterface
     public function check(NodeInterface $node): PingReport
     {
         $address = $node->getIp() ?? $node->getHostname();
+
         return $this->ping($address);
     }
 

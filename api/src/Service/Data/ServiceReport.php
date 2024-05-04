@@ -20,6 +20,7 @@ final readonly class ServiceReport implements ServiceReportInterface
         private NodeInterface $node,
         private int $port,
         private bool $successful,
+        private int $timeout,
         private ?string $error = null,
         private ?int $errorCode = null,
         private ?float $latency = null,
@@ -54,5 +55,10 @@ final readonly class ServiceReport implements ServiceReportInterface
     public function getError(): ?string
     {
         return $this->error;
+    }
+
+    public function getTimeout(): int
+    {
+        return $this->timeout;
     }
 }

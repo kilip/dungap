@@ -19,7 +19,6 @@ use Dungap\Dungap;
 use Dungap\Service\Config\ScannerConfig;
 use Dungap\Service\Event\ServiceScannedEvent;
 use Dungap\Service\ServiceException;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -39,8 +38,7 @@ final class ServiceScanner implements ServiceScannerInterface
         #[Autowire('%dungap.service.scanner.configs%')]
         array $configs
     ) {
-
-        foreach($configs as $config) {
+        foreach ($configs as $config) {
             $this->addConfig($config['port'], $config['timeout']);
         }
     }

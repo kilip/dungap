@@ -53,14 +53,17 @@ final readonly class ServiceScannedListener
             $service = $this->services->create();
             $service->setPort($port);
             $service->setNode($node);
+            $service->setTimeout($report->getTimeout());
             $services->save($service);
         }
 
-        $name = "node.service.".strval($port);
         $event = new StateUpdatedEvent(
             entityId: $service->getId(),
-            name: $name,
+            name: $service->getStateName(),
             state: $state,
+            attributes: [
+                'latency' => $report->getLatency(),
+            ],
             relId: $node->getId()
         );
 

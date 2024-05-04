@@ -47,18 +47,17 @@ final readonly class NodeEntityListener
 
     private function setLatency(NodeInterface $node): void
     {
-        if($node->isOnline()){
+        if ($node->isOnline()) {
             $latency = null;
             $state = $this->states->getLastState(
                 $node->getId(),
                 Dungap::NodeLatencyState
             );
-            if($state instanceof StateInterface){
+            if ($state instanceof StateInterface) {
                 $latency = floatval($state->getState());
             }
 
             $node->setLatency($latency);
         }
     }
-
 }

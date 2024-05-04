@@ -33,6 +33,16 @@ interface StateInterface
 
     public function getRelId(): ?Uuid;
 
+    /**
+     * @param array<string,mixed> $attributes
+     */
+    public function setAttributes(array $attributes): void;
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getAttributes(): array;
+
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): void;
 
     public function getUpdatedAt(): \DateTimeImmutable;

@@ -11,12 +11,7 @@
 
 namespace Dungap\Service\DI;
 
-use Dungap\Contracts\Service\ServiceScannerInterface;
-use Dungap\Service\Service\ServiceScanner;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\AbstractExtension;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 class ServiceExtension extends ConfigurableExtension
