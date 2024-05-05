@@ -11,6 +11,9 @@
 
 namespace Dungap\State\Entity;
 
+use ApiPlatform\Doctrine\Common\Filter\SearchFilterInterface;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -19,6 +22,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\State\StateInterface;
+use Dungap\State\Controller\LatestAction;
 use Dungap\State\Repository\StateRepository;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
@@ -30,6 +34,12 @@ use Symfony\Component\Uid\Uuid;
         new Get(),
         new Patch(security: 'is_granted("ROLE_ADMIN")'),
         new Delete(security: 'is_granted("ROLE_ADMIN")'),
+        new Get(
+            uriTemplate: '/states/latest/{id}',
+            controller: LatestAction::class,
+            read: false,
+            name: 'api_state_latest',
+        ),
     ],
     mercure: true
 )]
@@ -44,6 +54,10 @@ class State implements StateInterface
     #[ORM\Column(type: UuidType::NAME)]
     private Uuid $entityId;
 
+    #[ApiFilter(
+        SearchFilter::class,
+        strategy: SearchFilterInterface::STRATEGY_EXACT
+    )]
     #[ORM\Column(type: 'string', length: 50)]
     private string $name;
 

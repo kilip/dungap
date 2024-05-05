@@ -17,7 +17,6 @@ use Dungap\Contracts\State\StateInterface;
 use Dungap\Contracts\State\StateRepositoryInterface;
 use Dungap\Core\Entity\RepositoryConcern;
 use Dungap\State\Entity\State;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<State>
@@ -34,10 +33,9 @@ class StateRepository extends ServiceEntityRepository implements StateRepository
         parent::__construct($registry, State::class);
     }
 
-    public function getLastState(Uuid $entityId, string $name): ?StateInterface
+    public function findLatest(string $name): ?StateInterface
     {
         return $this->findOneBy([
-            'entityId' => $entityId,
             'name' => $name,
         ], ['updatedAt' => 'DESC']);
     }

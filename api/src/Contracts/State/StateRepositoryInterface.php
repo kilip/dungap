@@ -12,12 +12,11 @@
 namespace Dungap\Contracts\State;
 
 use Dungap\Contracts\Core\RepositoryInterface;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends RepositoryInterface<StateInterface>
  */
 interface StateRepositoryInterface extends RepositoryInterface
 {
-    public function getLastState(Uuid $entityId, string $name): ?StateInterface;
+    public function findLatest(string $name): ?StateInterface;
 }

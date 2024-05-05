@@ -11,16 +11,15 @@
 
 namespace Dungap\State\Event;
 
-class StateChangedEvent extends StateUpdatedEvent
+use Dungap\Contracts\Core\IdentifiableInterface;
+use Dungap\Contracts\State\StateInterface;
+
+class StateChangedEvent
 {
-    public function __construct(StateUpdatedEvent $event)
-    {
-        parent::__construct(
-            $event->entity,
-            $event->name,
-            $event->state,
-            $event->attributes,
-            $event->related
-        );
+    public function __construct(
+        public StateInterface $state,
+        public IdentifiableInterface $entity,
+        public ?IdentifiableInterface $related
+    ) {
     }
 }

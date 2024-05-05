@@ -11,5 +11,5 @@ parameters:
 
 
 services:
-  mercure.hub.default:
-    class: 'Dungap\Tests\Functional\Stub\MercureHubStub'
+#  mercure.hub.default:
+#    class: 'Dungap\Tests\Functional\Stub\MercureHubStub'

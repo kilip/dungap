@@ -34,6 +34,7 @@ use Dungap\Node\Repository\FeatureRepository;
     mercure: true
 )]
 #[ORM\Entity(repositoryClass: FeatureRepository::class)]
+#[ORM\Table(name: 'dungap_node_feature')]
 #[ORM\UniqueConstraint(name: 'feature_node', columns: ['node_id', 'name'])]
 class Feature implements FeatureInterface
 {

@@ -12,6 +12,7 @@
 namespace Dungap\Contracts\Node;
 
 use Dungap\Contracts\Core\IdentifiableInterface;
+use Dungap\Node\Entity\NodeStates;
 
 interface NodeInterface extends IdentifiableInterface
 {
@@ -42,4 +43,6 @@ interface NodeInterface extends IdentifiableInterface
     public function getLatency(): ?float;
 
     public function setLatency(?float $latency): void;
+
+    public function getStates(): NodeStates;
 }

@@ -1,14 +1,10 @@
 import { Session } from "@remix-run/node";
 import { MimeType } from "~/types/common";
+import { FetchResponse } from "~/types/response";
 
 export const MIME_TYPE = "application/ld+json";
-export const ENTRYPOINT = process.env.DUNGAP_API_ENTRYPOINT ?? 'https://localhost';
+export const ENTRYPOINT = 'https://localhost';
 
-export interface FetchResponse<TData> {
-  hubURL: string | null;
-  data: TData;
-  text: string;
-}
 
 const extractHubURL = (response: Response): null | string => {
   const linkHeader = response.headers.get("Link");
@@ -36,7 +32,7 @@ export interface FetchError {
 export async function fetchApi<TData>(
   id: string,
   init: RequestInit = {},
-  session: Session
+  session: Session | undefined = undefined
 ): Promise<FetchResponse<TData> | undefined> {
 
 

@@ -15,6 +15,7 @@ use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Contracts\Node\NodeRepositoryInterface;
 use Dungap\Contracts\Node\OnlineCheckerInterface;
 use Dungap\Node\Command\CheckOnlineNodesCommand;
+use Dungap\Node\Entity\NodeStates;
 use Dungap\Node\Handler\CheckOnlineNodesHandler;
 use Dungap\Node\State\PingReport;
 use Dungap\State\Event\StateUpdatedEvent;
@@ -28,9 +29,12 @@ class CheckOnlineNodesHandlerTest extends TestCase
 {
     private MockObject|NodeRepositoryInterface $nodes;
     private MockObject|NodeInterface $node;
+
     private MockObject|OnlineCheckerInterface $onlineChecker;
     private MockObject|LoggerInterface $logger;
     private MockObject|EventDispatcherInterface $dispatcher;
+
+    private NodeStates $nodeStates;
     private PingReport $report;
     private CheckOnlineNodesHandler $handler;
 
@@ -62,6 +66,11 @@ class CheckOnlineNodesHandlerTest extends TestCase
 
         $this->node->method('getIp')
             ->willReturn('127.0.0.1');
+
+        $this->node->method('getName')
+            ->willReturn('zeus');
+        $this->nodeStates = NodeStates::create($this->node);
+        $this->node->method('getStates')->willReturn($this->nodeStates);
     }
 
     public function testInvoke(): void
