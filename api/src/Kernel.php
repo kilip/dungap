@@ -11,6 +11,7 @@
 
 namespace Dungap;
 
+use Dungap\Bridge\SSH\DI\SSHExtension;
 use Dungap\Core\DI\CoreExtension;
 use Dungap\Node\DI\NodeExtension;
 use Dungap\Service\DI\ServiceExtension;
@@ -28,5 +29,6 @@ class Kernel extends BaseKernel
         $container->registerExtension(new CoreExtension());
         $container->registerExtension(new NodeExtension());
         $container->registerExtension(new ServiceExtension());
+        $container->registerExtension(new SSHExtension());
     }
 }
