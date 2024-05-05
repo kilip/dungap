@@ -18,17 +18,19 @@ use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Contracts\SSH\SshFactoryInterface;
 use Dungap\Contracts\SSH\SshInterface;
 use phpseclib3\Crypt\PublicKeyLoader;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final readonly class SSHFactory implements SshFactoryInterface
 {
     public function __construct(
         private NodeConfigRepositoryInterface $configRepository,
+        private LoggerInterface $logger,
         #[Autowire('%env(DUNGAP_DEFAULT_SSH_USERNAME)%')]
         private string $defaultUsername,
         #[Autowire('%env(DUNGAP_DEFAULT_SSH_PASSWORD)%')]
         private string $defaultPassword,
-        #[Autowire('%env(DUNGAP_DEFAULT_SSH_PRIVATE_KEY)%')]
+        #[Autowire('%env(resolve:DUNGAP_DEFAULT_SSH_PRIVATE_KEY)%')]
         private string $defaultPrivateKey,
         #[Autowire('%env(DUNGAP_DEFAULT_SSH_TIMEOUT)%')]
         private int $defaultTimeout = 5,
@@ -69,6 +71,6 @@ final readonly class SSHFactory implements SshFactoryInterface
             password: $password
         );
 
-        return new SSH($config);
+        return new SSH($config, $this->logger);
     }
 }

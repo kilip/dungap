@@ -14,15 +14,18 @@ namespace Dungap\State\Listener;
 use Dungap\Contracts\State\StateInterface;
 use Dungap\Contracts\State\StateRepositoryInterface;
 use Dungap\Dungap;
+use Dungap\State\Event\StateChangedEvent;
 use Dungap\State\Event\StateUpdatedEvent;
 use Dungap\State\StateException;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[AsEventListener(event: Dungap::OnStateUpdated)]
-class StateUpdatedListener
+final readonly class StateUpdatedListener
 {
     public function __construct(
         private StateRepositoryInterface $states,
+        private EventDispatcherInterface $dispatcher,
     ) {
     }
 
@@ -52,6 +55,9 @@ class StateUpdatedListener
             $state->setState($event->state);
             $state->setAttributes($event->attributes);
             $this->states->save($state);
+
+            $changedEvent = new StateChangedEvent($event);
+            $this->dispatcher->dispatch($changedEvent, Dungap::OnStateChanged);
         } catch (\Exception $e) {
             throw StateException::updateStateFailed($event->name, $event->state, $e->getMessage());
         }

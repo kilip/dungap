@@ -11,19 +11,27 @@
 
 namespace Dungap\State\Event;
 
+use Dungap\Contracts\Core\IdentifiableInterface;
 use Symfony\Component\Uid\Uuid;
 
 class StateUpdatedEvent
 {
+    public readonly Uuid $entityId;
+    public ?Uuid $relId = null;
+
     /**
      * @param array<string,mixed> $attributes
      */
     public function __construct(
-        public Uuid $entityId,
-        public string $name,
-        public string $state,
-        public array $attributes = [],
-        public ?Uuid $relId = null
+        public readonly IdentifiableInterface $entity,
+        public readonly string $name,
+        public readonly string $state,
+        public readonly array $attributes = [],
+        public readonly ?IdentifiableInterface $related = null,
     ) {
+        $this->entityId = $entity->getId();
+        if (!is_null($this->related)) {
+            $this->relId = $related->getId();
+        }
     }
 }

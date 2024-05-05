@@ -24,6 +24,9 @@ use Dungap\Service\Entity\Service;
  */
 class ServiceRepository extends ServiceEntityRepository implements ServiceRepositoryInterface
 {
+    /**
+     * @use RepositoryConcern<ServiceInterface>
+     */
     use RepositoryConcern;
 
     public function __construct(ManagerRegistry $registry)

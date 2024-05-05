@@ -16,6 +16,7 @@ use Dungap\Bridge\SSH\Contracts\NodeConfigRepositoryInterface;
 use Dungap\Bridge\SSH\Service\SSHFactory;
 use Dungap\Contracts\Node\NodeInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class SSHFactoryTest extends TestCase
 {
@@ -23,10 +24,12 @@ class SSHFactoryTest extends TestCase
     {
         $repository = $this->createMock(NodeConfigRepositoryInterface::class);
         $nodeConfig = $this->createMock(NodeConfigInterface::class);
+        $logger = $this->createMock(LoggerInterface::class);
         $node = $this->createMock(NodeInterface::class);
 
         $factory = new SSHFactory(
             $repository,
+            $logger,
             'admin',
             'admin',
             __DIR__.'/fixtures/test',

@@ -60,11 +60,11 @@ final readonly class ServiceCheckHandler
 
         try {
             $event = new StateUpdatedEvent(
-                entityId: $service->getId(),
+                entity: $service,
                 name: $service->getStateName(),
                 state: $report->isSuccessful() ? Dungap::OnlineState : Dungap::OfflineState,
                 attributes: ['latency' => $report->getLatency()],
-                relId: $service->getNode()->getId()
+                related: $service->getNode()
             );
             $dispatcher->dispatch($event, Dungap::OnServiceValidated);
         } catch (\Exception $e) {

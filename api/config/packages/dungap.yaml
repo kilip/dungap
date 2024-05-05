@@ -1,6 +1,10 @@
 core:
   config_dirs: /config
 node:
+  default_processor:
+    power_on: etherwake
+    power_off: ssh
+    reboot: ssh
   hosts: []
 service:
   scanner:

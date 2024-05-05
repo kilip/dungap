@@ -60,7 +60,7 @@ final readonly class CheckOnlineNodesHandler
         $report = $this->onlineChecker->check($node);
         $state = $report->success ? Dungap::OnlineState : Dungap::OfflineState;
         $event = new StateUpdatedEvent(
-            $node->getId(),
+            $node,
             Dungap::NodeOnlineStateName,
             $state,
             [

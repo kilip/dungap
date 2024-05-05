@@ -15,6 +15,9 @@ use Dungap\Bridge\SSH\Configuration;
 use Dungap\Bridge\SSH\SSHException;
 use Dungap\Contracts\SSH\SshInterface;
 use phpseclib3\Net\SSH2;
+use Psr\Log\LoggerInterface;
+
+define('NET_SSH2_LOGGING', SSH2::LOG_SIMPLE);
 
 final class SSH implements SshInterface
 {
@@ -23,7 +26,8 @@ final class SSH implements SshInterface
 
     public function __construct(
         private readonly Configuration $config,
-        SSH2 $client = null
+        private LoggerInterface $logger,
+        SSH2 $client = null,
     ) {
         $this->client = $client ?? new SSH2(
             host: $this->config->host,
@@ -39,9 +43,24 @@ final class SSH implements SshInterface
         return $this->client->exec($command, $callback);
     }
 
+    public function getLogs(): array
+    {
+        return $this->client->getLog();
+    }
+
+    public function disconnect(): void
+    {
+        $this->client->disconnect();
+    }
+
     private function ensureLoggedIn(): void
     {
         $config = $this->config;
+
+        $this->logger->info(
+            'Start ssh connect with config: {0}',
+            [$config]
+        );
 
         if (!$this->loggedIn) {
             $password = $config->key ?? $config->password;

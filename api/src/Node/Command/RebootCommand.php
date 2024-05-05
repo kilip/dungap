@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Bridge\SSH\Repository;
+namespace Dungap\Node\Command;
 
-class NodeRepository
+final readonly class RebootCommand extends AbstractFeatureCommand
 {
 }

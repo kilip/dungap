@@ -13,6 +13,7 @@ namespace Dungap\Service\Listener;
 
 use Dungap\Contracts\Service\ServiceRepositoryInterface;
 use Dungap\Dungap;
+use Dungap\Service\Event\ServiceCreatedEvent;
 use Dungap\Service\Event\ServiceScannedEvent;
 use Dungap\State\Event\StateUpdatedEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -55,16 +56,19 @@ final readonly class ServiceScannedListener
             $service->setNode($node);
             $service->setTimeout($report->getTimeout());
             $services->save($service);
+
+            $event = new ServiceCreatedEvent($service);
+            $this->dispatcher->dispatch($event, Dungap::OnServiceCreated);
         }
 
         $event = new StateUpdatedEvent(
-            entityId: $service->getId(),
+            entity: $service,
             name: $service->getStateName(),
             state: $state,
             attributes: [
                 'latency' => $report->getLatency(),
             ],
-            relId: $node->getId()
+            related: $node
         );
 
         $dispatcher->dispatch($event, Dungap::OnStateUpdated);

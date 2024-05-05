@@ -17,16 +17,19 @@ use Dungap\Bridge\SSH\SSHException;
 use phpseclib3\Net\SSH2;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class SSHTest extends TestCase
 {
     private MockObject|SSH2 $client;
+    private MockObject|LoggerInterface $logger;
     private Configuration $config;
     private SSH $ssh;
 
     protected function setUp(): void
     {
         $this->client = $this->createMock(SSH2::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
         $this->config = new Configuration(
             host: 'localhost',
             username: 'admin',
@@ -34,6 +37,7 @@ class SSHTest extends TestCase
         );
         $this->ssh = new SSH(
             config: $this->config,
+            logger: $this->logger,
             client: $this->client
         );
     }
