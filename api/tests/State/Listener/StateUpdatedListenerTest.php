@@ -11,6 +11,7 @@
 
 namespace Dungap\Tests\State\Listener;
 
+use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Contracts\State\StateInterface;
 use Dungap\Contracts\State\StateRepositoryInterface;
 use Dungap\State\Event\StateUpdatedEvent;
@@ -19,11 +20,14 @@ use Dungap\State\StateException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class StateUpdatedListenerTest extends TestCase
 {
     private MockObject|StateRepositoryInterface $states;
     private MockObject|StateInterface $state;
+    private MockObject|EventDispatcherInterface $dispatcher;
+
     private StateUpdatedEvent $event;
     private StateUpdatedListener $listener;
 
@@ -31,10 +35,15 @@ class StateUpdatedListenerTest extends TestCase
     {
         $this->states = $this->createMock(StateRepositoryInterface::class);
         $this->state = $this->createMock(StateInterface::class);
-        $this->listener = new StateUpdatedListener($this->states);
+        $node = $this->createMock(NodeInterface::class);
+        $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->listener = new StateUpdatedListener($this->states, $this->dispatcher);
+
+        $node->method('getId')
+            ->willReturn(Uuid::v7());
 
         $this->event = new StateUpdatedEvent(
-            Uuid::v7(),
+            $node,
             'online',
             'online'
         );

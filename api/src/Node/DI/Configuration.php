@@ -23,6 +23,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $builder->getRootNode();
 
         $this->addHostsSection($rootNode);
+        $this->addDefaultDriverSection($rootNode);
 
         return $builder;
     }
@@ -41,6 +42,21 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('mac')->defaultNull()->end()
                             ->scalarNode('note')->defaultNull()->end()
                         ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
+
+    private function addDefaultDriverSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('default_processor')
+                    ->children()
+                        ->scalarNode('power_on')->defaultValue('etherwake')->end()
+                        ->scalarNode('power_off')->defaultValue('ssh')->end()
+                        ->scalarNode('reboot')->defaultValue('ssh')->end()
                     ->end()
                 ->end()
             ->end()

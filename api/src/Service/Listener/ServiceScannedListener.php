@@ -58,13 +58,13 @@ final readonly class ServiceScannedListener
         }
 
         $event = new StateUpdatedEvent(
-            entityId: $service->getId(),
+            entity: $service,
             name: $service->getStateName(),
             state: $state,
             attributes: [
                 'latency' => $report->getLatency(),
             ],
-            relId: $node->getId()
+            related: $node
         );
 
         $dispatcher->dispatch($event, Dungap::OnStateUpdated);

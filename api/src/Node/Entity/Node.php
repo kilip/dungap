@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Core\Entity\UuidConcern;
+use Dungap\Node\Controller\PowerOnAction;
 use Dungap\Node\Listener\NodeEntityListener;
 
 #[ApiResource(
@@ -29,6 +30,13 @@ use Dungap\Node\Listener\NodeEntityListener;
         new Get(),
         new Patch(security: 'is_granted("ROLE_ADMIN")'),
         new Delete(security: 'is_granted("ROLE_ADMIN")'),
+        new Get(
+            uriTemplate: '/nodes/{id}/power-on',
+            controller: PowerOnAction::class,
+            security: 'is_granted("ROLE_ADMIN")',
+            write: false,
+            name: 'api_node_power_on'
+        ),
     ],
     mercure: true
 )]

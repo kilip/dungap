@@ -1,0 +1,44 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: 3
+
+vars:
+
+tasks:
+  default:
+    cmd: task -l
+
+  .sf:
+    cmds:
+      - php bin/console {{.args}}
+    requires:
+      vars: [args]
+
+  cc:
+    cmds:
+      - task: .sf
+        vars:
+          args: cache:clear
+
+  db:recreate:
+    cmds:
+      - task: cc
+      - task: .sf
+        vars:
+          args: doctrine:schema:drop --force
+      - task: .sf
+        vars:
+          args: doctrine:schema:create
+      - task: .sf
+        vars:
+          args: doctrine:fixtures:load -n
+
+  run:task:
+    cmds:
+      - task: .sf
+        vars:
+          args: dungap:task:run -vvv
+
+  server:
+    cmds:
+      - symfony server:start

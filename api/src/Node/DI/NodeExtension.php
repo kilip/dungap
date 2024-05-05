@@ -22,10 +22,21 @@ class NodeExtension extends ConfigurableExtension
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
         $container->setParameter('dungap.node.hosts', $mergedConfig['hosts']);
+        $this->configureDefaultProcessor($container, $mergedConfig['default_processor']);
     }
 
     public function getAlias(): string
     {
         return 'node';
+    }
+
+    /**
+     * @param array<string,string> $config
+     */
+    private function configureDefaultProcessor(ContainerBuilder $container, array $config): void
+    {
+        $container->setParameter('dungap.node.processor.power_on', $config['power_on']);
+        $container->setParameter('dungap.node.processor.power_off', $config['power_off']);
+        $container->setParameter('dungap.node.processor.reboot', $config['reboot']);
     }
 }
