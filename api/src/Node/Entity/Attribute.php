@@ -18,10 +18,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
-use Dungap\Contracts\Node\FeatureInterface;
 use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Core\Entity\UuidConcern;
-use Dungap\Node\Repository\FeatureRepository;
 
 #[ApiResource(
     operations: [
@@ -33,41 +31,57 @@ use Dungap\Node\Repository\FeatureRepository;
     ],
     mercure: true
 )]
-#[ORM\Entity(repositoryClass: FeatureRepository::class)]
-#[ORM\Table(name: 'node_feature')]
-#[ORM\UniqueConstraint(name: 'feature_node', columns: ['node_id', 'name'])]
-class Feature implements FeatureInterface
+#[ORM\Entity()]
+#[ORM\Table(name: 'node_attribute')]
+#[ORM\UniqueConstraint(
+    name: 'attribute_node',
+    columns: ['subject_id', 'name']
+)]
+class Attribute
 {
     use UuidConcern;
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\ManyToOne(
+        targetEntity: NodeInterface::class,
+        inversedBy: 'attributes'
+    )]
+    private NodeInterface $subject;
+
+    #[ORM\Column(type: 'string', length: 50)]
     private string $name;
 
-    #[ORM\ManyToOne(targetEntity: NodeInterface::class)]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
-    private NodeInterface $node;
+    /**
+     * Value data type.
+     */
+    #[ORM\Column(type: 'string', length: 50)]
+    private string $type;
 
-    #[ORM\Column(type: 'string')]
-    private string $driver;
+    #[ORM\Column(type: 'json')]
+    private array $value;
 
-    public function getNode(): NodeInterface
+    public function __toString()
     {
-        return $this->node;
+        return $this->name;
     }
 
-    public function setNode(NodeInterface $node): void
+    public function getSubject(): NodeInterface
     {
-        $this->node = $node;
+        return $this->subject;
     }
 
-    public function getDriver(): string
+    public function setSubject(NodeInterface $subject): void
     {
-        return $this->driver;
+        $this->subject = $subject;
     }
 
-    public function setDriver(string $driver): void
+    public function getValue(): int|string|float|bool|object
     {
-        $this->driver = $driver;
+        return $this->value[0];
+    }
+
+    public function setValue(int|string|float|bool|object $value): void
+    {
+        $this->value = [$value];
     }
 
     public function getName(): string
@@ -78,5 +92,15 @@ class Feature implements FeatureInterface
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): void
+    {
+        $this->type = $type;
     }
 }

@@ -8,3 +8,7 @@
 
 parameters:
   dungap.config_dir: "%kernel.project_dir%/tests/fixtures/config"
+
+services:
+  mercure.hub.default:
+    class: 'Dungap\Tests\Functional\Stub\MercureHubStub'

@@ -17,6 +17,8 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Core\Entity\UuidConcern;
@@ -79,9 +81,63 @@ class Node implements NodeInterface
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $note = null;
 
+    /**
+     * @var Collection<Attribute>
+     */
+    #[ORM\OneToMany(
+        targetEntity: Attribute::class,
+        mappedBy: 'subject',
+        cascade: ['persist', 'remove'],
+        fetch: 'LAZY'
+    )]
+    #[ORM\JoinColumn(
+        onDelete: 'CASCADE'
+    )]
+    private Collection $attributes;
+
     private bool $online = false;
 
     private ?float $latency = null;
+
+    public function __construct()
+    {
+        $this->attributes = new ArrayCollection();
+    }
+
+    public function hasAttribute(string $name): bool
+    {
+        return null !== $this->attributes->containsKey($name);
+    }
+
+    public function getAttribute(string $name): ?Attribute
+    {
+        return $this->attributes->get($name);
+    }
+
+    public function addAttribute(Attribute $attribute): void
+    {
+        if (!$this->hasAttribute($attribute->getName())) {
+            $this->attributes->set($attribute->getName(), $attribute);
+            $attribute->setSubject($this);
+        }
+    }
+
+    public function removeAttribute(string $name): void
+    {
+        if ($this->hasAttribute($name)) {
+            $this->getAttributes()->removeElement($name);
+        }
+    }
+
+    public function getAttributes(): Collection
+    {
+        return $this->attributes;
+    }
+
+    public function setAttributes(Collection $attributes): void
+    {
+        $this->attributes = $attributes;
+    }
 
     public function getName(): string
     {
