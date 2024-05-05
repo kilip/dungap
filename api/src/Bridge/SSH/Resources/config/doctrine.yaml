@@ -1,0 +1,15 @@
+doctrine:
+  orm:
+    mappings:
+      SSH:
+        type: attribute
+        is_bundle: false
+        dir: "%kernel.project_dir%/src/Bridge/SSH/Entity"
+        prefix: 'Dungap\Bridge\SSH\Entity'
+        alias: SSH
+    resolve_target_entities:
+      Dungap\Bridge\SSH\Contracts\NodeConfigInterface: Dungap\Bridge\SSH\Entity\NodeConfig
+
+api_platform:
+  resource_class_directories:
+    - "%kernel.project_dir%/src/Bridge/SSH/Entity"

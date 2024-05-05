@@ -20,10 +20,12 @@ services:
   Dungap\:
     resource: "../src/"
     exclude:
+      - "../src/Dungap.php"
       - "../src/Kernel.php"
       - "../src/Core/DI/"
       - "../src/Node/DI/"
       - "../src/Service/DI/"
+      - "../src/Bridge/SSH/DI"
 
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
