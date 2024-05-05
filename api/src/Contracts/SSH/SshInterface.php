@@ -13,5 +13,12 @@ namespace Dungap\Contracts\SSH;
 
 interface SshInterface
 {
+    public function disconnect(): void;
+
     public function execute(string $command, callable $callback = null): string;
+
+    /**
+     * @return array<int,string>
+     */
+    public function getLogs(): array;
 }

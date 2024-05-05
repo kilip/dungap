@@ -9,11 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Contracts\Node;
+namespace Dungap\Node\Command;
 
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use Symfony\Component\Uid\Uuid;
 
-#[AutoconfigureTag('dungap.processor.reboot')]
-interface RebootProcessorInterface extends FeatureProcessorInterface
+abstract readonly class AbstractFeatureCommand
 {
+    public function __construct(
+        public Uuid $deviceId,
+    ) {
+    }
 }

@@ -11,8 +11,14 @@
 
 namespace Dungap\Core\Entity;
 
+/**
+ * @template T of object
+ */
 trait RepositoryConcern
 {
+    /**
+     * @return T
+     */
     public function create()
     {
         $class = $this->getClassName();
@@ -20,6 +26,9 @@ trait RepositoryConcern
         return new $class();
     }
 
+    /**
+     * @param T $object
+     */
     public function save($object): void
     {
         $this->getEntityManager()->persist($object);

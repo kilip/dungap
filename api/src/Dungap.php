@@ -24,13 +24,15 @@ class Dungap
     public const OnStateUpdated = 'onStateUpdated';
     public const OnServiceScanned = 'onServiceScanned';
     public const OnServiceValidated = 'onServiceValidated';
+    public const OnServiceCreated = 'onServiceCreated';
     public const OnStateChanged = 'onStateChanged';
 
-    public const PowerOnFeature = 'PowerOnFeature';
-    public const PowerOffFeature = 'PowerOffFeature';
-    public const RebootFeature = 'RebootFeature';
+    public const PowerOnFeature = 'PowerOn';
+    public const PowerOffFeature = 'PowerOff';
+    public const RebootFeature = 'Reboot';
 
     public const PowerOnProcessorTag = 'dungap.node.processor.power_on';
+    public const PowerOffProcessorTag = 'dungap.node.processor.power_off';
     public const SshDriver = 'ssh';
     public const RouterOsDriver = 'routeros';
     public const EtherWakeDriver = 'EtherWake';

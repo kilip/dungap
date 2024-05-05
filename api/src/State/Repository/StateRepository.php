@@ -24,6 +24,9 @@ use Symfony\Component\Uid\Uuid;
  */
 class StateRepository extends ServiceEntityRepository implements StateRepositoryInterface
 {
+    /**
+     * @use RepositoryConcern<StateInterface>
+     */
     use RepositoryConcern;
 
     public function __construct(ManagerRegistry $registry)

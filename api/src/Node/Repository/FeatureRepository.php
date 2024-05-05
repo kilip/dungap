@@ -24,6 +24,9 @@ use Symfony\Component\Uid\Uuid;
  */
 class FeatureRepository extends ServiceEntityRepository implements FeatureRepositoryInterface
 {
+    /**
+     * @use RepositoryConcern<FeatureInterface>
+     */
     use RepositoryConcern;
 
     public function __construct(ManagerRegistry $registry)

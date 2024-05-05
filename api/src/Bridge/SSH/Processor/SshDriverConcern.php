@@ -9,12 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Contracts\Node;
+namespace Dungap\Bridge\SSH\Processor;
 
 use Dungap\Dungap;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-#[AutoconfigureTag(Dungap::PowerOffProcessorTag)]
-interface PowerOffProcessorInterface extends FeatureProcessorInterface
+trait SshDriverConcern
 {
+    public function getDriverName(): string
+    {
+        return Dungap::SshDriver;
+    }
 }

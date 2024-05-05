@@ -9,8 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Bridge\SSH\Repository;
+namespace Dungap\Service\Event;
 
-class NodeRepository
+use Dungap\Contracts\Service\ServiceInterface;
+
+class ServiceCreatedEvent
 {
+    public function __construct(
+        public ServiceInterface $service
+    ) {
+    }
 }

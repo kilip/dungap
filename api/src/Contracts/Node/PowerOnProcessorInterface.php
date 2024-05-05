@@ -15,9 +15,6 @@ use Dungap\Dungap;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 #[AutoconfigureTag(Dungap::PowerOnProcessorTag)]
-interface PowerOnProcessorInterface
+interface PowerOnProcessorInterface extends FeatureProcessorInterface
 {
-    public function getDriverName(): string;
-
-    public function process(FeatureInterface $feature): void;
 }

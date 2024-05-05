@@ -11,10 +11,9 @@
 
 namespace Dungap\Contracts\Node;
 
-use Dungap\Dungap;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
-
-#[AutoconfigureTag(Dungap::PowerOffProcessorTag)]
-interface PowerOffProcessorInterface extends FeatureProcessorInterface
+interface FeatureProcessorInterface
 {
+    public function getDriverName(): string;
+
+    public function process(FeatureInterface $feature): void;
 }

@@ -9,11 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Contracts\Node;
+namespace Dungap\Node\Command;
 
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
-
-#[AutoconfigureTag('dungap.processor.reboot')]
-interface RebootProcessorInterface extends FeatureProcessorInterface
+final readonly class PowerOffCommand extends AbstractFeatureCommand
 {
 }

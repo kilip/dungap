@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Core\Entity\UuidConcern;
+use Dungap\Node\Controller\PowerOffAction;
 use Dungap\Node\Controller\PowerOnAction;
 use Dungap\Node\Listener\NodeEntityListener;
 
@@ -36,6 +37,13 @@ use Dungap\Node\Listener\NodeEntityListener;
             security: 'is_granted("ROLE_ADMIN")',
             write: false,
             name: 'api_node_power_on'
+        ),
+        new Get(
+            uriTemplate: '/nodes/{id}/power-off',
+            controller: PowerOffAction::class,
+            security: 'is_granted("ROLE_ADMIN")',
+            write: false,
+            name: 'api_node_power_off'
         ),
     ],
     mercure: true

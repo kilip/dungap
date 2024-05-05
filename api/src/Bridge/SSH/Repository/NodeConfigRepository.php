@@ -9,36 +9,35 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\Service\Repository;
+namespace Dungap\Bridge\SSH\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Dungap\Bridge\SSH\Contracts\NodeConfigInterface;
+use Dungap\Bridge\SSH\Contracts\NodeConfigRepositoryInterface;
+use Dungap\Bridge\SSH\Entity\NodeConfig;
 use Dungap\Contracts\Node\NodeInterface;
-use Dungap\Contracts\Service\ServiceInterface;
-use Dungap\Contracts\Service\ServiceRepositoryInterface;
 use Dungap\Core\Entity\RepositoryConcern;
-use Dungap\Service\Entity\Service;
 
 /**
- * @extends ServiceEntityRepository<Service>
+ * @extends ServiceEntityRepository<NodeConfig>
  */
-class ServiceRepository extends ServiceEntityRepository implements ServiceRepositoryInterface
+class NodeConfigRepository extends ServiceEntityRepository implements NodeConfigRepositoryInterface
 {
     /**
-     * @use RepositoryConcern<ServiceInterface>
+     * @use RepositoryConcern<NodeConfigInterface>
      */
     use RepositoryConcern;
 
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Service::class);
+        parent::__construct($registry, NodeConfig::class);
     }
 
-    public function findByNodePort(NodeInterface $node, int $port): ?ServiceInterface
+    public function findByNode(NodeInterface $node): ?NodeConfigInterface
     {
         return $this->findOneBy([
             'node' => $node,
-            'port' => $port,
         ]);
     }
 }

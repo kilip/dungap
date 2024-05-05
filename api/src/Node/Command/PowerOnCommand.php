@@ -11,12 +11,6 @@
 
 namespace Dungap\Node\Command;
 
-use Symfony\Component\Uid\Uuid;
-
-class PowerOnCommand
+final readonly class PowerOnCommand extends AbstractFeatureCommand
 {
-    public function __construct(
-        public Uuid $deviceId
-    ) {
-    }
 }

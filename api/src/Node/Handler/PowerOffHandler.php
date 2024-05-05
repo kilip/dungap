@@ -12,30 +12,30 @@
 namespace Dungap\Node\Handler;
 
 use Dungap\Contracts\Node\FeatureRepositoryInterface;
-use Dungap\Contracts\Node\PowerOnProcessorInterface;
+use Dungap\Contracts\Node\PowerOffProcessorInterface;
 use Dungap\Dungap;
-use Dungap\Node\Command\PowerOnCommand;
+use Dungap\Node\Command\PowerOffCommand;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-final class PowerOnHandler extends AbstractFeatureHandler
+final class PowerOffHandler extends AbstractFeatureHandler
 {
     /**
-     * @param iterable<PowerOnProcessorInterface> $processors
+     * @param iterable<PowerOffProcessorInterface> $processors
      */
     public function __construct(
         protected FeatureRepositoryInterface $features,
-        #[TaggedIterator(Dungap::PowerOnProcessorTag)]
+        #[TaggedIterator(Dungap::PowerOffProcessorTag)]
         protected iterable $processors,
         protected LoggerInterface $logger
     ) {
         parent::__construct($this->features, $this->processors, $this->logger);
     }
 
-    public function __invoke(PowerOnCommand $command): void
+    public function __invoke(PowerOffCommand $command): void
     {
-        $this->process($command->deviceId, Dungap::PowerOnFeature);
+        $this->process($command->deviceId, Dungap::PowerOffFeature);
     }
 }
