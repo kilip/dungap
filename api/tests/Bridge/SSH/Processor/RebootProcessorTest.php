@@ -11,20 +11,20 @@
 
 namespace Dungap\Tests\Bridge\SSH\Processor;
 
-use Dungap\Bridge\SSH\Processor\PowerOffProcessor;
+use Dungap\Bridge\SSH\Processor\RebootProcessor;
 use PHPUnit\Framework\TestCase;
 
-class PowerOffProcessorTest extends TestCase
+class RebootProcessorTest extends TestCase
 {
     use TestSshProcessorConcern;
 
     protected function getProcessorClassName(): string
     {
-        return PowerOffProcessor::class;
+        return RebootProcessor::class;
     }
 
     protected function getSshCommand(): string
     {
-        return 'sudo poweroff';
+        return 'sudo reboot';
     }
 }

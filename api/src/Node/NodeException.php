@@ -15,10 +15,11 @@ use Dungap\Contracts\Node\FeatureInterface;
 
 class NodeException extends \Exception
 {
-    public static function powerOnProcessorInvalid(FeatureInterface $feature): self
+    public static function featureProcessorInvalid(FeatureInterface $feature): self
     {
         return new self(sprintf(
-            'Power on processor for node "%s" with driver "%s" not found.',
+            '"%s" processor for node "%s" with driver "%s" not found.',
+            $feature->getName(),
             $feature->getNode()->getName(),
             $feature->getDriver()
         ));

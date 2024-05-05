@@ -22,9 +22,9 @@ class ServiceValidatorTest extends TestCase
         $node = new Node();
         $validator = new ServiceValidator();
 
-        $node->setName('google');
-        $node->setHostname('www.google.com');
-        $report = $validator->validate($node, 80, 500);
+        $node->setName('github');
+        $node->setHostname('github.com');
+        $report = $validator->validate($node, 22, 1000);
 
         $this->assertTrue($report->isSuccessful());
         $this->assertNotNull($report->getLatency());

@@ -33,6 +33,8 @@ class Dungap
 
     public const PowerOnProcessorTag = 'dungap.node.processor.power_on';
     public const PowerOffProcessorTag = 'dungap.node.processor.power_off';
+    public const RebootProcessorTag = 'dungap.node.processor.reboot';
+
     public const SshDriver = 'ssh';
     public const RouterOsDriver = 'routeros';
     public const EtherWakeDriver = 'EtherWake';

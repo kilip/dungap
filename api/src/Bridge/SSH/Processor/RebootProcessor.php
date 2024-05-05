@@ -11,12 +11,14 @@
 
 namespace Dungap\Bridge\SSH\Processor;
 
-use Dungap\Dungap;
+use Dungap\Contracts\Node\RebootProcessorInterface;
 
-trait SshDriverConcern
+final readonly class RebootProcessor implements RebootProcessorInterface
 {
-    public function getDriverName(): string
+    use SshProcessorConcern;
+
+    protected function getCommand(): string
     {
-        return Dungap::SshDriver;
+        return 'sudo reboot';
     }
 }

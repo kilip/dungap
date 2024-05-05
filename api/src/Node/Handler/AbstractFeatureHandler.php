@@ -69,7 +69,7 @@ abstract class AbstractFeatureHandler
         $processor = $this->findProcessor($feature);
 
         if (is_null($processor)) {
-            throw NodeException::powerOnProcessorInvalid($feature);
+            throw NodeException::featureProcessorInvalid($feature);
         }
 
         $processor->process($feature);

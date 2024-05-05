@@ -11,9 +11,10 @@
 
 namespace Dungap\Contracts\Node;
 
+use Dungap\Dungap;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-#[AutoconfigureTag('dungap.processor.reboot')]
+#[AutoconfigureTag(Dungap::RebootProcessorTag)]
 interface RebootProcessorInterface extends FeatureProcessorInterface
 {
 }

@@ -22,6 +22,7 @@ use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Core\Entity\UuidConcern;
 use Dungap\Node\Controller\PowerOffAction;
 use Dungap\Node\Controller\PowerOnAction;
+use Dungap\Node\Controller\RebootAction;
 use Dungap\Node\Listener\NodeEntityListener;
 
 #[ApiResource(
@@ -44,6 +45,13 @@ use Dungap\Node\Listener\NodeEntityListener;
             security: 'is_granted("ROLE_ADMIN")',
             write: false,
             name: 'api_node_power_off'
+        ),
+        new Get(
+            uriTemplate: '/nodes/{id}/reboot',
+            controller: RebootAction::class,
+            security: 'is_granted("ROLE_ADMIN")',
+            write: false,
+            name: 'api_node_reboot'
         ),
     ],
     mercure: true
