@@ -2,25 +2,35 @@ security:
   # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
   password_hashers:
     Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
   # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
   providers:
     users_in_memory: { memory: null }
+    users:
+      entity:
+        class: Dungap\User\Entity\User
+        property: 'email'
+
   firewalls:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
-    main:
-      lazy: true
-      provider: users_in_memory
 
-      # activate different ways to authenticate
-      # https://symfony.com/doc/current/security.html#the-firewall
+    login:
+      pattern: ^/jwt-login
+      stateless: true
+      provider: users
+      json_login:
+        check_path: /jwt-login-check
+        success_handler: lexik_jwt_authentication.handler.authentication_success
+        failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
-      # https://symfony.com/doc/current/security/impersonating_user.html
-      # switch_user: true
+    api:
+      pattern: ^/
+      stateless: true
+      jwt: ~
+      provider: users
 
-  # Easy way to control access for large sections of your site
-  # Note: Only the *first* access control that matches will be used
   access_control:
   # - { path: ^/admin, roles: ROLE_ADMIN }
   # - { path: ^/profile, roles: ROLE_USER }

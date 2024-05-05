@@ -1,2 +1,2 @@
-#controllers:
-#  type: attribute
+api_login_check:
+  path: /jwt-login-check
