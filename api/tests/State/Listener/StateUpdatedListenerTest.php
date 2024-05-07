@@ -52,7 +52,7 @@ class StateUpdatedListenerTest extends TestCase
     public function testWithLastStateNull(): void
     {
         $this->states->expects($this->once())
-            ->method('getLastState')
+            ->method('findLatest')
             ->willReturn(null);
 
         $this->states->expects($this->once())
@@ -70,7 +70,7 @@ class StateUpdatedListenerTest extends TestCase
     public function testWithStateChanged(): void
     {
         $this->states->expects($this->once())
-            ->method('getLastState')
+            ->method('findLatest')
             ->willReturn($this->state);
 
         $this->state->expects($this->once())
@@ -92,7 +92,7 @@ class StateUpdatedListenerTest extends TestCase
     public function testWithError(): void
     {
         $this->states->expects($this->once())
-            ->method('getLastState')
+            ->method('findLatest')
             ->willReturn(null);
 
         $this->states->expects($this->once())

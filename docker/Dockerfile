@@ -4,7 +4,6 @@ FROM ghcr.io/kilip/frankenphp-api:1.1.4-php8.3 as upstream
 
 RUN apk add --no-cache \
         nodejs-current \
-        nmap \
         awake \
         supervisor \
         bash \

@@ -34,8 +34,7 @@ final readonly class NodeEntityListener
     private function setOnline(NodeInterface $node): void
     {
         $online = false;
-        $state = $this->states->getLastState(
-            $node->getId(),
+        $state = $this->states->findLatest(
             Dungap::NodeOnlineStateName
         );
         if ($state instanceof StateInterface) {
@@ -49,8 +48,7 @@ final readonly class NodeEntityListener
     {
         if ($node->isOnline()) {
             $latency = null;
-            $state = $this->states->getLastState(
-                $node->getId(),
+            $state = $this->states->findLatest(
                 Dungap::NodeLatencyState
             );
             if ($state instanceof StateInterface) {

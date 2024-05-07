@@ -60,6 +60,7 @@ use Dungap\Node\Listener\NodeEntityListener;
 #[ORM\EntityListeners([
     NodeEntityListener::class,
 ])]
+#[ORM\Table(name: 'dungap_node')]
 class Node implements NodeInterface
 {
     use UuidConcern;
@@ -82,6 +83,11 @@ class Node implements NodeInterface
     private bool $online = false;
 
     private ?float $latency = null;
+
+    public function getStates(): NodeStates
+    {
+        return NodeStates::create($this);
+    }
 
     public function getName(): string
     {

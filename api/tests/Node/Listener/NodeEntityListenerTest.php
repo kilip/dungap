@@ -38,7 +38,7 @@ class NodeEntityListenerTest extends TestCase
         $this->listener = new NodeEntityListener(
             $this->states
         );
-        $this->states->method('getLastState')
+        $this->states->method('findLatest')
             ->willReturn($this->state);
         $this->node->method('getId')
             ->willReturn(Uuid::v7());

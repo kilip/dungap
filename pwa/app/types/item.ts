@@ -1,6 +1,6 @@
 export interface Item {
   "@id": string;
-  id: string;
+  id: string | number;
 }
 
 // eslint-disable-next-line

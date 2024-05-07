@@ -15,5 +15,5 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 interface HttpClientFactoryInterface
 {
-    public function create(): HttpCLientInterface;
+    public function create(): HttpClientInterface;
 }

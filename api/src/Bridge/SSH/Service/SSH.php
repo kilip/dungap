@@ -12,8 +12,8 @@
 namespace Dungap\Bridge\SSH\Service;
 
 use Dungap\Bridge\SSH\Configuration;
+use Dungap\Bridge\SSH\Contracts\SshInterface;
 use Dungap\Bridge\SSH\SSHException;
-use Dungap\Contracts\SSH\SshInterface;
 use phpseclib3\Net\SSH2;
 use Psr\Log\LoggerInterface;
 
@@ -34,6 +34,24 @@ final class SSH implements SshInterface
             port: $this->config->port,
             timeout: $this->config->timeout,
         );
+    }
+
+    public function getConfig(): Configuration
+    {
+        return $this->config;
+    }
+
+    public function login(): bool
+    {
+        try {
+            $this->ensureLoggedIn();
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+
+            return false;
+        }
+
+        return true;
     }
 
     public function execute(string $command, callable $callback = null): string

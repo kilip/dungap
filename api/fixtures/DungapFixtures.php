@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Dungap\DataFixtures;
+namespace Dungap\Fixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 /**
  * @codeCoverageIgnore
  */
-class DungapFixtures extends Fixture
+final class DungapFixtures extends Fixture
 {
     public function __construct(
         #[Autowire('%env(DUNGAP_DEFAULT_ADMIN_EMAIL)%')]
@@ -31,14 +31,18 @@ class DungapFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        // $product = new Product();
-        // $manager->persist($product);
         $user = new User();
         $user->setEmail($this->adminEmail);
         $user->setPassword($this->adminPassword);
         $user->addRole('ROLE_ADMIN');
         $manager->persist($user);
 
+        $this->loadAttributeMeta($manager);
+
         $manager->flush();
+    }
+
+    private function loadAttributeMeta(ObjectManager $manager): void
+    {
     }
 }

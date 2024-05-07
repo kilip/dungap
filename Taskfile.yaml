@@ -5,21 +5,36 @@ version: "3"
 tasks:
   default: task -l
 
-  #build:*:
-  #  cmds:
-  #    - docker build --target {{.target}} -f docker/Dockerfile -t dungap:{{.target}} .
-  #    - task: goss
-  #      tag: "{{.target}}"
-  #  vars:
-  #    target: "{{index .MATCH 0}}"
+  .compose:
+    cmd: docker compose -f compose.yaml -f compose.override.yaml {{.args}}
+    requirements:
+      vars: [args]
 
   build:
     cmds:
-      - docker compose -f compose.yaml -f compose.override.yaml build {{.CLI_ARGS}}
-      - task: goss
+      - task: .compose
+        vars:
+          args: build {{.CLI_ARGS}}
 
   up:
-    cmd: docker compose -f compose.yaml -f compose.override.yaml up -d
+    cmds:
+      - task: .compose
+        vars:
+          args: up -d
+      - task: db:recreate
+
+  db:recreate:
+    desc: recreate db
+    cmds:
+      - task: .sf
+        vars:
+          args: doctrine:schema:drop --force
+      - task: .sf
+        vars:
+          args: doctrine:schema:create
+      - task: .sf
+        vars:
+          args: doctrine:fixtures:load -n
 
   up:prod:
     cmd: docker compose -f compose.yaml -f compose.prod.yaml up -d
@@ -34,6 +49,17 @@ tasks:
     cmds:
       - task: stop
       - task: start
+
+  restart:tasks:
+    cmds:
+      - task: .exec
+        vars:
+          args: supervisorctl restart dungap-tasks:dungap-tasks_00
+  .exec:
+    cmds:
+      - docker compose exec dungap {{.args}}
+    requirements:
+      vars: [args]
 
   logs:
     cmd: docker compose logs -f --tail 50
@@ -57,14 +83,18 @@ tasks:
     cmds:
       - task: .sf
         vars:
-          CLI_ARGS: "cache:clear {{.CLI_ARGS}}"
+          args: "cache:clear"
 
   sf:
     cmds:
       - task: .sf
+        vars:
+          args: "{{.CLI_ARGS}}"
 
   .sf:
-    cmd: docker compose exec dungap /srv/api/bin/console {{.CLI_ARGS}}
+    cmd: docker compose exec dungap /srv/api/bin/console {{.args}}
+    requirements:
+      vars: [args]
 
   make:
     desc: Build production image and test it with goss

@@ -28,7 +28,7 @@ class HttpClientFactory implements HttpClientFactoryInterface
     ) {
     }
 
-    public function create(): HttpCLientInterface
+    public function create(): HttpClientInterface
     {
         return $this->httpClient->withOptions([
             'base_uri' => $this->baseUrl,

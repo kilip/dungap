@@ -38,10 +38,14 @@ doctrine:
         alias: User
     resolve_target_entities:
       Dungap\Contracts\Node\NodeInterface: Dungap\Node\Entity\Node
+      Dungap\Contracts\Node\AttributeInterface: Dungap\Node\Entity\Attribute
       Dungap\Contracts\State\StateInterface: Dungap\State\Entity\State
       Dungap\Contracts\Service\ServiceInterface: Dungap\Service\Entity\Service
+      Dungap\Contracts\User\UserInterface: Dungap\User\Entity\User
+      Dungap\Contracts\Attribute\MetaInterface: Dungap\Attribute\Entity\Meta
 
 api_platform:
+  use_symfony_listeners: true
   resource_class_directories:
     - "%kernel.project_dir%/src/Node/Entity"
     - "%kernel.project_dir%/src/State/Entity"

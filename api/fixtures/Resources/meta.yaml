@@ -1,0 +1,10 @@
+
+- name: uptime
+  description: Node uptime
+  label: Node uptime value
+  type: timestamp
+
+- name: os-family
+  description: Node OS Family
+  label: Node OS Family
+  type: string

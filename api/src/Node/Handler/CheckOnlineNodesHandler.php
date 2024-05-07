@@ -61,7 +61,7 @@ final readonly class CheckOnlineNodesHandler
         $state = $report->success ? Dungap::OnlineState : Dungap::OfflineState;
         $event = new StateUpdatedEvent(
             $node,
-            Dungap::NodeOnlineStateName,
+            $node->getStates()->online,
             $state,
             [
                 'latency' => $report->latency,

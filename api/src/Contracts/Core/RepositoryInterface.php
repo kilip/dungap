@@ -12,7 +12,7 @@
 namespace Dungap\Contracts\Core;
 
 /**
- * @template T of object
+ * @template T
  */
 interface RepositoryInterface
 {
