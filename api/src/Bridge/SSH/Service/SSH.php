@@ -21,18 +21,19 @@ define('NET_SSH2_LOGGING', SSH2::LOG_SIMPLE);
 
 final class SSH implements SshInterface
 {
-    private SSH2 $client;
     private bool $loggedIn = false;
+
+    private SSH2 $client;
 
     public function __construct(
         private readonly Configuration $config,
         private LoggerInterface $logger,
-        SSH2 $client = null,
+        ?SSH2 $client = null,
     ) {
         $this->client = $client ?? new SSH2(
-            host: $this->config->host,
-            port: $this->config->port,
-            timeout: $this->config->timeout,
+            host: $config->host,
+            port: $config->port,
+            timeout: $config->timeout,
         );
     }
 
@@ -75,16 +76,13 @@ final class SSH implements SshInterface
     {
         $config = $this->config;
 
-        $this->logger->info(
-            'Start ssh connect with config: {0}',
-            [$config]
-        );
-
         if (!$this->loggedIn) {
             $password = $config->key ?? $config->password;
             if (!$this->client->login($config->username, $password)) {
                 throw SSHException::failToLogin($config);
             }
+            $this->client->write("\n");
+            $this->loggedIn = true;
         }
     }
 }

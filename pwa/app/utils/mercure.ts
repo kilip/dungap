@@ -17,7 +17,6 @@ export const mercureSubscribe = <T extends Item | PagedCollection<Item> | null |
     new URL(id, window.origin).toString()
   );
   const eventSource = new EventSource(url.toString());
-  console.log(url.toString());
   eventSource.addEventListener("message", (event) =>
     setData(JSON.parse(event.data))
   );
@@ -59,7 +58,7 @@ export function useMercure<TData extends Item | PagedCollection<Item> | null | u
               data[ 'hydra:member' ][ pos ] = datum;
             }
             setData({ ...data });
-          })
+          }, topic)
         );
       });
 
@@ -76,7 +75,7 @@ export function useMercure<TData extends Item | PagedCollection<Item> | null | u
         eventSource.close();
       };
     }
-  }, [ data, hubURL ]);
+  }, [ data, hubURL, topic ]);
 
   return data;
 }

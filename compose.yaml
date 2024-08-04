@@ -14,6 +14,8 @@ services:
       DUNGAP_PWA_UPSTREAM: ${DUNGAP_PWA_UPSTREAM:-localhost:5173}
       DUNGAP_API_ENTRYPOINT: ${DUNGAP_API_ENTRYPOINT:-https://localhost}
       DUNGAP_DATABASE_DSN: ${DUNGAP_DATABASE_DSN:-sqlite:///%kernel.project_dir%/var/data.db}
+    cap_add:
+      - ALL
     ports:
       # HTTP
       - target: 80

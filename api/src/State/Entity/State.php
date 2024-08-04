@@ -44,10 +44,11 @@ use Symfony\Component\Uid\Uuid;
     mercure: true
 )]
 #[ORM\Entity(repositoryClass: StateRepository::class)]
+#[ORM\Table(name: 'dungap_states')]
 class State implements StateInterface
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
     #[ORM\Column(type: 'bigint', unique: true)]
     private ?int $id = null;
 

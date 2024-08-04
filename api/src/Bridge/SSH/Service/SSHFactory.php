@@ -68,7 +68,7 @@ final readonly class SSHFactory implements SshFactoryInterface
             port: $port,
             timeout: $timeout,
             key: $key,
-            password: $password
+            password: $password,
         );
 
         return new SSH($config, $this->logger);

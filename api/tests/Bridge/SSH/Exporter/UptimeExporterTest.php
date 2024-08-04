@@ -49,10 +49,9 @@ class UptimeExporterTest extends TestCase
 
     public function testProcess(): void
     {
-        $this->ssh->expects($this->once())
+        $this->ssh->expects($this->exactly(2))
             ->method('execute')
-            ->with('uptime -s')
-            ->willReturn('2024-05-07 22:18:32')
+            ->willReturn('UTC', '2024-05-07 22:18:32')
         ;
 
         $this->dispatcher->expects($this->once())

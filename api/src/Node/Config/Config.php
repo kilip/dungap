@@ -28,7 +28,7 @@ class Config
         array $hosts,
     ) {
         foreach ($hosts as $host) {
-            $this->addHost($host['name'], $host['ip'], $host['mac'], $host['note']);
+            $this->addHost($host['name'], $host['ip'], $host['mac'], $host['note'], $host['exporter']);
         }
     }
 
@@ -36,9 +36,10 @@ class Config
         string $name,
         ?string $ip,
         ?string $mac,
-        ?string $note
+        ?string $note,
+        ?string $exporter
     ): void {
-        $this->hosts[] = new Host($name, $ip, $mac, $note);
+        $this->hosts[] = new Host($name, $ip, $mac, $note, $exporter);
     }
 
     /**

@@ -18,13 +18,13 @@ use Dungap\Bridge\SSH\SSH;
 use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Contracts\Service\ServiceInterface;
 use Dungap\Dungap;
-use Dungap\State\Event\StateChangedEvent;
+use Dungap\State\Event\StateUpdatedEvent;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-#[AsEventListener(event: Dungap::OnStateChanged)]
-final readonly class StateChangedListener
+#[AsEventListener(event: Dungap::OnStateUpdated)]
+final readonly class StateUpdatedListener
 {
     /**
      * @param iterable<NodeExporterInterface> $exporters
@@ -37,20 +37,28 @@ final readonly class StateChangedListener
     ) {
     }
 
-    public function __invoke(StateChangedEvent $state): void
+    public function __invoke(StateUpdatedEvent $event): void
     {
+        $regex = '#(service)\..*\.(.*)$#';
+        $name = $event->name;
+        /** @var NodeInterface $node */
+        $node = $event->related;
+
         // only process on service state changed
-        if (
-            $state->entity instanceof ServiceInterface
-            && $state->related instanceof NodeInterface
-        ) {
-            $service = $state->entity;
-            $node = $state->related;
+        if (preg_match_all($regex, $name, $matches) === 1 && $node->getExporter() === Dungap::NodeExporterSSH) {
+
+            /** @var ServiceInterface $service $service */
+            $service = $event->entity;
+
             $ssh = $this->factory->createSshClient($node);
             $isLoggedIn = $ssh->login();
 
             // only process on ssh port
-            if (($ssh->getConfig()->port === $service->getPort()) && $isLoggedIn) {
+            if (
+                $ssh->getConfig()->port === $service->getPort()
+                && $isLoggedIn
+            ) {
+                $this->logger->info('start exporting {0} info', [$node->getName()]);
                 $this->process($node, $ssh);
             }
         }

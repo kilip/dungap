@@ -17,6 +17,7 @@ use Dungap\Bridge\SSH\Contracts\SshInterface;
 use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Dungap;
 use Dungap\State\Event\StateUpdatedEvent;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final readonly class UptimeExporter implements NodeExporterInterface
@@ -28,15 +29,15 @@ final readonly class UptimeExporter implements NodeExporterInterface
 
     public function process(NodeInterface $node, SshInterface $ssh): void
     {
+        $timezone = $ssh->execute('cat /etc/timezone');
+        $timezone = trim($timezone) ?? 'UTC';
         $uptime = $ssh->execute('uptime -s');
-        $date = Carbon::parse($uptime);
-
+        $date = Carbon::parse($uptime, new \DateTimeZone(trim($timezone)));
         $event = new StateUpdatedEvent(
             entity: $node,
             name: $node->getStates()->uptime,
             state: $date->timestamp
         );
-
-        $this->dispatcher->dispatch($event, Dungap::OnStateChanged);
+        $this->dispatcher->dispatch($event, Dungap::OnStateUpdated);
     }
 }

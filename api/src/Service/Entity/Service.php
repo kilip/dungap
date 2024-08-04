@@ -34,6 +34,7 @@ use Dungap\Service\Repository\ServiceRepository;
     mercure: true
 )]
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
+#[ORM\Table(name: 'dungap_service')]
 #[ORM\UniqueConstraint(name: 'constraint_node_port', columns: ['node_id', 'port'])]
 class Service implements ServiceInterface
 {
@@ -50,7 +51,7 @@ class Service implements ServiceInterface
 
     public function getStateName(): string
     {
-        return 'node.service.'.$this->port;
+        return "service.{$this->node->getName()}.{$this->port}";
     }
 
     public function getNode(): NodeInterface

@@ -7,4 +7,4 @@ export interface FetchResponse<TData> {
 }
 
 export type PagedResponse<TData> = FetchResponse<PagedCollection<TData>> | undefined;
-export type ItemResponse<TData> = FetchResponse<TData>;
+export type ItemResponse<TData> = FetchResponse<TData> | undefined;

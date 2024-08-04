@@ -15,21 +15,23 @@ use Dungap\Bridge\SSH\Configuration;
 use Dungap\Bridge\SSH\Contracts\NodeExporterInterface;
 use Dungap\Bridge\SSH\Contracts\SshFactoryInterface;
 use Dungap\Bridge\SSH\Contracts\SshInterface;
-use Dungap\Bridge\SSH\Listener\StateChangedListener;
+use Dungap\Bridge\SSH\Listener\StateUpdatedListener;
 use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Contracts\Service\ServiceInterface;
 use Dungap\Contracts\State\StateInterface;
-use Dungap\State\Event\StateChangedEvent;
+use Dungap\Dungap;
+use Dungap\State\Event\StateUpdatedEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Uid\Uuid;
 
-class StateChangedListenerTest extends TestCase
+class StateUpdatedListenerTest extends TestCase
 {
     private MockObject|LoggerInterface $logger;
     private MockObject|NodeExporterInterface $exporter;
-    private StateChangedEvent $event;
-    private StateChangedListener $listener;
+    private StateUpdatedEvent $event;
+    private StateUpdatedListener $listener;
 
     protected function setUp(): void
     {
@@ -41,7 +43,7 @@ class StateChangedListenerTest extends TestCase
         $this->exporter = $this->createMock(NodeExporterInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
-        $this->listener = new StateChangedListener(
+        $this->listener = new StateUpdatedListener(
             $factory,
             [$this->exporter],
             $this->logger
@@ -63,10 +65,17 @@ class StateChangedListenerTest extends TestCase
             ->method('login')
             ->willReturn(true);
 
-        $this->event = new StateChangedEvent(
-            $state,
-            $service,
-            $node,
+        $node->expects($this->atLeastOnce())
+            ->method('getExporter')
+            ->willReturn(Dungap::NodeExporterSSH);
+
+        $service->method('getId')->willReturn(Uuid::v7());
+        $node->method('getId')->willReturn(Uuid::v7());
+        $this->event = new StateUpdatedEvent(
+            entity: $service,
+            name: 'service.zeus.22',
+            state: 'online',
+            related: $node,
         );
     }
 

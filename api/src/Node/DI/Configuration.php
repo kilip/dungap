@@ -11,6 +11,7 @@
 
 namespace Dungap\Node\DI;
 
+use Dungap\Dungap;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -41,6 +42,7 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('hostname')->defaultNull()->end()
                             ->scalarNode('mac')->defaultNull()->end()
                             ->scalarNode('note')->defaultNull()->end()
+                            ->scalarNode('exporter')->defaultValue(Dungap::NodeExporterSSH)->end()
                         ->end()
                     ->end()
                 ->end()
