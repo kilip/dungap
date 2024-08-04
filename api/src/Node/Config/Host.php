@@ -11,13 +11,16 @@
 
 namespace Dungap\Node\Config;
 
+use Dungap\Dungap;
+
 class Host
 {
     public function __construct(
         public string $name,
         public ?string $ip = null,
         public ?string $mac = null,
-        public ?string $note = null
+        public ?string $note = null,
+        public ?string $exporter = Dungap::NodeExporterSSH
     ) {
     }
 

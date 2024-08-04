@@ -1,14 +1,14 @@
 #syntax=docker/dockerfile:1.7@sha256:dbbd5e059e8a07ff7ea6233b213b36aa516b4c53c645f1817a4dd18b83cbea56
 
-FROM ghcr.io/kilip/frankenphp-api:1.1.4-php8.3 as upstream
+FROM ghcr.io/kilip/frankenphp-api:1.2.2-php8.3 as upstream
 
 RUN apk add --no-cache \
         nodejs-current \
-        nmap \
         awake \
         supervisor \
         bash \
         bash-completion \
+        openssh \
     ;
 
 RUN set -eux; \
@@ -18,7 +18,8 @@ RUN set -eux; \
         pcov \
         bcmath \
         sockets \
-        sqlite3 \
+        gmp \
+        openssl \
     ;
 
 FROM upstream AS base

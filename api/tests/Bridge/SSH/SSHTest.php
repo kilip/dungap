@@ -42,6 +42,11 @@ class SSHTest extends TestCase
         );
     }
 
+    public function testGetConfig(): void
+    {
+        $this->assertSame($this->config, $this->ssh->getConfig());
+    }
+
     public function testExecute(): void
     {
         $this->client->expects($this->once())

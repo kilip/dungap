@@ -13,4 +13,20 @@ namespace Dungap\Tests\Concern;
 
 trait ContainerConcern
 {
+    public function setUp(): void
+    {
+        static::bootKernel();
+    }
+
+    /**
+     * @template T
+     *
+     * @param class-string<T> $serviceName
+     *
+     * @return T|null
+     */
+    protected function getService(string $serviceName)
+    {
+        return static::getContainer()->get($serviceName);
+    }
 }

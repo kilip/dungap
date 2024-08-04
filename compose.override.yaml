@@ -13,6 +13,7 @@ services:
       # - /app/vendor
     environment:
       DUNGAP_MERCURE_EXTRA_DIRECTIVES: demo
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
       # See https://xdebug.org/docs/all_settings#mode
       XDEBUG_MODE: "${XDEBUG_MODE:-off}"
     env_file:

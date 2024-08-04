@@ -13,7 +13,8 @@ namespace Dungap\Service\Command;
 
 class ServiceCheckCommand
 {
-    public function __construct()
+    public function __construct(
+    )
     {
     }
 }

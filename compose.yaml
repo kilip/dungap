@@ -7,16 +7,15 @@ services:
       dockerfile: ./docker/Dockerfile
     restart: unless-stopped
     environment:
-      PWA_UPSTREAM: localhost:5173
-      SERVER_NAME: ${SERVER_NAME:-localhost}, dungap:80
-      MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-      MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-      TRUSTED_PROXIES: ${TRUSTED_PROXIES:-127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
-      TRUSTED_HOSTS: ^${SERVER_NAME:-itstoni\.com|localhost}|api$$
-      MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-      DUNGAP_CONFIG_DIRS: /config,/srv/api/config/dungap
-      OIDC_UPSTREAM: https://localhost/change/me
-      OIDC_SERVER_URL: ${OIDC_SERVER_URL:-https://localhost/oidc/realms/demo}
+      DUNGAP_SERVER_NAME: ${DUNGAP_SERVER_NAME:-localhost}
+      DUNGAP_URL: ${DUNGAP_URL:-localhost}
+      DUNGAP_SECRET: ${DUNGAP_SECRET:-!changeme!}
+      DUNGAP_JWT_SECRET: ${DUNGAP_JWT_SECRET:-!changeme!}
+      DUNGAP_PWA_UPSTREAM: ${DUNGAP_PWA_UPSTREAM:-localhost:5173}
+      DUNGAP_API_ENTRYPOINT: ${DUNGAP_API_ENTRYPOINT:-https://localhost}
+      DUNGAP_DATABASE_DSN: ${DUNGAP_DATABASE_DSN:-sqlite:///%kernel.project_dir%/var/data.db}
+    cap_add:
+      - ALL
     ports:
       # HTTP
       - target: 80

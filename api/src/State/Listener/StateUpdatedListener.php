@@ -31,7 +31,7 @@ final readonly class StateUpdatedListener
 
     public function __invoke(StateUpdatedEvent $event): void
     {
-        $lastState = $this->states->getLastState($event->entityId, $event->name);
+        $lastState = $this->states->findLatest($event->name);
         $haveToChange = false;
 
         if (!$lastState instanceof StateInterface) {
@@ -56,7 +56,11 @@ final readonly class StateUpdatedListener
             $state->setAttributes($event->attributes);
             $this->states->save($state);
 
-            $changedEvent = new StateChangedEvent($event);
+            $changedEvent = new StateChangedEvent(
+                state: $state,
+                entity: $event->entity,
+                related: $event->related
+            );
             $this->dispatcher->dispatch($changedEvent, Dungap::OnStateChanged);
         } catch (\Exception $e) {
             throw StateException::updateStateFailed($event->name, $event->state, $e->getMessage());

@@ -66,7 +66,7 @@ final readonly class ServiceCheckHandler
                 attributes: ['latency' => $report->getLatency()],
                 related: $service->getNode()
             );
-            $dispatcher->dispatch($event, Dungap::OnServiceValidated);
+            $dispatcher->dispatch($event, Dungap::OnStateUpdated);
         } catch (\Exception $e) {
             throw ServiceException::failedToDispatchValidatedEvent($service, $e);
         }

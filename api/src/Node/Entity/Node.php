@@ -20,10 +20,10 @@ use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Node\NodeInterface;
 use Dungap\Core\Entity\UuidConcern;
+use Dungap\Dungap;
 use Dungap\Node\Controller\PowerOffAction;
 use Dungap\Node\Controller\PowerOnAction;
 use Dungap\Node\Controller\RebootAction;
-use Dungap\Node\Listener\NodeEntityListener;
 
 #[ApiResource(
     operations: [
@@ -57,9 +57,7 @@ use Dungap\Node\Listener\NodeEntityListener;
     mercure: true
 )]
 #[ORM\Entity()]
-#[ORM\EntityListeners([
-    NodeEntityListener::class,
-])]
+#[ORM\Table(name: 'dungap_node')]
 class Node implements NodeInterface
 {
     use UuidConcern;
@@ -79,9 +77,13 @@ class Node implements NodeInterface
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $note = null;
 
-    private bool $online = false;
+    #[ORM\Column(type: 'string')]
+    private string $exporter = Dungap::NodeExporterSSH;
 
-    private ?float $latency = null;
+    public function getStates(): NodeStates
+    {
+        return NodeStates::create($this);
+    }
 
     public function getName(): string
     {
@@ -123,16 +125,6 @@ class Node implements NodeInterface
         $this->note = $note;
     }
 
-    public function isOnline(): bool
-    {
-        return $this->online;
-    }
-
-    public function setOnline(bool $online): void
-    {
-        $this->online = $online;
-    }
-
     public function getHostname(): ?string
     {
         return $this->hostname;
@@ -143,13 +135,13 @@ class Node implements NodeInterface
         $this->hostname = $hostname;
     }
 
-    public function getLatency(): ?float
+    public function getExporter(): string
     {
-        return $this->latency;
+        return $this->exporter;
     }
 
-    public function setLatency(?float $latency): void
+    public function setExporter(string $exporter): void
     {
-        $this->latency = $latency;
+        $this->exporter = $exporter;
     }
 }

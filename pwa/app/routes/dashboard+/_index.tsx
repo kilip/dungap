@@ -1,7 +1,8 @@
-import { Box, Flex, Grid, Heading } from "@radix-ui/themes";
+import { Flex, Grid, Heading } from "@radix-ui/themes";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { getSession } from "~/auth/session.server";
+import NodeSummary from "~/nodes/components/NodeSummary";
 import { PagedCollection } from "~/types/collection";
 import { Node } from "~/types/node";
 import { fetchApi, FetchResponse } from "~/utils/api";
@@ -44,7 +45,7 @@ export default function Index() {
       <Heading size="4">Dashboard</Heading>
       <Grid columns="4" gap="2" width="auto">
         {collection?.["hydra:member"].map((node) => (
-          <Box key={node.id}>{node.ip}</Box>
+          <NodeSummary key={node.id} hubUrl={hubUrl as string} node={node} />
         ))}
       </Grid>
     </Flex>

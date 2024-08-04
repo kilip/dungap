@@ -82,6 +82,7 @@ final class TaskPreRunListener
         $node->setIp($host->ip);
         $node->setMac($host->mac);
         $node->setNote($host->note);
+        $node->setExporter($host->exporter);
 
         $this->nodes->save($node);
     }

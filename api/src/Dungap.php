@@ -35,7 +35,12 @@ class Dungap
     public const PowerOffProcessorTag = 'dungap.node.processor.power_off';
     public const RebootProcessorTag = 'dungap.node.processor.reboot';
 
-    public const SshDriver = 'ssh';
-    public const RouterOsDriver = 'routeros';
+    public const SshDriver = 'SSH';
+    public const RouterOsDriver = 'RouterOS';
     public const EtherWakeDriver = 'EtherWake';
+    const PrometheusDriver= 'Prometheus';
+
+    const NodeExporterSSH = self::SshDriver;
+    const NodeExporterRouterOS = self::RouterOsDriver;
+    const NodeExporterPrometheus = self::PrometheusDriver;
 }

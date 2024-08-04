@@ -15,10 +15,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Dungap\Contracts\Core\IdentifiableInterface;
 use Dungap\Core\Entity\UuidConcern;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 #[ORM\Entity()]
-class User implements PasswordAuthenticatedUserInterface, UserInterface, IdentifiableInterface
+#[ORM\Table(name: 'dungap_users')]
+class User implements PasswordAuthenticatedUserInterface, SymfonyUserInterface, IdentifiableInterface
 {
     use UuidConcern;
 

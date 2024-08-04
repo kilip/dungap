@@ -5,66 +5,116 @@ version: "3"
 tasks:
   default: task -l
 
-  #build:*:
-  #  cmds:
-  #    - docker build --target {{.target}} -f docker/Dockerfile -t dungap:{{.target}} .
-  #    - task: goss
-  #      tag: "{{.target}}"
-  #  vars:
-  #    target: "{{index .MATCH 0}}"
+  .compose:
+    cmd: docker compose -f compose.yaml -f compose.override.yaml {{.args}}
+    requirements:
+      vars: [args]
 
   build:
     cmds:
-      - docker compose -f compose.yaml -f compose.override.yaml build {{.CLI_ARGS}}
-      - task: goss
+      - task: .compose
+        vars:
+          args: build {{.CLI_ARGS}}
 
   up:
-    cmd: docker compose -f compose.yaml -f compose.override.yaml up -d
+    desc: startup docker containers
+    cmds:
+      - task: .compose
+        vars:
+          args: up -d
+
+  db:recreate:
+    desc: recreate db
+    cmds:
+      - task: .sf
+        vars:
+          args: doctrine:schema:drop --force
+      - task: .sf
+        vars:
+          args: doctrine:schema:create
+      - task: .sf
+        vars:
+          args: doctrine:fixtures:load -n
 
   up:prod:
+    desc: start production container
     cmd: docker compose -f compose.yaml -f compose.prod.yaml up -d
 
   stop:
+    desc: stop container
     cmd: docker compose stop
 
   start:
+    desc: start container
     cmd: docker compose start
 
   restart:
+    desc: restart container
     cmds:
       - task: stop
       - task: start
 
+  restart:tasks:
+    desc: restart tasks
+    cmds:
+      - task: .exec
+        vars:
+          args: supervisorctl restart dungap-tasks:dungap-tasks_00
+  .exec:
+    cmds:
+      - docker compose exec dungap {{.args}}
+    requirements:
+      vars: [args]
+
   logs:
+    desc: show docker logs
     cmd: docker compose logs -f --tail 50
 
   logs:franken:
+    desc: show franken logs
     cmd: docker compose exec dungap tail -f /var/log/dungap/caddy.log
 
   logs:pwa:
+    desc: show pwa logs
     cmd: docker compose exec dungap tail -f /var/log/dungap/pwa.log
 
+  logs:task:
+    desc: show task logs
+    cmd: docker compose exec dungap tail -f /var/log/dungap/tasks.log
+
+  logs:messenger:
+    desc: show messenger logs
+    cmd: docker compose exec dungap tail -f /var/log/dungap/messenger.log
+
   rm:
+    desc: remove containers
     cmds:
       - task: stop
       - docker compose rm -f
 
   shell:
+    desc: execute into shell
     cmds:
       - docker compose exec dungap bash
 
   sf:cc:
+    desc: clear cache
     cmds:
       - task: .sf
         vars:
-          CLI_ARGS: "cache:clear {{.CLI_ARGS}}"
+          args: "cache:clear"
 
   sf:
+    desc: execute symfony command
     cmds:
       - task: .sf
+        vars:
+          args: "{{.CLI_ARGS}}"
 
   .sf:
-    cmd: docker compose exec dungap /srv/api/bin/console {{.CLI_ARGS}}
+    cmd: docker compose exec dungap /srv/api/bin/console {{.args}}
+    requirements:
+      vars: [args]
 
   make:
     desc: Build production image and test it with goss

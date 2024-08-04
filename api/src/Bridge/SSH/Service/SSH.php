@@ -12,8 +12,8 @@
 namespace Dungap\Bridge\SSH\Service;
 
 use Dungap\Bridge\SSH\Configuration;
+use Dungap\Bridge\SSH\Contracts\SshInterface;
 use Dungap\Bridge\SSH\SSHException;
-use Dungap\Contracts\SSH\SshInterface;
 use phpseclib3\Net\SSH2;
 use Psr\Log\LoggerInterface;
 
@@ -21,19 +21,38 @@ define('NET_SSH2_LOGGING', SSH2::LOG_SIMPLE);
 
 final class SSH implements SshInterface
 {
-    private SSH2 $client;
     private bool $loggedIn = false;
+
+    private SSH2 $client;
 
     public function __construct(
         private readonly Configuration $config,
         private LoggerInterface $logger,
-        SSH2 $client = null,
+        ?SSH2 $client = null,
     ) {
         $this->client = $client ?? new SSH2(
-            host: $this->config->host,
-            port: $this->config->port,
-            timeout: $this->config->timeout,
+            host: $config->host,
+            port: $config->port,
+            timeout: $config->timeout,
         );
+    }
+
+    public function getConfig(): Configuration
+    {
+        return $this->config;
+    }
+
+    public function login(): bool
+    {
+        try {
+            $this->ensureLoggedIn();
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+
+            return false;
+        }
+
+        return true;
     }
 
     public function execute(string $command, callable $callback = null): string
@@ -57,16 +76,13 @@ final class SSH implements SshInterface
     {
         $config = $this->config;
 
-        $this->logger->info(
-            'Start ssh connect with config: {0}',
-            [$config]
-        );
-
         if (!$this->loggedIn) {
             $password = $config->key ?? $config->password;
             if (!$this->client->login($config->username, $password)) {
                 throw SSHException::failToLogin($config);
             }
+            $this->client->write("\n");
+            $this->loggedIn = true;
         }
     }
 }

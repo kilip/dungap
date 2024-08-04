@@ -2,3 +2,4 @@
 compose.local.yaml
 vars/*
 !vars/.gitkeep
+/config

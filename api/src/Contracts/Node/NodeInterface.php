@@ -12,6 +12,8 @@
 namespace Dungap\Contracts\Node;
 
 use Dungap\Contracts\Core\IdentifiableInterface;
+use Dungap\Node\Entity\Node;
+use Dungap\Node\Entity\NodeStates;
 
 interface NodeInterface extends IdentifiableInterface
 {
@@ -35,11 +37,9 @@ interface NodeInterface extends IdentifiableInterface
 
     public function getNote(): ?string;
 
-    public function setOnline(bool $online): void;
+    public function getStates(): NodeStates;
 
-    public function isOnline(): bool;
+    public function setExporter(string $exporter): void;
 
-    public function getLatency(): ?float;
-
-    public function setLatency(?float $latency): void;
+    public function getExporter(): string;
 }

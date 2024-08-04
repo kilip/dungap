@@ -14,9 +14,9 @@ namespace Dungap\Bridge\SSH\Service;
 use Dungap\Bridge\SSH\Configuration;
 use Dungap\Bridge\SSH\Contracts\NodeConfigInterface;
 use Dungap\Bridge\SSH\Contracts\NodeConfigRepositoryInterface;
+use Dungap\Bridge\SSH\Contracts\SshFactoryInterface;
+use Dungap\Bridge\SSH\Contracts\SshInterface;
 use Dungap\Contracts\Node\NodeInterface;
-use Dungap\Contracts\SSH\SshFactoryInterface;
-use Dungap\Contracts\SSH\SshInterface;
 use phpseclib3\Crypt\PublicKeyLoader;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -68,7 +68,7 @@ final readonly class SSHFactory implements SshFactoryInterface
             port: $port,
             timeout: $timeout,
             key: $key,
-            password: $password
+            password: $password,
         );
 
         return new SSH($config, $this->logger);
